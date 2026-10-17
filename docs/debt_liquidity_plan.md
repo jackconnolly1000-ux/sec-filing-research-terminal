@@ -1,6 +1,6 @@
 # Debt and liquidity: first-release plan
 
-Status (October 17, 2026 UTC): **delivery steps 1–10 are built for the three pilots as frozen, dated reviews, with unsupported inputs explicitly Unavailable.** Release 1 steps 1–7 merged as PRs #42–#47 (base `635b962`); step 8 completes on merge of the final reconciliation PR. This is completion of the defined release, not a claim that the evidence or obligations extraction is complete. See `release1_reconciliation.md` and "Release 1 status" below.
+Status (October 17, 2026 UTC): **delivery steps 1–10 are built for the three pilots as frozen, dated reviews, with unsupported inputs explicitly Unavailable.** Release 1 steps 1–8 merged as PRs #42–#48; step 8, the final reconciliation, is PR #48 (`0294a7e`). This is completion of the defined release, not a claim that the evidence or obligations extraction is complete. See `release1_reconciliation.md` and "Release 1 status" below.
 
 ## Goal
 
@@ -160,7 +160,7 @@ Release 1 order (agreed Oct 16, 2026). One step per pull request; each keeps the
 
 **Completed release presentation and reconciliation:**
 - Step 4 merged as PR #44. Oracle and Vistra's primary exports now include current ratio, net debt and flow/debt calculations that were missing from their workbooks. All three workbooks and the app preserve their checked inputs and distinct interest-coverage bases. See `ratio_reconciliation.md`.
-- Step 5 merged as PR #45 (`company_history.md`); fiscal-year and later TTM flows overlap, and unsupported older Vistra debt remains Unavailable. Step 6 merged as PR #46 with checked cash-generation and two-date balance charts (`core_charts.md`), with two formula-backed native charts in each individual workbook. Step 7 merged as PR #47 with contents/reading guides and scoped history explanations to the primary exports (`excel_parity.md`). Step 8 completes with the final reconciliation PR (`release1_reconciliation.md`).
+- Step 5 merged as PR #45 (`company_history.md`); fiscal-year and later TTM flows overlap, and unsupported older Vistra debt remains Unavailable. Step 6 merged as PR #46 with checked cash-generation and two-date balance charts (`core_charts.md`), with two formula-backed native charts in each individual workbook. Step 7 merged as PR #47 with contents/reading guides and scoped history explanations to the primary exports (`excel_parity.md`). Step 8 merged as PR #48 (`release1_reconciliation.md`).
 
 **Evidence gaps retained (not silently closed by release completion):**
 - Leases: Oracle's August 31, 2026 operating (34.621B) and finance (9.185B) lease liabilities are shown separately from borrowing, and its 288B of leases not yet commenced is shown as a commitment. Lilly's and Vistra's June 30, 2026 10-Q reviews establish no lease liability amounts, so June 30 amounts are Unavailable; the latest reported amounts are at Dec 31, 2025 (Lilly: 1,362M operating, no finance leases described; Vistra: 105M operating and 222M finance). No review has a complete lease or obligations extraction, and lease interest is not added to any coverage ratio.

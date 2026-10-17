@@ -30,7 +30,7 @@ ending cash = starting cash + OCF excluding prepayments + prepayments
 | Decision (hypothetical) | Revolver usable | No / yes, up to $10B | The commitment is a filing fact; the drawable amount is Unavailable |
 | Assumption | Correlation, OCF excluding prepayments vs prepayments | 0 (independent) | No filing establishes it; editable from −0.9 to +0.9 |
 
-Every default is editable in the app. Trials default to 10,000 with seed 2026, and the same inputs and seed reproduce the results exactly.
+Not every input is editable. The filing facts are fixed: starting cash, dated principal, the commercial-paper range and the $10B revolver commitment. So are the prepayment low and most-likely values ($0). The app lets you edit the OCF triangle, the prepayment high, dividends, the two capex levels, the correlation, the number of trials and the seed. Each decision is always shown both with and without the revolver; usability is not a setting. Trials default to 10,000 with seed 2026, and the same inputs and seed reproduce the results exactly.
 
 **What it tests, and what it doesn't.** Cash is tested at the end of the window (August 31, 2027) and, since the month-end path below was added, at every month end from September 2026 to August 2027. It doesn't test cash on each payment date within a month, and it doesn't model OCF seasonality or when capex and dividends fall within the year.
 
