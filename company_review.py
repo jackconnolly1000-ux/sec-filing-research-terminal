@@ -253,6 +253,11 @@ def maturity_html(snapshot):
     return output.replace("$", "&#36;")
 
 
+# Where the page places the company's download: after the header, figures and funding conclusion, before the detail.
+# render() ends one review section and opens the next here, so its single-string output is unchanged in effect.
+SPLIT = '</section><!-- lr-download --><section class="lr-review">'
+
+
 def render(snapshot):
     """Deterministic, source-linked explanations; no ratings or implied repayment assumptions."""
     m = snapshot["metrics"]
@@ -278,7 +283,7 @@ def render(snapshot):
         swatch = {"Cash and equivalents": "cash", "Baseline gross debt": "borrowing"}.get(label)
         mark = f'<span class="lr-swatch lr-{swatch}" aria-hidden="true"></span>' if swatch else ''
         output += f'<div><div class="lr-stat-label">{mark}{esc(label)}</div><div class="lr-stat-value">{esc(value)}</div><div class="lr-stat-detail">{esc(detail)}</div></div>'
-    output += '</div>' + funding_html(snapshot)
+    output += '</div>' + funding_html(snapshot) + SPLIT
     # Financial order: what the company owes, the cash it generates, how cash was funded, when debt falls due and what
     # could pay it, how earnings covered interest, how balances changed, then what stays unresolved. Each group but the
     # last gets a label; "What remains unresolved?" carries its own rule.
@@ -764,8 +769,11 @@ def render_app() -> None:
         st.markdown(notice(f"{ticker} review unavailable", "This saved review is incomplete or out of date, so it is "
                            "not shown. The other saved reviews are unaffected.", "caution"), unsafe_allow_html=True)
         return
+    # The reader sees the company, its figures and the funding conclusion before being offered the workbook
+    head, body = page.split(SPLIT, 1)
+    st.markdown(head + '</section>', unsafe_allow_html=True)
     render_download(st, snapshot, saved["snapshots"])
-    st.markdown(page, unsafe_allow_html=True)
+    st.markdown('<section class="lr-review">' + body, unsafe_allow_html=True)   # the first block's styles apply page-wide
     if simulation_view.available(snapshot):
         st.caption(f"An illustrative stress scenario for these obligations is under View → {simulation_view.VIEWS[1]}, "
                    "above. It uses stated assumptions and does not change this review.")

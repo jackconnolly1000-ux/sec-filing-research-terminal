@@ -71,4 +71,4 @@ Recorded for a later presentation fix. None is a figure error, and none is fixed
 
 Smaller notes, not counted above:
 - The scenario's monthly chart labels ticks "Oct 26", "Jan 27", which can read as days of the month rather than October 2026. *Fixed October 17 (PR #75):* ticks sit on the month-end points and read "Sep 2026", "Jan 2027", "May 2027", "Aug 2027", all visible at 390 px.
-- On every company page, the download button and its caption ("editing inputs does not update the checked narrative") sit above the review, before the reader knows what the workbook contains.
+- On every company page, the download button and its caption ("editing inputs does not update the checked narrative") sit above the review, before the reader knows what the workbook contains. *Fixed October 17 (PR #76):* the caption and button now follow the header, figures and funding conclusion, before *What it owes*.
