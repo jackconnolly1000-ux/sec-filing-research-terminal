@@ -90,7 +90,7 @@ AAPL and STRL fixtures may test extraction mechanics. They don't replace the pil
 
 The steps are done in this order. Each change is small enough to review on its own, and related steps can share a pull request (for example, cash and current ratio, or borrowing and net debt). Nothing merges until its tests and acceptance checks pass.
 
-1. **Pilot data:** download LLY, ORCL and VST company facts to `C:\Users\jackc\Stock Project\data\raw\xbrl`; record by hand, from each latest 10-K or 10-Q, the reported cash, debt lines, lease lines, current assets and liabilities, and interest expense, with their page and accession. These hand-read values are the expected answers.
+1. **Pilot data:** download LLY, ORCL and VST company facts to a local data folder outside the repository (`data/raw/xbrl`, beside `app/`); record by hand, from each latest 10-K or 10-Q, the reported cash, debt lines, lease lines, current assets and liabilities, and interest expense, with their page and accession. These hand-read values are the expected answers.
 2. **Cash:** cash and cash equivalents excluding restricted cash, point in time, with source metadata and the Unavailable result.
 3. **Current ratio:** current assets and current liabilities from the same date.
 4. **Borrowing:** map debt tags per pilot from the filings, check overlap, compute baseline gross debt; leases separately; then net debt.
@@ -118,7 +118,7 @@ Later phases (not in the first release): debt maturities, financing terms, coven
 - All existing unit tests still pass (407 on step-7 `main` at `635b962`; 412 in final reconciliation), and the offline and saved-sample app checks still pass.
 - Vistra's limits are written in the app's README "Known limits".
 - No grades, default probabilities or recommendations appear anywhere.
-- Copy meets `C:\Users\jackc\Stock Project\docs\Quality_Standard.md`.
+- Copy meets the project's quality standard (plain words, dated and sourced numbers, stated unknowns), kept outside the repository.
 
 ## Decisions to resolve
 
