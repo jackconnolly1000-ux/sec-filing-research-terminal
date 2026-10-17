@@ -83,6 +83,17 @@ class ScenarioPanel(unittest.TestCase):
         self.pick("ORCL")
         self.assertEqual(self.view().value, sv.VIEWS[1])
 
+    def test_the_2x2_picker_selects_each_decision(self):
+        self.scenario()
+        capex = next(c for c in self.app.segmented_control if c.key == "sim_pick_capex")
+        revolver = next(c for c in self.app.segmented_control if c.key == "sim_pick_revolver")
+        self.assertEqual((capex.value, revolver.value), ("Decision A", "Not assumed usable"))
+        revolver.set_value("Assumed usable").run()
+        next(c for c in self.app.segmented_control if c.key == "sim_pick_capex").set_value("Decision B").run()
+        self.assertFalse(self.app.exception)
+        self.assertIn('Distribution of ending cash<span class="sim-h-note"> · Decision B, revolver assumed usable', self.text())
+        self.assertIn("How the scenario works", self.text())
+
     def test_an_invalid_range_runs_nothing(self):
         self.scenario()
         next(n for n in self.app.number_input if n.key == "sim_ocf_low").set_value(60.0).run()

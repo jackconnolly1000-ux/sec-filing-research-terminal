@@ -94,11 +94,24 @@ CSS = """<style>
 .lr-maturity-bar {display:block;height:14px;background:var(--text-muted);}
 .op-ladder {margin:20px 0;}
 .op-ladder h4 {font-size:.95rem;margin:0 0 12px;color:var(--text-strong);}
-.op-ladder-row {display:grid;grid-template-columns:190px minmax(30px,1fr) 90px;gap:12px;align-items:center;font-size:.84rem;margin:12px 0;}
-.op-ladder-track {height:16px;border-left:1px solid var(--text-muted);}
-.op-ladder-bar {display:block;height:14px;background:var(--series-borrowing);border-radius:0 3px 3px 0;}
-.op-ladder-row strong {text-align:right;white-space:nowrap;}
-@media(max-width:600px){.op-ladder-row{grid-template-columns:130px minmax(24px,1fr) 74px;gap:6px;font-size:.76rem;}}
+.op-ladder-row {display:grid;grid-template-columns:190px minmax(30px,1fr) 96px;gap:12px;align-items:center;font-size:.84rem;margin:0;padding:7px 0;border-bottom:1px solid var(--border);}
+.op-ladder-row:hover {background:var(--surface);}
+/* Vertical gridlines, one per scale step, so each bar reads against the dollar scale below. */
+.op-ladder-track {display:flex;align-items:center;height:22px;border-left:1px solid var(--text-muted);border-right:1px solid var(--border);
+  background-image:repeating-linear-gradient(to right,var(--border-strong) 0 1px,transparent 1px 100%);background-size:calc(100% / var(--ticks)) 100%;}
+.op-ladder-bar {display:block;position:relative;height:14px;background:var(--series-borrowing);border-radius:0 3px 3px 0;}
+/* A cut bar runs past the scale: a gap near its end marks the break, and the value says "bar cut". */
+.op-ladder-bar.cut {border-radius:0;}
+.op-ladder-bar.cut::after {content:"";position:absolute;right:12px;top:-3px;bottom:-3px;width:5px;background:var(--bg);transform:skewX(-20deg);}
+.op-ladder-row strong {text-align:right;white-space:nowrap;color:var(--text-strong);}
+.op-ladder-row strong em {display:block;font-style:normal;font-weight:400;font-size:.72rem;color:var(--text-muted);}
+.op-ladder-axis {border-bottom:0;padding-top:2px;}
+.op-ladder-axis:hover {background:none;}
+.op-ladder-scale {position:relative;height:16px;font-size:.72rem;color:var(--text-muted);}
+.op-ladder-scale span {position:absolute;top:0;transform:translateX(-50%);white-space:nowrap;}
+.op-ladder-scale span:first-child {transform:none;}
+.op-ladder-scale span:last-child {transform:translateX(-100%);}
+@media(max-width:600px){.op-ladder-row{grid-template-columns:104px minmax(24px,1fr) 70px;gap:6px;font-size:.76rem;} .op-ladder-scale span:nth-child(even){display:none;}}
 .lr-event {display:grid;grid-template-columns:145px minmax(0,1fr);gap:20px;border-top:1px solid var(--border);padding:14px 0;}
 .lr-event p {margin:0 0 7px;}
 .lr-review a {color:var(--link);}

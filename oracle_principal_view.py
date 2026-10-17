@@ -4,22 +4,51 @@ from datetime import date
 from ui import esc
 
 
+def _scale(top):
+    """A round gridline step (in USD) giving at most six intervals, and the axis end it reaches."""
+    import math
+    for step in (1, 2, 2.5, 5, 10, 20, 25, 50):
+        if top / (step * 1e9) <= 6:
+            return step * 1e9, math.ceil(top / (step * 1e9)) * step * 1e9
+    raise ValueError("Ladder scale out of range")
+
+
 def ladder(review, money):
-    """The checked calendar, including its combined later bucket, on one zero-based scale."""
+    """The checked calendar on one zero-based scale with gridlines.
+
+    The scale is set by the single fiscal years, so the near-term bars stay readable; the combined FY2032-onward
+    bucket is drawn cut at the edge (and says so) rather than compressing every other bar to a sliver."""
     buckets = review["calendar"]
     if any(b["principal"] is None for b in buckets):
         raise ValueError("Unavailable maturity is not a chart zero")
-    maximum = max(b["principal"] for b in buckets)
+    step, axis = _scale(max(b["principal"] for b in buckets if b["end"]))
+    ticks = round(axis / step)
     output = ('<div class="op-ladder" role="img" aria-label="Oracle principal maturity ladder at August 31, 2026">'
               '<h4>Principal maturity ladder · USD billions</h4>')
     for b in buckets:
         label = b["label"] if b["end"] else "FY2032 onward (combined)"
-        output += (f'<div class="op-ladder-row"><span>{esc(label)}</span><div class="op-ladder-track">'
-                   f'<span class="op-ladder-bar" style="width:{b["principal"]/maximum*100:.5f}%" '
-                   f'data-principal="{b["principal"]}"></span></div><strong>{esc(money(b["principal"],3))}</strong></div>')
-    return output + ('<p class="lr-meta">Zero-based bars. FY2027 covers September 2026–May 2027; subsequent fiscal years '
-                     'end May 31. The last bar combines FY2032 onward. Excludes commercial paper (Unavailable), '
-                     'interest and leases. The term-loan date may be extended; this is not funding coverage.</p></div>')
+        cut = b["principal"] > axis
+        width = min(b["principal"] / axis, 1) * 100
+        output += (f'<div class="op-ladder-row"><span>{esc(label)}</span>'
+                   f'<div class="op-ladder-track" style="--ticks:{ticks}">'
+                   f'<span class="op-ladder-bar{" cut" if cut else ""}" style="width:{width:.5f}%" '
+                   f'data-principal="{b["principal"]}"></span></div><strong>{esc(money(b["principal"],3))}'
+                   f'{"<em>bar cut</em>" if cut else ""}</strong></div>')
+    labels = "".join(f'<span style="left:{k / ticks * 100:.4f}%">${k * step / 1e9:g}B</span>' for k in range(ticks + 1))
+    output += (f'<div class="op-ladder-row op-ladder-axis" aria-hidden="true"><span></span>'
+               f'<div class="op-ladder-scale">{labels}</div><strong></strong></div>')
+    last = max(r["maturity"] for r in review["remaining"] if r["maturity"])
+    from oracle_principal import fiscal_year
+    near, first = review["next_twelve_months"]["principal"], buckets[0]
+    second = next(b for b in buckets if b["label"] == "FY2028")
+    return output + (
+        f'<p class="lr-meta">Zero-based bars on one scale, gridlines every {esc(money(step, 0))}. The FY2032-onward '
+        f'bar combines FY2032 through FY{fiscal_year(last)} and is cut at the edge so the nearer years stay '
+        f'readable. The {esc(money(near, 3))} due September 2026–August 2027 is {esc(first["label"])} '
+        f'({esc(money(first["principal"], 3))}) plus June–August 2027 ({esc(money(near - first["principal"], 3))} '
+        f'of FY2028’s {esc(money(second["principal"], 3))}). FY2027 covers September 2026–May 2027; subsequent '
+        'fiscal years end May 31. Excludes commercial paper (Unavailable), interest and leases. The term-loan date '
+        'may be extended; this is not funding coverage.</p></div>')
 
 
 def render(snapshot, money):
