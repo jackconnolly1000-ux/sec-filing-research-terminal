@@ -34,6 +34,22 @@ COMPARISON = ("Coverage bases differ: Lilly derives operating income and its int
               "Oracle uses reported operating income and a reported interest line with unresolved composition/capitalization. "
               "Vistra uses reported operating income and a separate interest component before the capitalized-interest deduction. "
               "The periods also differ. These historical accrual ratios do not rank funding strength, measure covenant headroom or prove future repayment capacity.")
+# The plain answer a first-time reader needs before any historical figure, with the one thing missing for each company
+# (a short form of each review's Decisive unknowns row)
+COVERAGE_REASON = {
+    "LLY": "The saved filings do not establish the remaining principal dates, current drawable credit or when acquisition and manufacturing payments fall due.",
+    "ORCL": "Note and term-loan principal is dated, but drawable credit, commercial paper and future cash generation are not established.",
+    "VST": "The saved filings do not establish the current borrowing base, compliance with draw conditions or how much cash the parent company can reach.",
+}
+# Abbreviations the reviews use, defined once at the top of each review
+TERMS = (
+    ("TTM", "trailing twelve months, the four quarters ending on the balance-sheet date"),
+    ("OCF", "operating cash flow, cash from operations in the cash-flow statement"),
+    ("FCF", "free cash flow, OCF less reported capital spending"),
+    ("H1", "first half of the fiscal year, January to June for Lilly and Vistra"),
+    ("PP&E", "property, plant and equipment (cash PP&E is the cash paid for it)"),
+    ("IPR&D", "in-process research and development, projects acquired before they are complete"),
+)
 
 
 def source(label, accession, document, cik, location):
@@ -124,6 +140,21 @@ def load(ticker, folder=None):
 def for_snapshot(snapshot):
     review = load(snapshot.get("ticker"))
     return review if review and review["snapshot"] == snapshot else None
+
+
+def plain_answer(snapshot):
+    """The release's answer, stated first: future funding coverage is Unavailable, and why."""
+    from html import escape
+    review = for_snapshot(snapshot)
+    reason = (COVERAGE_REASON[review["ticker"]] if review else
+              "The saved evidence does not match the reviewed conclusion.")
+    return f'<p class="lr-plain"><strong>Future funding coverage: Unavailable.</strong> {escape(reason)}</p>'.replace("$", "&#36;")
+
+
+def terms_html():
+    from html import escape
+    terms = "; ".join(f"<strong>{escape(a)}</strong> {escape(d)}" for a, d in TERMS)
+    return f'<p class="lr-meta lr-terms">Terms used: {terms}.</p>'
 
 
 def render(snapshot):

@@ -136,4 +136,42 @@ class FundingConclusions(unittest.TestCase):
             self.assertIsNone(vl.workbook_bytes(json.loads(vl.SAMPLE.read_text())))
 
 
+
+class PlainAnswer(unittest.TestCase):
+    """First-time-reader fix (docs/presentation_acceptance.md, obstacle 1): the answer comes before history."""
+    def setUp(self):
+        self.snapshots = json.loads((fc.FOLDER / 'liquidity_pilots.json').read_text())['snapshots']
+
+    def test_unavailable_answer_and_reason_come_before_the_historical_headline(self):
+        for s in self.snapshots:
+            shown = html.unescape(company_review.render(s))
+            answer = shown.index('Future funding coverage: Unavailable.')
+            self.assertIn(fc.COVERAGE_REASON[s['ticker']], shown[answer:answer + 400])
+            self.assertLess(answer, shown.index('Historical: ' + company_review.headline(s)))
+            self.assertLess(answer, shown.index('Cash and equivalents'))
+            self.assertLess(answer, shown.index('Funding conclusion for'))
+
+    def test_every_abbreviation_the_reviews_use_is_defined_once_at_the_top(self):
+        for s in self.snapshots:
+            shown = html.unescape(company_review.render(s))
+            terms = shown[shown.index('Terms used:'):shown.index('Cash and equivalents')]
+            for abbreviation, definition in fc.TERMS:
+                self.assertIn(f'{abbreviation}</strong> {definition}', terms)
+        used = " ".join(text for t in fc.CONCLUSIONS for _, text, _ in fc.CONCLUSIONS[t]['rows'])
+        for abbreviation in ('TTM', 'OCF', 'H1', 'PP&E', 'IPR&D'):
+            self.assertIn(abbreviation, used + " ".join(c['coverage_basis'] for c in fc.CONCLUSIONS.values()))
+
+    def test_stale_evidence_still_says_unavailable_without_a_reason_it_cannot_support(self):
+        s = deepcopy(self.snapshots[0]); s['metrics']['cash']['value'] += 1
+        shown = html.unescape(fc.plain_answer(s))
+        self.assertIn('Future funding coverage: Unavailable.', shown)
+        self.assertIn('does not match the reviewed conclusion', shown)
+        self.assertNotIn(fc.COVERAGE_REASON['LLY'], shown)
+
+    def test_manifests_bind_the_current_interpretation(self):
+        for stem in ('lly_liquidity', 'oracle_liquidity', 'vistra_liquidity'):
+            manifest = json.loads((fc.FOLDER / f'{stem}.manifest.json').read_text())
+            self.assertEqual(manifest['funding_sha256'], fc.fingerprint(), stem)
+
+
 if __name__=='__main__':unittest.main()

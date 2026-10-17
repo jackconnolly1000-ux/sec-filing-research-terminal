@@ -12,6 +12,20 @@ the interpretation's fingerprint, so an edited interpretation cannot serve an ol
 The optional older combined pilot export retains its existing scope and is not a substitute
 for the individual funding reviews.
 
+## The plain answer, first (October 17, 2026)
+
+Each review now opens, under the company name and balance-sheet date, with **Future funding coverage:
+Unavailable** and one line saying what the saved filings don't establish for that company
+(`COVERAGE_REASON`, a short form of the Decisive unknowns row). The historical comparison follows it,
+labelled "Historical:", so a favourable past figure is not read as the answer. A "Terms used" line
+defines TTM, OCF, FCF, H1, PP&E and IPR&D (`TERMS`). If the saved evidence no longer matches, the
+answer still reads Unavailable but gives no company reason.
+
+These are shown in the app only. The workbooks already state the answer at the start of their
+Decisive unknowns row, so their bytes are unchanged; `tests/offline/rebind_funding_fingerprint.py`
+rebinds the three manifests to the new interpretation fingerprint and refuses to run if a workbook
+no longer matches its manifest.
+
 ## Conclusions and decisive evidence
 
 | Company | Funding implication | Evidence needed to resolve future coverage |
