@@ -109,10 +109,10 @@ class ScenarioPanel(unittest.TestCase):
         self.assertEqual([wb["Correlation"].cell(r, 2).value for r in (2, 3, 4)], list(ls.COMPARE_CORRELATIONS))
         self.assertEqual(wb["Scenario"]["A2"].value, ls.LABEL)
         self.assertIn("Seed 2026, 10,000 trials", wb["Scenario"]["A3"].value)
-        self.assertEqual(wb["Results"].max_row, 5)
+        self.assertEqual(wb["Results"].max_row, 7)
         expected = ls.simulate(ls.oracle_inputs(), ls.oracle_decisions()[0], 10_000, 2026)
-        self.assertAlmostEqual(wb["Results"]["E2"].value, expected["mean"], delta=1)
-        self.assertAlmostEqual(wb["Results"]["J2"].value, expected["share_below_zero"])
+        self.assertAlmostEqual(wb["Results"]["E4"].value, expected["mean"], delta=1)
+        self.assertAlmostEqual(wb["Results"]["J4"].value, expected["share_below_zero"])
 
     def test_the_correlation_setting_reaches_every_result_and_the_download(self):
         self.scenario()
@@ -124,8 +124,8 @@ class ScenarioPanel(unittest.TestCase):
         from dataclasses import replace
         tied = replace(ls.oracle_inputs(), correlation=0.5)
         expected = ls.simulate(tied, ls.oracle_decisions()[0], 10_000, 2026)
-        self.assertAlmostEqual(wb["Results"]["E2"].value, expected["mean"], delta=1)
-        self.assertAlmostEqual(wb["Results"]["F2"].value, expected["sd"], delta=1)
+        self.assertAlmostEqual(wb["Results"]["E4"].value, expected["mean"], delta=1)
+        self.assertAlmostEqual(wb["Results"]["F4"].value, expected["sd"], delta=1)
 
     def test_panel_separates_facts_from_assumptions_and_states_its_limits(self):
         self.scenario()
@@ -219,13 +219,29 @@ class ScenarioWorkbook(unittest.TestCase):
         i, decisions = ls.oracle_inputs(), ls.oracle_decisions()
         results = [(ls.simulate(i, d, 1_000, 1), d) for d in decisions]
         wb = load_workbook(BytesIO(sv.workbook(i, results, 1_000, 1)))
-        cell = wb["Results"]["E2"]
+        cell = wb["Results"]["E4"]
         self.assertIsInstance(cell.value, float)
         self.assertEqual((cell.font.name, cell.font.sz), ("Arial", 10.0))
         self.assertEqual(wb["About"]["B8"].value, ls.TIMING_LIMIT)
         self.assertEqual(wb["About"]["B11"].value, sv.SHARE_NOTE)
         self.assertEqual(wb["Scenario"]["C12"].number_format, "+0.0;-0.0;0.0")   # a ratio, not $ millions
         self.assertNotIn("Correlation", wb.sheetnames)                            # only when a comparison is passed
+
+    def test_results_opens_with_what_the_figures_are_and_points_to_about(self):
+        # First-time-reader obstacle 2: the first sheet said nothing about being simulated from assumptions
+        import scenario_export
+        i, decisions = ls.oracle_inputs(), ls.oracle_decisions()
+        results = [(ls.simulate(i, d, 1_000, 1), d) for d in decisions]
+        wb = load_workbook(BytesIO(sv.workbook(i, results, 1_000, 1)))
+        res = wb["Results"]
+        self.assertEqual(wb.sheetnames[0], "Results")
+        self.assertEqual(res["A1"].value, scenario_export.RESULTS_LABEL)
+        self.assertIn("not a forecast", res["A1"].value)
+        self.assertIn("About", res["A2"].value)
+        self.assertEqual(res["A2"].hyperlink.location, "'About'!A1")
+        self.assertTrue(res["A1"].font.b)
+        self.assertEqual(res["A3"].value, "Decision")
+        self.assertEqual(res.freeze_panes, "A4")                                  # the header row stays frozen
 
 
 if __name__ == "__main__":

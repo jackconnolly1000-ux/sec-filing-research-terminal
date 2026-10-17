@@ -170,7 +170,7 @@ All three settings reuse the same seed, so the same underlying normal scores app
 | Sheet | Contents |
 |---|---|
 | Scenario | Label, horizon, seed and trials. Each input with its **kind** (filing fact, assumption, derived range, hypothetical), low, most likely, high and basis. The timing limit and the share-of-trials note. |
-| Results | One row per decision: mean, standard deviation, percentiles, share of trials below zero and the average shortfall in those trials |
+| Results | Opens with two rows: the illustrative-scenario label and a link to About. Then one row per decision: mean, standard deviation, percentiles, share of trials below zero and the average shortfall in those trials |
 | Correlation | −0.5, 0 and +0.5 for the decision shown |
 | Monthly path | One row per decision: share below zero at August 31, 2027 and at any month end, mean ending cash, mean and 10th percentile of the lowest month-end cash, the month most often lowest and its share, and the share of trials with a net outflow over the year |
 | Monthly path by month | Every decision × twelve month ends: dated principal, mean and 10th percentile month-end cash, share of trials below zero at that month end |
