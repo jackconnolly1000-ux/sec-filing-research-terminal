@@ -19,7 +19,6 @@ import hashlib
 import json
 from datetime import date
 from pathlib import Path
-from xml.etree import ElementTree as ET
 
 import filing_xbrl as fx
 
@@ -86,7 +85,7 @@ def bucket_of(day: str) -> str:
 
 def _dates(document: Path, tag: str) -> dict:
     """{(axis, member): (date text, context id)} for one ix:nonNumeric date tag over fiscal 2026, Oracle only."""
-    root = ET.parse(document).getroot()
+    root = fx.parse(document)
     contexts = fx._contexts(root)
     out = {}
     for f in root.iter(f"{{{fx.IX}}}nonNumeric"):
@@ -107,7 +106,7 @@ def _dates(document: Path, tag: str) -> dict:
 
 def _members(document: Path) -> list:
     """Every (axis, member) with a DebtInstrumentCarryingAmount at May 31, 2026."""
-    root = ET.parse(document).getroot()
+    root = fx.parse(document)
     contexts = fx._contexts(root)
     seen = []
     for f in root.iter(f"{{{fx.IX}}}nonFraction"):
@@ -369,7 +368,7 @@ def build(annual_document: Path, quarter_document: Path) -> dict:
 
 def _rate(document: Path, member: str, axis: str):
     """The stated rate (coupon, or the margin over SOFR) at May 31, 2026, a percentage fact."""
-    root = ET.parse(document).getroot()
+    root = fx.parse(document)
     contexts = fx._contexts(root)
     for f in root.iter(f"{{{fx.IX}}}nonFraction"):
         if f.get("name") != "us-gaap:DebtInstrumentInterestRateStatedPercentage":
