@@ -68,6 +68,27 @@ class OracleCharts(unittest.TestCase):
             np.testing.assert_allclose([float(p.v) for p in series.val.numRef.numCache.pt],monthly[2][2][field])
         w.close()
 
+    def test_saved_workbooks_state_dimensions_and_units_in_words(self):
+        for name in ('lly_liquidity','oracle_liquidity','vistra_liquidity'):
+            w=load_workbook(ROOT/f'samples/{name}.xlsx',read_only=True)
+            texts=[v for ws in w for row in ws.iter_rows(values_only=True) for v in row if isinstance(v,str)]
+            w.close()
+            self.assertNotIn('[]',texts,name)
+            self.assertFalse([t for t in texts if t.startswith('[[')],name)          # no raw JSON dimension lists
+            self.assertFalse([t for t in texts if 'unless x' in t],name)
+            self.assertIn('None (consolidated total)',texts,name)
+            self.assertTrue(any(t.startswith('USD millions, except ratios (x) and percentages (%).') for t in texts),name)
+
+    def test_saved_oracle_ladder_is_scaled_like_the_app(self):
+        w=load_workbook(ROOT/'samples/oracle_liquidity.xlsx');chart=w['Payment dates']._charts[0]
+        self.assertEqual((chart.y_axis.scaling.min,chart.y_axis.scaling.max,chart.y_axis.majorUnit),(0,12e9,2e9))
+        series=chart.series[0]
+        self.assertTrue(series.dLbls.showVal)
+        self.assertEqual([p.idx for p in series.dPt],[5])                    # only the cut Thereafter bar is hatched
+        self.assertEqual(series.dPt[0].spPr.pattFill.prst,'wdUpDiag')
+        self.assertEqual(series.cat.strRef.strCache.pt[5].v,'Thereafter')
+        w.close()
+
     def test_saved_oracle_ladder_links_to_the_existing_formula_table(self):
         values=load_workbook(ROOT/'samples/oracle_liquidity.xlsx',data_only=True)
         chart=values['Payment dates']._charts[0]

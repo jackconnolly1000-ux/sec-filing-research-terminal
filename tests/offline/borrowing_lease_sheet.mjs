@@ -2,7 +2,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import {execFileSync} from 'node:child_process';
-import {frame,header,subtotal} from './workbook_style.mjs';
+import {frame,header,subtotal,dimensionText} from './workbook_style.mjs';
 
 export function addBorrowingLeaseSheet(wb,root,ticker){
  const model=JSON.parse(execFileSync(process.env.CODEX_PRIMARY_RUNTIME_PYTHON,['-c',
@@ -23,8 +23,8 @@ export async function finishBorrowingLeaseSheet(wb,root,ticker,state){
   const base=ticker==='LLY'?
    [label,f.value,null,date(f.period_end),f.form,date(f.filed),f.accession,f.tag||null,f.context_id||null,f.scale??null,f.decimals??null,f.source_url,f.location,(f.selection_rule||'')+(f.detail?' '+f.detail:''),f.source_sha256||'']:
    [label,f.value,label,null,date(f.period_end),f.form,date(f.filed),f.accession,f.tag||null,f.context_id||null,
-    ...(ticker==='VST'?[JSON.stringify(f.dimensions||[]),f.scale??null,f.decimals??null]:[f.scale??null,f.decimals??null]),
-    f.source_url,f.location,f.detail||'',...(ticker==='VST'?[]:[JSON.stringify(f.dimensions||[])]),f.source_sha256||'',f.value===null?'Unavailable; no numeric fact established':'USD; '+(f.selection_rule||'exact checked instant')];
+    ...(ticker==='VST'?[dimensionText(f.dimensions),f.scale??null,f.decimals??null]:[f.scale??null,f.decimals??null]),
+    f.source_url,f.location,f.detail||'',...(ticker==='VST'?[]:[dimensionText(f.dimensions)]),f.source_sha256||'',f.value===null?'Unavailable; no numeric fact established':'USD; '+(f.selection_rule||'exact checked instant')];
   records.push(base);
   return `=IF(ISNUMBER('Data'!B${n}),'Data'!B${n},NA())`;
  }

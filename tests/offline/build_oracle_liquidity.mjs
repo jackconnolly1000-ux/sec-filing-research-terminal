@@ -3,7 +3,7 @@ import {addCoreChartSheet,finishCoreChartSheet} from './core_chart_sheet.mjs';
 import {addBorrowingLeaseSheet,finishBorrowingLeaseSheet} from './borrowing_lease_sheet.mjs';
 import {addRatioSheet,finishRatioSheet} from './ratio_sheet.mjs';
 import {addHistorySheet,finishHistorySheet} from './history_sheet.mjs';
-import {documentationLinks} from './workbook_style.mjs';
+import {documentationLinks,dimensionText} from './workbook_style.mjs';
 import {addFundingSheet,finishFundingSheet} from './funding_sheet.mjs';
 // Run from a temporary directory using the Codex artifact runtime; deployment only serves the saved file.
 import fs from 'node:fs/promises';
@@ -94,10 +94,10 @@ for(const [key,f] of Object.entries(interestReview.inputs)){
  rows.set('coverage_'+key,sourceRows.length+2);
  sourceRows.push(['coverage_'+key,f.value,f.label,toDate(f.period_start),toDate(f.period_end),f.form,toDate(f.filed),
   f.accession,f.tag,f.context_id,f.scale,f.decimals,f.source_url,f.location,f.detail||'',
-  JSON.stringify(f.dimensions),f.source_sha256,f.unit+'; '+f.selection_rule]);
+  dimensionText(f.dimensions),f.source_sha256,f.unit+'; '+f.selection_rule]);
 }
 sourceRows.push(['financing_index',null,'SEC financing-candidate index',toDate(revolver.inventory.since),toDate(revolver.inventory.through),'SEC submissions index',null,null,null,null,null,null,revolver.inventory.source_url,'Two later 8-K candidates, matched to reviewed documents','Retrieved index SHA256 '+revolver.inventory.sha256+'; checked '+revolver.inventory.checked,null,revolver.inventory.sha256,null]);
-data.getRange('A1:R1').values = [['Key','USD millions unless x','Reported input','Period start','Period end / as of',
+data.getRange('A1:R1').values = [['Key','USD millions, except ratios (x)','Reported input','Period start','Period end / as of',
   'Form','Filed','Accession','Tag','Context ID','Scale','Decimals','Source','Filing location','Finding / Unavailable reason',
   'Dimensions','Reviewed source SHA256','Unit and selection rule']];
 data.getRange(`A2:R${sourceRows.length+1}`).values = sourceRows.map(r=>r.concat(Array(18-r.length).fill(null)));

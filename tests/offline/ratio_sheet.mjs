@@ -2,7 +2,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import {execFileSync} from 'node:child_process';
-import {frame,header,subtotal} from './workbook_style.mjs';
+import {frame,header,subtotal,dimensionText} from './workbook_style.mjs';
 
 export function addRatioSheet(wb,root,ticker){
  const snapshot=JSON.parse(execFileSync(process.env.CODEX_PRIMARY_RUNTIME_PYTHON,['-c',
@@ -22,9 +22,9 @@ export async function finishRatioSheet(wb,root,ticker,state){
    const n=ticker==='LLY'?llyRow++:start+records.length+1;
    index.set(key,n);
    if(ticker!=='LLY')records.push(['Ratio input: '+f.label,f.value,f.label,date(f.period_start),date(f.period_end),f.form,date(f.filed),f.accession,
-    f.tag,f.context_id||null,...(ticker==='VST'?[JSON.stringify(f.dimensions||[]),f.scale??null,f.decimals??null]:[f.scale??null,f.decimals??null]),
+    f.tag,f.context_id||null,...(ticker==='VST'?[dimensionText(f.dimensions),f.scale??null,f.decimals??null]:[f.scale??null,f.decimals??null]),
     f.source_url||snapshot.source_url,'Checked balance sheet / cash-flow statement',f.selection_rule||f.detail||'',
-    ...(ticker==='VST'?[]:[JSON.stringify(f.dimensions||[])]),f.source_sha256||null,f.unit]);
+    ...(ticker==='VST'?[]:[dimensionText(f.dimensions)]),f.source_sha256||null,f.unit]);
   }
   const c=`'Data'!B${index.get(key)}`;return `IF(ISNUMBER(${c}),${c},NA())`;
  }
@@ -43,7 +43,7 @@ export async function finishRatioSheet(wb,root,ticker,state){
   for(const col of ['D','E','G'])data.getRange(`${col}${start+1}:${col}${end}`).setNumberFormat('mmm d, yyyy');
   frame(data,`A${start}:R${end}`);header(data,`A${start}:R${start}`);
   sheet.showGridLines=false;sheet.getRange('A2').values=[[review.company]];
-  sheet.getRange('A3').values=[['Balance sheet '+review.period_end+'. TTM '+review.period_start+' to '+review.period_end+'. USD millions unless x or %.']];
+  sheet.getRange('A3').values=[['Balance sheet '+review.period_end+'. TTM '+review.period_start+' to '+review.period_end+'. USD millions, except ratios (x) and percentages (%).']];
   sheet.getRange('A2:A3').format.wrapText=false;
   sheet.getRange('A2').format.font.bold=true;sheet.getRange('A2').format.font.size=14;
  }
