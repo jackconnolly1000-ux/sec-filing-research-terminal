@@ -1,0 +1,92 @@
+{
+  "0000059478-22-000068": {
+    "document": "LLY_lly-20211231.htm",
+    "sha256": "8b01e1fa6970c39fc78cd1a3f6dc40f0b561dbe4bb3e905b55bffc34a3e3e7ec",
+    "facts": 8,
+    "contexts": 2
+  },
+  "0000059478-23-000082": {
+    "document": "LLY_lly-20221231.htm",
+    "sha256": "331b2e40dda85952b133418eb946ca313b006424002674bb4718f9aa55ad898f",
+    "facts": 8,
+    "contexts": 2
+  },
+  "0000059478-24-000065": {
+    "document": "LLY_lly-20231231.htm",
+    "sha256": "afc101a4569f8e3a2a6682611d8ac8432d7c7ffa13cff0541cca73a3559d0ca4",
+    "facts": 20,
+    "contexts": 7
+  },
+  "0000059478-25-000067": {
+    "document": "LLY_lly-20241231.htm",
+    "sha256": "37a2b77fb9333a684b6750d6ae81230433d778dc246f3b3f26267ee3ea40d7ff",
+    "facts": 8,
+    "contexts": 2
+  },
+  "0000059478-26-000013": {
+    "document": "LLY_lly-20251231.htm",
+    "sha256": "d10956bb60e9df49500c07a3f74c676c16387dda3112a1fcf6e63bd7cfc79298",
+    "facts": 8,
+    "contexts": 2
+  },
+  "0001564590-22-023675": {
+    "document": "ORCL_orcl-10k_20220531.htm",
+    "sha256": "d3c5c822e750e85d7513a952eaa20e957b548f9b694d2f18eb341845ed45f3ce",
+    "facts": 6,
+    "contexts": 2
+  },
+  "0000950170-23-028914": {
+    "document": "ORCL_orcl-20230531.htm",
+    "sha256": "a2228d9d5673213844a543ad7f20275f20ff068bd433f5228301efdbdd20517c",
+    "facts": 6,
+    "contexts": 2
+  },
+  "0000950170-24-075605": {
+    "document": "ORCL_orcl-20240531.htm",
+    "sha256": "0d3132e4252fdea9fb53aebdc5c8e0ca8153a7a1e7fd016ad891f66aef89f252",
+    "facts": 6,
+    "contexts": 2
+  },
+  "0000950170-25-087926": {
+    "document": "ORCL_orcl-20250531.htm",
+    "sha256": "69975a8947a546551b633cb711201cb6986ffe8c6ea0de4a79603e03a3d8f5b7",
+    "facts": 6,
+    "contexts": 2
+  },
+  "0001193125-26-277521": {
+    "document": "ORCL_orcl-20260531.htm",
+    "sha256": "d4d70620021e9303923a575c1b7586b551dd06b01acf139eb3e53a6b6d9c32c3",
+    "facts": 6,
+    "contexts": 2
+  },
+  "0001692819-22-000005": {
+    "document": "VST_vistra-20211231.htm",
+    "sha256": "c177856bd00b90044bf7061a481e32eec2ec0f628f289bad5e64eab0be408bd0",
+    "facts": 39,
+    "contexts": 27
+  },
+  "0001692819-23-000005": {
+    "document": "VST_vistra-20221231.htm",
+    "sha256": "43cf8b26129e53312020e3e815e184f091707a765926675344426e9d2ca065da",
+    "facts": 81,
+    "contexts": 54
+  },
+  "0001692819-24-000012": {
+    "document": "VST_vistra-20231231.htm",
+    "sha256": "4de6794c5c19c2984c449474182cfd83e887470a6ffd1a2024f5d5480a10e1c0",
+    "facts": 40,
+    "contexts": 27
+  },
+  "0001692819-25-000013": {
+    "document": "VST_vistra-20241231.htm",
+    "sha256": "4b23d7b03df6009b10ab12a1cfedadc8ecd95013f4b46da3fc3877840927dcec",
+    "facts": 48,
+    "contexts": 37
+  },
+  "0001692819-26-000006": {
+    "document": "VST_vistra-20251231.htm",
+    "sha256": "d9e9612b1def7cbcb1d6275837ebc1e9f463cf24c3cb26e523bed303e6be54f6",
+    "facts": 101,
+    "contexts": 77
+  }
+}

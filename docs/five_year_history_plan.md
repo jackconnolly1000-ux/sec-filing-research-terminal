@@ -1,7 +1,7 @@
 # Five-year history: source and implementation plan
 
-Roadmap items 12–13. Preflight October 17, 2026, after PR #78. No historical financial
-values or existing review dates change in this planning step.
+Roadmap items 12–13. Source reconciliation completed October 17, 2026. Existing app/workbook
+values and review dates are unchanged; annual history is not displayed yet.
 
 ## Periods and definitions
 
@@ -19,14 +19,15 @@ It is not cash available to repay debt. No independent-period growth rate across
 
 ## Available evidence and gates
 
-The committed companyfacts fixtures begin around 2024. They cannot alone support five
-complete annual observations. Saved recent 10-Ks contain some older comparative flows,
-but that does not establish every older balance sheet or borrowing presentation.
+All 15 original annual filings and captured companyfacts are now acquired and checked.
+The source checkpoint contains 75 selected measures and retains original observations.
+See [annual_history_reconciliation.md](annual_history_reconciliation.md) for values,
+printed locations, source choices, tests and remaining limits.
 
 Cash must reconcile to the exact annual date, USD unit and accession used. OCF and capex
 must span the exact fiscal year, with reported scale and sign checked against the filing.
 Each borrowing mapping must be checked for that year; today's tags are not automatically
-valid historically. Vistra's receivables/repurchase scope is especially unresolved. Never
+valid historically. Vistra's financing line is counted once; its facility split remains unresolved. Never
 replace a missing extension component with zero. A comparative may differ from an original
 filing; retain both and disclose which version is used rather than silently mixing versions.
 
@@ -49,6 +50,11 @@ or chart them as zero. Validate fiscal-year changes and presentation changes exp
 5. Test source refusal, conflicting filings, missing components and formula parity. Inspect
    desktop/narrow layouts and changed workbook sheets, then verify deployed downloads.
 
-Items 12–13 are not complete. The next implementation may proceed on independent roadmap
-items while historical source acquisition remains pending. No unsupported history should be
-published merely to fill five columns.
+Build steps 1–2 are complete. Lilly 2021/2022 flows use its disclosed FY2023
+reclassification, while the balance sheets remain original. Vistra 2021/2024 use complete
+comparative snapshots to establish reported zero short-term borrowing. Each calculation
+retains one filing version, and original gaps remain visible in the audit.
+
+Roadmap item 12 still needs the app/workbook annual table (step 3); item 13 charts
+remain not started. Correct the legacy Lilly FY2025 printed-page references during
+integration. No unsupported history should be published merely to fill five columns.
