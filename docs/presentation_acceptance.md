@@ -69,5 +69,5 @@ Recorded for a later presentation fix. None is a figure error, and none is fixed
 3. **Oracle's twelve-month principal figure doesn't appear on its ladder.** The text and the scenario use $7.317B due September 2026–August 2027, but the ladder is bucketed by fiscal year (May year end). Its first bar, *Remainder FY2027*, is $2.672B and runs through May 2027; the remaining $4.645B due June–August 2027 is inside *FY2028* ($10.145B). A reader comparing the two can't find $7.317B on the chart. *Location:* Oracle review, *Funding and repayment → Which borrowing principal is due after August 31?*, principal maturity ladder.
 
 Smaller notes, not counted above:
-- The scenario's monthly chart labels ticks "Oct 26", "Jan 27", which can read as days of the month rather than October 2026.
+- The scenario's monthly chart labels ticks "Oct 26", "Jan 27", which can read as days of the month rather than October 2026. *Fixed October 17 (PR #75):* ticks sit on the month-end points and read "Sep 2026", "Jan 2027", "May 2027", "Aug 2027", all visible at 390 px.
 - On every company page, the download button and its caption ("editing inputs does not update the checked narrative") sit above the review, before the reader knows what the workbook contains.
