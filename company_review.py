@@ -60,7 +60,9 @@ CSS = """<style>
 .lr-review p {font-size:.9rem;line-height:1.55;margin:8px 0;}
 .lr-review .lr-meta {font-size:.78rem;color:var(--text-muted);line-height:1.5;}
 .lr-lead {border-bottom:1px solid var(--border);padding:0 0 18px;}
-.lr-lead .lr-answer {font-size:1.12rem;max-width:850px;color:var(--text-strong);margin-top:12px;}
+.lr-lead .lr-plain {font-size:1.12rem;max-width:850px;color:var(--text-strong);margin-top:12px;}
+.lr-lead .lr-answer {font-size:.98rem;max-width:850px;color:var(--text);margin-top:6px;}
+.lr-lead .lr-terms {max-width:850px;}
 .lr-summary {display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;padding:18px 0;border-bottom:1px solid var(--border);}
 .lr-stat-label {font-size:.8rem;color:var(--text-muted);}
 .lr-stat-value {font-size:1.5rem;font-weight:650;line-height:1.5;color:var(--text-strong);}
@@ -260,8 +262,11 @@ def render(snapshot):
     output += f'<header class="lr-lead"><div class="lr-meta">{esc(snapshot["ticker"])} · Debt and liquidity review</div>'
     output += f'<h2>{esc(snapshot["company_name"])}</h2><div class="lr-meta">Balance sheet: {esc(end)} · '
     output += f'<a href="{esc(source)}" target="_blank" rel="noopener noreferrer">Source 10-Q</a> · Balance-sheet facts checked {esc(snapshot["checked_as_of"])}</div>'
-    output += f'<p class="lr-answer">{esc(headline(snapshot))}</p>'
-    output += '<p class="lr-meta">Cash flows cover the trailing twelve months to this balance-sheet date. Borrowing is at carrying amount and excludes leases. Figures are rounded; evidence retains exact inputs.</p></header>'
+    from funding_conclusions import plain_answer, terms_html, render as funding_html
+    # The plain answer first; the historical comparison follows it, so a favourable past figure isn't read as the answer
+    output += plain_answer(snapshot)
+    output += f'<p class="lr-answer">Historical: {esc(headline(snapshot))}</p>'
+    output += '<p class="lr-meta">Cash flows cover the trailing twelve months to this balance-sheet date. Borrowing is at carrying amount and excludes leases. Figures are rounded; evidence retains exact inputs.</p>' + terms_html() + '</header>'
     output += '<div class="lr-summary">'
     for label, value, detail in (
         ("Cash and equivalents", money(m["cash"]["value"]), "Excludes restricted cash"),
@@ -273,7 +278,6 @@ def render(snapshot):
         swatch = {"Cash and equivalents": "cash", "Baseline gross debt": "borrowing"}.get(label)
         mark = f'<span class="lr-swatch lr-{swatch}" aria-hidden="true"></span>' if swatch else ''
         output += f'<div><div class="lr-stat-label">{mark}{esc(label)}</div><div class="lr-stat-value">{esc(value)}</div><div class="lr-stat-detail">{esc(detail)}</div></div>'
-    from funding_conclusions import render as funding_html
     output += '</div>' + funding_html(snapshot)
     # Financial order: what the company owes, the cash it generates, how cash was funded, when debt falls due and what
     # could pay it, how earnings covered interest, how balances changed, then what stays unresolved. Each group but the
