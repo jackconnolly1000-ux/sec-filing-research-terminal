@@ -1,0 +1,686 @@
+{
+  "0000059478-22-000068": {
+    "us-gaap:CashAndCashEquivalentsAtCarryingValue": {
+      "printed_page": 57,
+      "row_text": "Cash and cash equivalents (Note 7) $ 3,818.5 $ 3,657.1",
+      "context_id": "ie685003a00ac4b9e88ea5a5aad91acf6_I20211231"
+    },
+    "us-gaap:NetCashProvidedByUsedInOperatingActivities": {
+      "printed_page": 59,
+      "row_text": "Net Cash Provided by Operating Activities 7,260.7 6,499.6 4,836.6",
+      "context_id": "i22de8effd1e0473ea9e6b2ebf9fa4dfd_D20210101-20211231"
+    },
+    "us-gaap:PaymentsToAcquireOtherPropertyPlantAndEquipment": {
+      "printed_page": 59,
+      "row_text": "Purchases of property and equipment ( 1,309.8 ) ( 1,387.9 ) ( 1,033.9 )",
+      "context_id": "i22de8effd1e0473ea9e6b2ebf9fa4dfd_D20210101-20211231"
+    },
+    "us-gaap:DebtCurrent": {
+      "printed_page": 57,
+      "row_text": "Short-term borrowings and current maturities of long-term debt (Note 11) $ 1,538.3 $ 8.7",
+      "context_id": "ie685003a00ac4b9e88ea5a5aad91acf6_I20211231"
+    },
+    "us-gaap:LongTermDebtNoncurrent": {
+      "printed_page": 57,
+      "row_text": "Long-term debt (Note 11) 15,346.4 16,586.6",
+      "context_id": "ie685003a00ac4b9e88ea5a5aad91acf6_I20211231"
+    },
+    "us-gaap:DebtLongtermAndShorttermCombinedAmount": {
+      "printed_page": 86,
+      "row_text": "Total debt 16,884.7 16,595.3",
+      "context_id": "ie685003a00ac4b9e88ea5a5aad91acf6_I20211231"
+    }
+  },
+  "0000059478-23-000082": {
+    "us-gaap:CashAndCashEquivalentsAtCarryingValue": {
+      "printed_page": 58,
+      "row_text": "Cash and cash equivalents (Note 7) $ 2,067.0 $ 3,818.5",
+      "context_id": "ife049f03c96e47288db50605b1356b32_I20221231"
+    },
+    "us-gaap:NetCashProvidedByUsedInOperatingActivities": {
+      "printed_page": 60,
+      "row_text": "Net Cash Provided by Operating Activities 7,084.4 7,260.7 6,499.6",
+      "context_id": "i095cf5e171c244d4957ecbd3f0e77a2d_D20220101-20221231"
+    },
+    "us-gaap:PaymentsToAcquireOtherPropertyPlantAndEquipment": {
+      "printed_page": 60,
+      "row_text": "Purchases of property and equipment ( 1,854.3 ) ( 1,309.8 ) ( 1,387.9 )",
+      "context_id": "i095cf5e171c244d4957ecbd3f0e77a2d_D20220101-20221231"
+    },
+    "us-gaap:DebtCurrent": {
+      "printed_page": 58,
+      "row_text": "Short-term borrowings and current maturities of long-term debt (Note 11) $ 1,501.1 $ 1,538.3",
+      "context_id": "ife049f03c96e47288db50605b1356b32_I20221231"
+    },
+    "us-gaap:LongTermDebtNoncurrent": {
+      "printed_page": 58,
+      "row_text": "Long-term debt (Note 11) 14,737.5 15,346.4",
+      "context_id": "ife049f03c96e47288db50605b1356b32_I20221231"
+    },
+    "us-gaap:DebtLongtermAndShorttermCombinedAmount": {
+      "printed_page": 86,
+      "row_text": "Total debt 16,238.6 16,884.7",
+      "context_id": "ife049f03c96e47288db50605b1356b32_I20221231"
+    }
+  },
+  "0000059478-24-000065": {
+    "us-gaap:CashAndCashEquivalentsAtCarryingValue": {
+      "printed_page": 59,
+      "row_text": "Cash and cash equivalents (Note 7) $ 2,818.6 $ 2,067.0",
+      "context_id": "c-17"
+    },
+    "us-gaap:NetCashProvidedByUsedInOperatingActivities": {
+      "printed_page": 61,
+      "row_text": "Net Cash Provided by Operating Activities 4,240.1 7,585.7 7,365.9",
+      "context_id": "c-1"
+    },
+    "us-gaap:PaymentsToAcquireOtherPropertyPlantAndEquipment": {
+      "printed_page": 61,
+      "row_text": "Purchases of property and equipment ( 3,447.6 ) ( 1,854.3 ) ( 1,309.8 )",
+      "context_id": "c-1"
+    },
+    "us-gaap:DebtCurrent": {
+      "printed_page": 59,
+      "row_text": "Short-term borrowings and current maturities of long-term debt (Note 11) $ 6,904.5 $ 1,501.1",
+      "context_id": "c-17"
+    },
+    "us-gaap:LongTermDebtNoncurrent": {
+      "printed_page": 59,
+      "row_text": "Long-term debt (Note 11) 18,320.8 14,737.5",
+      "context_id": "c-17"
+    },
+    "us-gaap:DebtLongtermAndShorttermCombinedAmount": {
+      "printed_page": 86,
+      "row_text": "Total debt 25,225.3 16,238.6",
+      "context_id": "c-17"
+    }
+  },
+  "0000059478-24-000065:2021-12-31": {
+    "us-gaap:CashAndCashEquivalentsAtCarryingValue": {
+      "printed_page": null,
+      "row_text": null,
+      "context_id": null,
+      "note": "No exact-date consolidated fact for this tag in the selected filing."
+    },
+    "us-gaap:NetCashProvidedByUsedInOperatingActivities": {
+      "printed_page": 61,
+      "row_text": "Net Cash Provided by Operating Activities 4,240.1 7,585.7 7,365.9",
+      "context_id": "c-16"
+    },
+    "us-gaap:PaymentsToAcquireOtherPropertyPlantAndEquipment": {
+      "printed_page": 61,
+      "row_text": "Purchases of property and equipment ( 3,447.6 ) ( 1,854.3 ) ( 1,309.8 )",
+      "context_id": "c-16"
+    },
+    "us-gaap:DebtCurrent": {
+      "printed_page": null,
+      "row_text": null,
+      "context_id": null,
+      "note": "No exact-date consolidated fact for this tag in the selected filing."
+    },
+    "us-gaap:LongTermDebtNoncurrent": {
+      "printed_page": null,
+      "row_text": null,
+      "context_id": null,
+      "note": "No exact-date consolidated fact for this tag in the selected filing."
+    },
+    "us-gaap:DebtLongtermAndShorttermCombinedAmount": {
+      "printed_page": null,
+      "row_text": null,
+      "context_id": null,
+      "note": "No exact-date consolidated fact for this tag in the selected filing."
+    }
+  },
+  "0000059478-24-000065:2022-12-31": {
+    "us-gaap:CashAndCashEquivalentsAtCarryingValue": {
+      "printed_page": 59,
+      "row_text": "Cash and cash equivalents (Note 7) $ 2,818.6 $ 2,067.0",
+      "context_id": "c-18"
+    },
+    "us-gaap:NetCashProvidedByUsedInOperatingActivities": {
+      "printed_page": 61,
+      "row_text": "Net Cash Provided by Operating Activities 4,240.1 7,585.7 7,365.9",
+      "context_id": "c-15"
+    },
+    "us-gaap:PaymentsToAcquireOtherPropertyPlantAndEquipment": {
+      "printed_page": 61,
+      "row_text": "Purchases of property and equipment ( 3,447.6 ) ( 1,854.3 ) ( 1,309.8 )",
+      "context_id": "c-15"
+    },
+    "us-gaap:DebtCurrent": {
+      "printed_page": 59,
+      "row_text": "Short-term borrowings and current maturities of long-term debt (Note 11) $ 6,904.5 $ 1,501.1",
+      "context_id": "c-18"
+    },
+    "us-gaap:LongTermDebtNoncurrent": {
+      "printed_page": 59,
+      "row_text": "Long-term debt (Note 11) 18,320.8 14,737.5",
+      "context_id": "c-18"
+    },
+    "us-gaap:DebtLongtermAndShorttermCombinedAmount": {
+      "printed_page": 86,
+      "row_text": "Total debt 25,225.3 16,238.6",
+      "context_id": "c-18"
+    }
+  },
+  "0000059478-25-000067": {
+    "us-gaap:CashAndCashEquivalentsAtCarryingValue": {
+      "printed_page": 60,
+      "row_text": "Cash and cash equivalents (Note 7) $ 3,268.4 $ 2,818.6",
+      "context_id": "c-17"
+    },
+    "us-gaap:NetCashProvidedByUsedInOperatingActivities": {
+      "printed_page": 62,
+      "row_text": "Net Cash Provided by Operating Activities 8,817.9 4,240.1 7,585.7",
+      "context_id": "c-1"
+    },
+    "us-gaap:PaymentsToAcquireOtherPropertyPlantAndEquipment": {
+      "printed_page": 62,
+      "row_text": "Purchases of property and equipment ( 5,057.8 ) ( 3,447.6 ) ( 1,854.3 )",
+      "context_id": "c-1"
+    },
+    "us-gaap:DebtCurrent": {
+      "printed_page": 60,
+      "row_text": "Short-term borrowings and current maturities of long-term debt (Note 11) $ 5,117.1 $ 6,904.5",
+      "context_id": "c-17"
+    },
+    "us-gaap:LongTermDebtNoncurrent": {
+      "printed_page": 60,
+      "row_text": "Long-term debt (Note 11) 28,527.1 18,320.8",
+      "context_id": "c-17"
+    },
+    "us-gaap:DebtLongtermAndShorttermCombinedAmount": {
+      "printed_page": 87,
+      "row_text": "Total debt 33,644.2 25,225.3",
+      "context_id": "c-17"
+    }
+  },
+  "0000059478-26-000013": {
+    "us-gaap:CashAndCashEquivalentsAtCarryingValue": {
+      "printed_page": 59,
+      "row_text": "Cash and cash equivalents $ 7,268 $ 3,268",
+      "context_id": "c-16"
+    },
+    "us-gaap:NetCashProvidedByUsedInOperatingActivities": {
+      "printed_page": 61,
+      "row_text": "Net Cash Provided by Operating Activities 16,813 8,818 4,240",
+      "context_id": "c-1"
+    },
+    "us-gaap:PaymentsToAcquireOtherPropertyPlantAndEquipment": {
+      "printed_page": 61,
+      "row_text": "Purchases of property and equipment ( 7,841 ) ( 5,058 ) ( 3,448 )",
+      "context_id": "c-1"
+    },
+    "us-gaap:DebtCurrent": {
+      "printed_page": 59,
+      "row_text": "Short-term borrowings and current maturities of long-term debt $ 1,635 $ 5,117",
+      "context_id": "c-16"
+    },
+    "us-gaap:LongTermDebtNoncurrent": {
+      "printed_page": 59,
+      "row_text": "Long-term debt 40,868 28,527",
+      "context_id": "c-16"
+    },
+    "us-gaap:DebtLongtermAndShorttermCombinedAmount": {
+      "printed_page": 76,
+      "row_text": "Total debt 42,503 33,644",
+      "context_id": "c-16"
+    }
+  },
+  "0001564590-22-023675": {
+    "us-gaap:CashAndCashEquivalentsAtCarryingValue": {
+      "printed_page": 66,
+      "row_text": "Cash and cash equivalents $ 21,383 $ 30,098",
+      "context_id": "C_0001341439_20220531"
+    },
+    "us-gaap:NetCashProvidedByUsedInOperatingActivities": {
+      "printed_page": 70,
+      "row_text": "Net cash provided by operating activities 9,539 15,887 13,139",
+      "context_id": "C_0001341439_20210601_20220531"
+    },
+    "us-gaap:PaymentsToAcquirePropertyPlantAndEquipment": {
+      "printed_page": 70,
+      "row_text": "Capital expenditures ( 4,511 ) ( 2,135 ) ( 1,564 )",
+      "context_id": "C_0001341439_20210601_20220531"
+    },
+    "us-gaap:NotesPayableCurrent": {
+      "printed_page": 66,
+      "row_text": "Notes payable, current $ 3,749 $ 8,250",
+      "context_id": "C_0001341439_20220531"
+    },
+    "us-gaap:LongTermNotesAndLoans": {
+      "printed_page": 66,
+      "row_text": "Notes payable and other borrowings, non-current 72,110 75,995",
+      "context_id": "C_0001341439_20220531"
+    },
+    "us-gaap:DebtLongtermAndShorttermCombinedAmount": {
+      "printed_page": 87,
+      "row_text": "Total notes payable and other borrowings $ 75,859 $ 84,245",
+      "context_id": "C_0001341439_20220531"
+    }
+  },
+  "0000950170-23-028914": {
+    "us-gaap:CashAndCashEquivalentsAtCarryingValue": {
+      "printed_page": 64,
+      "row_text": "Cash and cash equivalents $ 9,765 $ 21,383",
+      "context_id": "C_8dc19c16-0a90-49bb-9768-74f9aa8bba7f"
+    },
+    "us-gaap:NetCashProvidedByUsedInOperatingActivities": {
+      "printed_page": 68,
+      "row_text": "Net cash provided by operating activities 17,165 9,539 15,887",
+      "context_id": "C_c621f99d-407f-4251-b31f-e58bcdda6fa8"
+    },
+    "us-gaap:PaymentsToAcquirePropertyPlantAndEquipment": {
+      "printed_page": 68,
+      "row_text": "Capital expenditures ( 8,695 ) ( 4,511 ) ( 2,135 )",
+      "context_id": "C_c621f99d-407f-4251-b31f-e58bcdda6fa8"
+    },
+    "us-gaap:NotesPayableCurrent": {
+      "printed_page": 64,
+      "row_text": "Notes payable and other borrowings, current $ 4,061 $ 3,749",
+      "context_id": "C_8dc19c16-0a90-49bb-9768-74f9aa8bba7f"
+    },
+    "us-gaap:LongTermNotesAndLoans": {
+      "printed_page": 64,
+      "row_text": "Notes payable and other borrowings, non-current 86,420 72,110",
+      "context_id": "C_8dc19c16-0a90-49bb-9768-74f9aa8bba7f"
+    },
+    "us-gaap:DebtLongtermAndShorttermCombinedAmount": {
+      "printed_page": 85,
+      "row_text": "Total notes payable and other borrowings $ 90,481 $ 75,859",
+      "context_id": "C_8dc19c16-0a90-49bb-9768-74f9aa8bba7f"
+    }
+  },
+  "0000950170-24-075605": {
+    "us-gaap:CashAndCashEquivalentsAtCarryingValue": {
+      "printed_page": 65,
+      "row_text": "Cash and cash equivalents $ 10,454 $ 9,765",
+      "context_id": "C_8b38d07e-7182-4ebc-9787-e25717cdb910"
+    },
+    "us-gaap:NetCashProvidedByUsedInOperatingActivities": {
+      "printed_page": 69,
+      "row_text": "Net cash provided by operating activities 18,673 17,165 9,539",
+      "context_id": "C_6b80b0ed-ad46-419f-9d80-36739c35988b"
+    },
+    "us-gaap:PaymentsToAcquirePropertyPlantAndEquipment": {
+      "printed_page": 69,
+      "row_text": "Capital expenditures ( 6,866 ) ( 8,695 ) ( 4,511 )",
+      "context_id": "C_6b80b0ed-ad46-419f-9d80-36739c35988b"
+    },
+    "us-gaap:NotesPayableCurrent": {
+      "printed_page": 65,
+      "row_text": "Notes payable and other borrowings, current $ 10,605 $ 4,061",
+      "context_id": "C_8b38d07e-7182-4ebc-9787-e25717cdb910"
+    },
+    "us-gaap:LongTermNotesAndLoans": {
+      "printed_page": 65,
+      "row_text": "Notes payable and other borrowings, non-current 76,264 86,420",
+      "context_id": "C_8b38d07e-7182-4ebc-9787-e25717cdb910"
+    },
+    "us-gaap:DebtLongtermAndShorttermCombinedAmount": {
+      "printed_page": 85,
+      "row_text": "Total notes payable and other borrowings $ 86,869 $ 90,481",
+      "context_id": "C_8b38d07e-7182-4ebc-9787-e25717cdb910"
+    }
+  },
+  "0000950170-25-087926": {
+    "us-gaap:CashAndCashEquivalentsAtCarryingValue": {
+      "printed_page": 64,
+      "row_text": "Cash and cash equivalents $ 10,786 $ 10,454",
+      "context_id": "C_9322c118-9fe7-4397-a563-84e40760adaa"
+    },
+    "us-gaap:NetCashProvidedByUsedInOperatingActivities": {
+      "printed_page": 68,
+      "row_text": "Net cash provided by operating activities 20,821 18,673 17,165",
+      "context_id": "C_3cc4ac16-8bed-47e2-a23b-8e372a01f4e9"
+    },
+    "us-gaap:PaymentsToAcquirePropertyPlantAndEquipment": {
+      "printed_page": 68,
+      "row_text": "Capital expenditures ( 21,215 ) ( 6,866 ) ( 8,695 )",
+      "context_id": "C_3cc4ac16-8bed-47e2-a23b-8e372a01f4e9"
+    },
+    "us-gaap:NotesPayableCurrent": {
+      "printed_page": 64,
+      "row_text": "Notes payable and other borrowings, current $ 7,271 $ 10,605",
+      "context_id": "C_9322c118-9fe7-4397-a563-84e40760adaa"
+    },
+    "us-gaap:LongTermNotesAndLoans": {
+      "printed_page": 64,
+      "row_text": "Notes payable and other borrowings, non-current 85,297 76,264",
+      "context_id": "C_9322c118-9fe7-4397-a563-84e40760adaa"
+    },
+    "us-gaap:DebtLongtermAndShorttermCombinedAmount": {
+      "printed_page": 84,
+      "row_text": "Total notes payable and other borrowings $ 92,568 $ 86,869",
+      "context_id": "C_9322c118-9fe7-4397-a563-84e40760adaa"
+    }
+  },
+  "0001193125-26-277521": {
+    "us-gaap:CashAndCashEquivalentsAtCarryingValue": {
+      "printed_page": 64,
+      "row_text": "Cash and cash equivalents $ 31,289 $ 10,786",
+      "context_id": "C_f62bade6-47e1-4441-9bb3-1e534300c2f2"
+    },
+    "us-gaap:NetCashProvidedByUsedInOperatingActivities": {
+      "printed_page": 68,
+      "row_text": "Net cash provided by operating activities 31,977 20,821 18,673",
+      "context_id": "C_24317829-d237-4c29-bae3-2e46dd1ae625"
+    },
+    "us-gaap:PaymentsToAcquirePropertyPlantAndEquipment": {
+      "printed_page": 68,
+      "row_text": "Capital expenditures ( 55,663 ) ( 21,215 ) ( 6,866 )",
+      "context_id": "C_24317829-d237-4c29-bae3-2e46dd1ae625"
+    },
+    "us-gaap:NotesPayableCurrent": {
+      "printed_page": 64,
+      "row_text": "Notes payable and other borrowings, current $ 7,199 $ 7,271",
+      "context_id": "C_f62bade6-47e1-4441-9bb3-1e534300c2f2"
+    },
+    "us-gaap:LongTermNotesAndLoans": {
+      "printed_page": 64,
+      "row_text": "Notes payable and other borrowings, non-current 122,342 85,297",
+      "context_id": "C_f62bade6-47e1-4441-9bb3-1e534300c2f2"
+    },
+    "us-gaap:DebtLongtermAndShorttermCombinedAmount": {
+      "printed_page": 84,
+      "row_text": "Total notes payable and other borrowings $ 129,541 $ 92,568",
+      "context_id": "C_f62bade6-47e1-4441-9bb3-1e534300c2f2"
+    }
+  },
+  "0001692819-22-000005": {
+    "us-gaap:CashAndCashEquivalentsAtCarryingValue": {
+      "printed_page": 92,
+      "row_text": "Cash and cash equivalents $ 1,325 $ 406",
+      "context_id": "i029a05aaf10a4c3a8cf2f4014b39e2e0_I20211231"
+    },
+    "us-gaap:NetCashProvidedByUsedInOperatingActivities": {
+      "printed_page": 90,
+      "row_text": "Cash provided by (used in) operating activities ( 206 ) 3,337 2,736",
+      "context_id": "i8f7debe348474277b0cbb88605db7c54_D20210101-20211231"
+    },
+    "us-gaap:PaymentsToAcquirePropertyPlantAndEquipment": {
+      "printed_page": 90,
+      "row_text": "Capital expenditures, including nuclear fuel purchases and LTSA prepayments ( 1,033 ) ( 1,259 ) ( 713 )",
+      "context_id": "i8f7debe348474277b0cbb88605db7c54_D20210101-20211231"
+    },
+    "us-gaap:LongTermDebtAndCapitalLeaseObligationsCurrent": {
+      "printed_page": 92,
+      "row_text": "Long-term debt due currently (Note 11) 254 95",
+      "context_id": "i029a05aaf10a4c3a8cf2f4014b39e2e0_I20211231"
+    },
+    "us-gaap:LongTermDebtAndCapitalLeaseObligations": {
+      "printed_page": 92,
+      "row_text": "Long-term debt, less amounts due currently (Note 11) 10,477 9,235",
+      "context_id": "i029a05aaf10a4c3a8cf2f4014b39e2e0_I20211231"
+    },
+    "us-gaap:ShortTermBorrowings": {
+      "printed_page": null,
+      "row_text": null,
+      "context_id": null,
+      "note": "No exact-date consolidated fact for this tag in the selected filing."
+    },
+    "vistra:AccountsReceivableSecuritizationProgramAmountsBorrowed": {
+      "printed_page": 92,
+      "row_text": "Accounts receivable financing (Note 10) $ \u2014 $ 300",
+      "context_id": "i029a05aaf10a4c3a8cf2f4014b39e2e0_I20211231"
+    },
+    "us-gaap:LongTermDebtAndCapitalLeaseObligationsIncludingCurrentMaturities": {
+      "printed_page": 120,
+      "row_text": "Total long-term debt including amounts due currently 10,731 9,330",
+      "context_id": "i029a05aaf10a4c3a8cf2f4014b39e2e0_I20211231"
+    }
+  },
+  "0001692819-23-000005": {
+    "us-gaap:CashAndCashEquivalentsAtCarryingValue": {
+      "printed_page": 96,
+      "row_text": "Cash and cash equivalents $ 455 $ 1,325",
+      "context_id": "if410d9b826a0474c87033fbeeeeee9da_I20221231"
+    },
+    "us-gaap:NetCashProvidedByUsedInOperatingActivities": {
+      "printed_page": 94,
+      "row_text": "Cash provided by (used in) operating activities 485 ( 206 ) 3,337",
+      "context_id": "ia414cc5f531541c38cf2dfa6d6ef6f12_D20220101-20221231"
+    },
+    "us-gaap:PaymentsToAcquirePropertyPlantAndEquipment": {
+      "printed_page": 94,
+      "row_text": "Capital expenditures, including nuclear fuel purchases and LTSA prepayments ( 1,301 ) ( 1,033 ) ( 1,259 )",
+      "context_id": "ia414cc5f531541c38cf2dfa6d6ef6f12_D20220101-20221231"
+    },
+    "us-gaap:LongTermDebtAndCapitalLeaseObligationsCurrent": {
+      "printed_page": 96,
+      "row_text": "Long-term debt due currently (Note 10) 38 254",
+      "context_id": "if410d9b826a0474c87033fbeeeeee9da_I20221231"
+    },
+    "us-gaap:LongTermDebtAndCapitalLeaseObligations": {
+      "printed_page": 96,
+      "row_text": "Long-term debt, less amounts due currently (Note 10) 11,933 10,477",
+      "context_id": "if410d9b826a0474c87033fbeeeeee9da_I20221231"
+    },
+    "us-gaap:ShortTermBorrowings": {
+      "printed_page": 96,
+      "row_text": "Short-term borrowings (Note 10) $ 650 $ \u2014",
+      "context_id": "if410d9b826a0474c87033fbeeeeee9da_I20221231"
+    },
+    "vistra:AccountsReceivableSecuritizationProgramAmountsBorrowed": {
+      "printed_page": 96,
+      "row_text": "Accounts receivable financing (Note 9) 425 \u2014",
+      "context_id": "if410d9b826a0474c87033fbeeeeee9da_I20221231"
+    },
+    "us-gaap:LongTermDebtAndCapitalLeaseObligationsIncludingCurrentMaturities": {
+      "printed_page": 122,
+      "row_text": "Total long-term debt including amounts due currently 11,971 10,731",
+      "context_id": "if410d9b826a0474c87033fbeeeeee9da_I20221231"
+    }
+  },
+  "0001692819-23-000005:2021-12-31": {
+    "us-gaap:CashAndCashEquivalentsAtCarryingValue": {
+      "printed_page": 96,
+      "row_text": "Cash and cash equivalents $ 455 $ 1,325",
+      "context_id": "ia3b2a182ae154576b40b5b2e4dee003d_I20211231"
+    },
+    "us-gaap:NetCashProvidedByUsedInOperatingActivities": {
+      "printed_page": 94,
+      "row_text": "Cash provided by (used in) operating activities 485 ( 206 ) 3,337",
+      "context_id": "ib44faa49ae8a47ebaccde16d473371ca_D20210101-20211231"
+    },
+    "us-gaap:PaymentsToAcquirePropertyPlantAndEquipment": {
+      "printed_page": 94,
+      "row_text": "Capital expenditures, including nuclear fuel purchases and LTSA prepayments ( 1,301 ) ( 1,033 ) ( 1,259 )",
+      "context_id": "ib44faa49ae8a47ebaccde16d473371ca_D20210101-20211231"
+    },
+    "us-gaap:LongTermDebtAndCapitalLeaseObligationsCurrent": {
+      "printed_page": 96,
+      "row_text": "Long-term debt due currently (Note 10) 38 254",
+      "context_id": "ia3b2a182ae154576b40b5b2e4dee003d_I20211231"
+    },
+    "us-gaap:LongTermDebtAndCapitalLeaseObligations": {
+      "printed_page": 96,
+      "row_text": "Long-term debt, less amounts due currently (Note 10) 11,933 10,477",
+      "context_id": "ia3b2a182ae154576b40b5b2e4dee003d_I20211231"
+    },
+    "us-gaap:ShortTermBorrowings": {
+      "printed_page": 96,
+      "row_text": "Short-term borrowings (Note 10) $ 650 $ \u2014",
+      "context_id": "ia3b2a182ae154576b40b5b2e4dee003d_I20211231"
+    },
+    "vistra:AccountsReceivableSecuritizationProgramAmountsBorrowed": {
+      "printed_page": 96,
+      "row_text": "Accounts receivable financing (Note 9) 425 \u2014",
+      "context_id": "ia3b2a182ae154576b40b5b2e4dee003d_I20211231"
+    },
+    "us-gaap:LongTermDebtAndCapitalLeaseObligationsIncludingCurrentMaturities": {
+      "printed_page": 122,
+      "row_text": "Total long-term debt including amounts due currently 11,971 10,731",
+      "context_id": "ia3b2a182ae154576b40b5b2e4dee003d_I20211231"
+    }
+  },
+  "0001692819-24-000012": {
+    "us-gaap:CashAndCashEquivalentsAtCarryingValue": {
+      "printed_page": 82,
+      "row_text": "Cash and cash equivalents $ 3,485 $ 455",
+      "context_id": "c-9"
+    },
+    "us-gaap:NetCashProvidedByUsedInOperatingActivities": {
+      "printed_page": 80,
+      "row_text": "Cash provided by (used in) operating activities 5,453 485 ( 206 )",
+      "context_id": "c-1"
+    },
+    "us-gaap:PaymentsToAcquirePropertyPlantAndEquipment": {
+      "printed_page": 80,
+      "row_text": "Capital expenditures, including nuclear fuel purchases and LTSA prepayments ( 1,676 ) ( 1,301 ) ( 1,033 )",
+      "context_id": "c-1"
+    },
+    "us-gaap:LongTermDebtAndCapitalLeaseObligationsCurrent": {
+      "printed_page": 82,
+      "row_text": "Long-term debt due currently (Note 12) 2,286 38",
+      "context_id": "c-9"
+    },
+    "us-gaap:LongTermDebtAndCapitalLeaseObligations": {
+      "printed_page": 82,
+      "row_text": "Long-term debt, less amounts due currently (Note 12) 12,116 11,933",
+      "context_id": "c-9"
+    },
+    "us-gaap:ShortTermBorrowings": {
+      "printed_page": 82,
+      "row_text": "Short-term borrowings (Note 12) $ \u2014 $ 650",
+      "context_id": "c-9"
+    },
+    "vistra:AccountsReceivableSecuritizationProgramAmountsBorrowed": {
+      "printed_page": 82,
+      "row_text": "Accounts receivable financing (Note 10) \u2014 425",
+      "context_id": "c-9"
+    },
+    "us-gaap:LongTermDebtAndCapitalLeaseObligationsIncludingCurrentMaturities": {
+      "printed_page": 109,
+      "row_text": "Total long-term debt including amounts due currently 14,402 11,971",
+      "context_id": "c-9"
+    }
+  },
+  "0001692819-25-000013": {
+    "us-gaap:CashAndCashEquivalentsAtCarryingValue": {
+      "printed_page": 79,
+      "row_text": "Cash and cash equivalents $ 1,188 $ 3,485",
+      "context_id": "c-6"
+    },
+    "us-gaap:NetCashProvidedByUsedInOperatingActivities": {
+      "printed_page": 81,
+      "row_text": "Cash provided by operating activities 4,563 5,453 485",
+      "context_id": "c-1"
+    },
+    "us-gaap:PaymentsToAcquirePropertyPlantAndEquipment": {
+      "printed_page": 81,
+      "row_text": "Capital expenditures, including nuclear fuel purchases and LTSA prepayments ( 2,078 ) ( 1,676 ) ( 1,301 )",
+      "context_id": "c-1"
+    },
+    "us-gaap:LongTermDebtAndCapitalLeaseObligationsCurrent": {
+      "printed_page": 79,
+      "row_text": "Long-term debt due currently 880 2,286",
+      "context_id": "c-6"
+    },
+    "us-gaap:LongTermDebtAndCapitalLeaseObligations": {
+      "printed_page": 79,
+      "row_text": "Long-term debt, less amounts due currently 15,418 12,116",
+      "context_id": "c-6"
+    },
+    "us-gaap:ShortTermBorrowings": {
+      "printed_page": null,
+      "row_text": null,
+      "context_id": null,
+      "note": "No exact-date consolidated fact for this tag in the selected filing."
+    },
+    "vistra:AccountsReceivableSecuritizationProgramAmountsBorrowed": {
+      "printed_page": 79,
+      "row_text": "Accounts receivable financing $ 750 $ \u2014",
+      "context_id": "c-6"
+    },
+    "us-gaap:LongTermDebtAndCapitalLeaseObligationsIncludingCurrentMaturities": {
+      "printed_page": 108,
+      "row_text": "Total long-term debt including amounts due currently 16,298 14,402",
+      "context_id": "c-6"
+    }
+  },
+  "0001692819-26-000006": {
+    "us-gaap:CashAndCashEquivalentsAtCarryingValue": {
+      "printed_page": 80,
+      "row_text": "Cash and cash equivalents $ 785 $ 1,188",
+      "context_id": "c-7"
+    },
+    "us-gaap:NetCashProvidedByUsedInOperatingActivities": {
+      "printed_page": 82,
+      "row_text": "Cash provided by operating activities 4,070 4,563 5,453",
+      "context_id": "c-1"
+    },
+    "us-gaap:PaymentsToAcquirePropertyPlantAndEquipment": {
+      "printed_page": 82,
+      "row_text": "Capital expenditures, including nuclear fuel purchases and LTSA prepayments ( 2,752 ) ( 2,078 ) ( 1,676 )",
+      "context_id": "c-1"
+    },
+    "us-gaap:LongTermDebtAndCapitalLeaseObligationsCurrent": {
+      "printed_page": 80,
+      "row_text": "Long-term debt due currently 1,201 880",
+      "context_id": "c-7"
+    },
+    "us-gaap:LongTermDebtAndCapitalLeaseObligations": {
+      "printed_page": 80,
+      "row_text": "Long-term debt, less amounts due currently 15,842 15,418",
+      "context_id": "c-7"
+    },
+    "us-gaap:ShortTermBorrowings": {
+      "printed_page": 80,
+      "row_text": "Short-term borrowings $ 1,800 $ \u2014",
+      "context_id": "c-7"
+    },
+    "vistra:AccountsReceivableSecuritizationProgramAmountsBorrowed": {
+      "printed_page": 80,
+      "row_text": "Accounts receivable financing 1,225 750",
+      "context_id": "c-7"
+    },
+    "us-gaap:LongTermDebtAndCapitalLeaseObligationsIncludingCurrentMaturities": {
+      "printed_page": 114,
+      "row_text": "Total long-term debt including amounts due currently 17,043 16,298",
+      "context_id": "c-7"
+    }
+  },
+  "0001692819-26-000006:2024-12-31": {
+    "us-gaap:CashAndCashEquivalentsAtCarryingValue": {
+      "printed_page": 80,
+      "row_text": "Cash and cash equivalents $ 785 $ 1,188",
+      "context_id": "c-8"
+    },
+    "us-gaap:NetCashProvidedByUsedInOperatingActivities": {
+      "printed_page": 82,
+      "row_text": "Cash provided by operating activities 4,070 4,563 5,453",
+      "context_id": "c-5"
+    },
+    "us-gaap:PaymentsToAcquirePropertyPlantAndEquipment": {
+      "printed_page": 82,
+      "row_text": "Capital expenditures, including nuclear fuel purchases and LTSA prepayments ( 2,752 ) ( 2,078 ) ( 1,676 )",
+      "context_id": "c-5"
+    },
+    "us-gaap:LongTermDebtAndCapitalLeaseObligationsCurrent": {
+      "printed_page": 80,
+      "row_text": "Long-term debt due currently 1,201 880",
+      "context_id": "c-8"
+    },
+    "us-gaap:LongTermDebtAndCapitalLeaseObligations": {
+      "printed_page": 80,
+      "row_text": "Long-term debt, less amounts due currently 15,842 15,418",
+      "context_id": "c-8"
+    },
+    "us-gaap:ShortTermBorrowings": {
+      "printed_page": 80,
+      "row_text": "Short-term borrowings $ 1,800 $ \u2014",
+      "context_id": "c-8"
+    },
+    "vistra:AccountsReceivableSecuritizationProgramAmountsBorrowed": {
+      "printed_page": 80,
+      "row_text": "Accounts receivable financing 1,225 750",
+      "context_id": "c-8"
+    },
+    "us-gaap:LongTermDebtAndCapitalLeaseObligationsIncludingCurrentMaturities": {
+      "printed_page": 114,
+      "row_text": "Total long-term debt including amounts due currently 17,043 16,298",
+      "context_id": "c-8"
+    }
+  }
+}

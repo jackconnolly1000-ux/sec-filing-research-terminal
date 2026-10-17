@@ -35,6 +35,8 @@ The original tool, reached from the link under the page subtitle. For up to five
 
 ## Status
 
+- **Annual-history source checkpoint:** 15 annual filings and 75 selected measures are reconciled, with Lilly reclassification and Vistra comparative choices recorded. This dataset is not yet displayed in the app or Excel; history tables precede charts. Sources, reproduction and limits: [annual_history_reconciliation.md](docs/annual_history_reconciliation.md).
+
 - **Release 1:** steps 1–8 merged as PRs #42–#48 (step 8, the final source and app reconciliation, is PR #48). Ten core measures, checked two-date history, two common chart questions and individual evidence exports cover LLY, ORCL and VST only. Reproducible audit and remaining gaps: `docs/release1_reconciliation.md`.
 - **Built:** the three saved company reviews and workbooks above, the Debt & Liquidity default page, and general filing research with its archived example.
 - **Remaining:** refreshing a review when a newer 10-Q is filed (today each is rebuilt and checked by hand), and the items each review lists as Unavailable, such as current drawable credit, covenant headroom and updated principal schedules. Live analysis does not compute the debt and liquidity metrics for other tickers. More companies and refresh automation are not started and have no date.

@@ -1,0 +1,396 @@
+{
+  "as_of": "2026-10-17",
+  "retrieved_at": "2026-10-17T23:02:43.112075+00:00",
+  "sources": [
+    {
+      "ticker": "LLY",
+      "cik": 59478,
+      "form": "10-K",
+      "period_start": "2021-01-01",
+      "period_end": "2021-12-31",
+      "filed": "2022-02-23",
+      "accession": "0000059478-22-000068",
+      "document": "lly-20211231.htm",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/59478/000005947822000068/lly-20211231.htm",
+      "source_sha256": "3b55fc2a0c0aff2551f8f8f10f42b91d99691169cfe6f73eab2f4ff6109f40b8",
+      "bytes": 4281872,
+      "status": "Retrieved",
+      "newly_acquired": true
+    },
+    {
+      "ticker": "LLY",
+      "cik": 59478,
+      "form": "10-K",
+      "period_start": "2022-01-01",
+      "period_end": "2022-12-31",
+      "filed": "2023-02-22",
+      "accession": "0000059478-23-000082",
+      "document": "lly-20221231.htm",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/59478/000005947823000082/lly-20221231.htm",
+      "source_sha256": "4cbed10c0c2bdcb9828495fbb64e9a93fed07b57c0a2ccd72c6e320d6fb763a2",
+      "bytes": 4048258,
+      "status": "Retrieved",
+      "newly_acquired": true
+    },
+    {
+      "ticker": "LLY",
+      "cik": 59478,
+      "form": "10-K",
+      "period_start": "2023-01-01",
+      "period_end": "2023-12-31",
+      "filed": "2024-02-21",
+      "accession": "0000059478-24-000065",
+      "document": "lly-20231231.htm",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/59478/000005947824000065/lly-20231231.htm",
+      "source_sha256": "b5fc840de60a167982197080635c29e32d2dbbcec8084d5be97e833fac19bf5c",
+      "bytes": 3213615,
+      "status": "Retrieved",
+      "newly_acquired": false
+    },
+    {
+      "ticker": "LLY",
+      "cik": 59478,
+      "form": "10-K",
+      "period_start": "2024-01-01",
+      "period_end": "2024-12-31",
+      "filed": "2025-02-19",
+      "accession": "0000059478-25-000067",
+      "document": "lly-20241231.htm",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/59478/000005947825000067/lly-20241231.htm",
+      "source_sha256": "e43c1e343f533f048fe5a0776fd1fa721cc9148206a7457e9d4468618f883fde",
+      "bytes": 3200185,
+      "status": "Retrieved",
+      "newly_acquired": true
+    },
+    {
+      "ticker": "LLY",
+      "cik": 59478,
+      "form": "10-K",
+      "period_start": "2025-01-01",
+      "period_end": "2025-12-31",
+      "filed": "2026-02-12",
+      "accession": "0000059478-26-000013",
+      "document": "lly-20251231.htm",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/59478/000005947826000013/lly-20251231.htm",
+      "source_sha256": "d45f8d1e0945df0b7b30254e96ff8c5dbd1df7d15b17c8ef7399c8e0206b7d7f",
+      "bytes": 2370071,
+      "status": "Retrieved",
+      "newly_acquired": false
+    },
+    {
+      "ticker": "ORCL",
+      "cik": 1341439,
+      "form": "10-K",
+      "period_start": "2021-06-01",
+      "period_end": "2022-05-31",
+      "filed": "2022-06-21",
+      "accession": "0001564590-22-023675",
+      "document": "orcl-10k_20220531.htm",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1341439/000156459022023675/orcl-10k_20220531.htm",
+      "source_sha256": "28aea71056a6c3f683d2c6de0da37c8eeddf9bcba4e357dc686783319e105560",
+      "bytes": 6077567,
+      "status": "Retrieved",
+      "newly_acquired": true
+    },
+    {
+      "ticker": "ORCL",
+      "cik": 1341439,
+      "form": "10-K",
+      "period_start": "2022-06-01",
+      "period_end": "2023-05-31",
+      "filed": "2023-06-20",
+      "accession": "0000950170-23-028914",
+      "document": "orcl-20230531.htm",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1341439/000095017023028914/orcl-20230531.htm",
+      "source_sha256": "755628a06c70fb4bb81da2c6d5c0716c08eb06a9a6b4dc4fe276421f42fe5116",
+      "bytes": 7325095,
+      "status": "Retrieved",
+      "newly_acquired": true
+    },
+    {
+      "ticker": "ORCL",
+      "cik": 1341439,
+      "form": "10-K",
+      "period_start": "2023-06-01",
+      "period_end": "2024-05-31",
+      "filed": "2024-06-20",
+      "accession": "0000950170-24-075605",
+      "document": "orcl-20240531.htm",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1341439/000095017024075605/orcl-20240531.htm",
+      "source_sha256": "3e8f9ae9676d6765458be96ef146b4c4b84c0b365b50ea487cf6caa70c2890cd",
+      "bytes": 5321452,
+      "status": "Retrieved",
+      "newly_acquired": true
+    },
+    {
+      "ticker": "ORCL",
+      "cik": 1341439,
+      "form": "10-K",
+      "period_start": "2024-06-01",
+      "period_end": "2025-05-31",
+      "filed": "2025-06-18",
+      "accession": "0000950170-25-087926",
+      "document": "orcl-20250531.htm",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1341439/000095017025087926/orcl-20250531.htm",
+      "source_sha256": "054e0a5e56c038d279b6cec60c9c004fb4e11b1dc21c7db2fd62ef4eca25529f",
+      "bytes": 6549799,
+      "status": "Retrieved",
+      "newly_acquired": true
+    },
+    {
+      "ticker": "ORCL",
+      "cik": 1341439,
+      "form": "10-K",
+      "period_start": "2025-06-01",
+      "period_end": "2026-05-31",
+      "filed": "2026-06-22",
+      "accession": "0001193125-26-277521",
+      "document": "orcl-20260531.htm",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1341439/000119312526277521/orcl-20260531.htm",
+      "source_sha256": "61a353e222f961e516bb3e8eed024a5245cfadbf30e3cc16a4a520129f1bdf63",
+      "bytes": 6874047,
+      "status": "Retrieved",
+      "newly_acquired": false
+    },
+    {
+      "ticker": "VST",
+      "cik": 1692819,
+      "form": "10-K",
+      "period_start": "2021-01-01",
+      "period_end": "2021-12-31",
+      "filed": "2022-02-25",
+      "accession": "0001692819-22-000005",
+      "document": "vistra-20211231.htm",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1692819/000169281922000005/vistra-20211231.htm",
+      "source_sha256": "9dc3eccae770fe86af90cf746b9afedebb6cebac6323126d5c2e047d516d8fde",
+      "bytes": 7071019,
+      "status": "Retrieved",
+      "newly_acquired": true,
+      "extension_definition_sources": [
+        {
+          "document": "vistra-20211231.xsd",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1692819/000169281922000005/vistra-20211231.xsd",
+          "source_sha256": "78ad91abf7288759b16a000e0de4ecc08ad3d6b27b77991321aa46cbde58f6c3",
+          "element": {
+            "name": "AccountsReceivableSecuritizationProgramAmountsBorrowed",
+            "type": "xbrli:monetaryItemType",
+            "{http://www.xbrl.org/2003/instance}periodType": "instant",
+            "{http://www.xbrl.org/2003/instance}balance": "credit"
+          }
+        },
+        {
+          "document": "vistra-20211231_lab.xml",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1692819/000169281922000005/vistra-20211231_lab.xml",
+          "source_sha256": "ee3ae7e60d5c756c60c453f856ddec803553cf82b7ee6418715730f38e4d1390",
+          "labels": [
+            "Accounts receivable financing",
+            "Accounts receivable securitization program, amounts borrowed",
+            "Accounts Receivable Securitization Program, Amounts Borrowed",
+            "Accounts Receivable Securitization Program, Amounts Borrowed"
+          ]
+        }
+      ]
+    },
+    {
+      "ticker": "VST",
+      "cik": 1692819,
+      "form": "10-K",
+      "period_start": "2022-01-01",
+      "period_end": "2022-12-31",
+      "filed": "2023-03-01",
+      "accession": "0001692819-23-000005",
+      "document": "vistra-20221231.htm",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1692819/000169281923000005/vistra-20221231.htm",
+      "source_sha256": "a810f6bc6f15ad7c46c37cf4c67e02c9968673ffe6cf152b6f5460cb5dbd9dd3",
+      "bytes": 7003379,
+      "status": "Retrieved",
+      "newly_acquired": true,
+      "extension_definition_sources": [
+        {
+          "document": "vistra-20221231.xsd",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1692819/000169281923000005/vistra-20221231.xsd",
+          "source_sha256": "25bc7f5b11fc57248d18dcb758685b78fe395d552db941bc85cfd0051e1b2110",
+          "element": {
+            "name": "AccountsReceivableSecuritizationProgramAmountsBorrowed",
+            "type": "xbrli:monetaryItemType",
+            "{http://www.xbrl.org/2003/instance}periodType": "instant",
+            "{http://www.xbrl.org/2003/instance}balance": "credit"
+          }
+        },
+        {
+          "document": "vistra-20221231_lab.xml",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1692819/000169281923000005/vistra-20221231_lab.xml",
+          "source_sha256": "4461b3bbeb1b3fdcdbb748abbfefae97111ca4f3762c18a62e7593134697138b",
+          "labels": [
+            "Accounts receivable financing",
+            "Accounts receivable securitization program, amounts borrowed",
+            "Accounts Receivable Securitization Program, Amounts Borrowed",
+            "Accounts Receivable Securitization Program, Amounts Borrowed"
+          ]
+        }
+      ]
+    },
+    {
+      "ticker": "VST",
+      "cik": 1692819,
+      "form": "10-K",
+      "period_start": "2023-01-01",
+      "period_end": "2023-12-31",
+      "filed": "2024-02-29",
+      "accession": "0001692819-24-000012",
+      "document": "vistra-20231231.htm",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1692819/000169281924000012/vistra-20231231.htm",
+      "source_sha256": "4885628a6cda6e6ec4bec9a2d40ad3e6809d5ec6f1c1624f35b33368008d008a",
+      "bytes": 5612803,
+      "status": "Retrieved",
+      "newly_acquired": true,
+      "extension_definition_sources": [
+        {
+          "document": "vistra-20231231.xsd",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1692819/000169281924000012/vistra-20231231.xsd",
+          "source_sha256": "affdb82a146c4477d535c4a2b93779fbd6166596d2ed2f33eb7747d0cb2b868a",
+          "element": {
+            "name": "AccountsReceivableSecuritizationProgramAmountsBorrowed",
+            "type": "xbrli:monetaryItemType",
+            "{http://www.xbrl.org/2003/instance}periodType": "instant",
+            "{http://www.xbrl.org/2003/instance}balance": "credit"
+          }
+        },
+        {
+          "document": "vistra-20231231_lab.xml",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1692819/000169281924000012/vistra-20231231_lab.xml",
+          "source_sha256": "8bec9ba664b2cb20399c97181cad01eeae5c8197e9711a90db1d71e20b066963",
+          "labels": [
+            "Accounts receivable financing",
+            "Accounts Receivable Securitization Program, Amounts Borrowed",
+            "Accounts Receivable Securitization Program, Amounts Borrowed"
+          ]
+        }
+      ]
+    },
+    {
+      "ticker": "VST",
+      "cik": 1692819,
+      "form": "10-K",
+      "period_start": "2024-01-01",
+      "period_end": "2024-12-31",
+      "filed": "2025-02-28",
+      "accession": "0001692819-25-000013",
+      "document": "vistra-20241231.htm",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1692819/000169281925000013/vistra-20241231.htm",
+      "source_sha256": "4c7fafaefa4c09d0c44b2352cf50189b3a3a1733026ffa5e76a6c39d63d19c16",
+      "bytes": 5623317,
+      "status": "Retrieved",
+      "newly_acquired": true,
+      "extension_definition_sources": [
+        {
+          "document": "vistra-20241231.xsd",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1692819/000169281925000013/vistra-20241231.xsd",
+          "source_sha256": "3190160c59db9ab29ce36c1915536bfb21a4641d4bcbb0b27f216190bf13ef76",
+          "element": {
+            "name": "AccountsReceivableSecuritizationProgramAmountsBorrowed",
+            "type": "xbrli:monetaryItemType",
+            "{http://www.xbrl.org/2003/instance}periodType": "instant",
+            "{http://www.xbrl.org/2003/instance}balance": "credit"
+          }
+        },
+        {
+          "document": "vistra-20241231_lab.xml",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1692819/000169281925000013/vistra-20241231_lab.xml",
+          "source_sha256": "a46078df3177cc036143f78374494ac7d845183c510e856032ff62ae1eaadaf0",
+          "labels": [
+            "Accounts receivable financing",
+            "Accounts Receivable Securitization Program, Amounts Borrowed",
+            "Accounts Receivable Securitization Program, Amounts Borrowed"
+          ]
+        }
+      ]
+    },
+    {
+      "ticker": "VST",
+      "cik": 1692819,
+      "form": "10-K",
+      "period_start": "2025-01-01",
+      "period_end": "2025-12-31",
+      "filed": "2026-02-27",
+      "accession": "0001692819-26-000006",
+      "document": "vistra-20251231.htm",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1692819/000169281926000006/vistra-20251231.htm",
+      "source_sha256": "42e6a0ba0c833ede7d9d452b9f1ea68fbc4cb52035129ab5d5e02916e02822d4",
+      "bytes": 5587162,
+      "status": "Retrieved",
+      "newly_acquired": false,
+      "extension_definition_sources": [
+        {
+          "document": "vistra-20251231.xsd",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1692819/000169281926000006/vistra-20251231.xsd",
+          "source_sha256": "4f96a891551b89bc124c38b9a656dd74841626db7259872cfdb08428cdca37fe",
+          "element": {
+            "name": "AccountsReceivableSecuritizationProgramAmountsBorrowed",
+            "type": "xbrli:monetaryItemType",
+            "{http://www.xbrl.org/2003/instance}periodType": "instant",
+            "{http://www.xbrl.org/2003/instance}balance": "credit"
+          }
+        },
+        {
+          "document": "vistra-20251231_lab.xml",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1692819/000169281926000006/vistra-20251231_lab.xml",
+          "source_sha256": "8a40c5ff80c54484560816367fbd9138f01167e4f7a6c5a52a60d41c55738ac6",
+          "labels": [
+            "Accounts receivable financing",
+            "Accounts Receivable Securitization Program, Amounts Borrowed",
+            "Accounts Receivable Securitization Program, Amounts Borrowed"
+          ]
+        }
+      ]
+    }
+  ],
+  "companyfacts": [
+    {
+      "ticker": "LLY",
+      "source_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000059478.json",
+      "source_sha256": "3fe29099e6efaef9acac95711c271de1a644602939ea18487e29708310985942",
+      "bytes": 3523596,
+      "document": "LLY_companyfacts_20261017.json"
+    },
+    {
+      "ticker": "ORCL",
+      "source_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001341439.json",
+      "source_sha256": "65523545f040abaea1dfcf321da2a5aec85e7f34387244b0ffcb26e4c8707f7d",
+      "bytes": 3962105,
+      "document": "ORCL_companyfacts_20261017.json"
+    },
+    {
+      "ticker": "VST",
+      "source_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001692819.json",
+      "source_sha256": "c0484a20916438410181975f561d3f9307116cdf096c4c6abd386cdd7228e1e1",
+      "bytes": 2587779,
+      "document": "VST_companyfacts_20261017.json"
+    }
+  ],
+  "annual_amendment_screen": "No 10-K/A for the fifteen selected fiscal-year periods in the captured submissions data.",
+  "acquisition_note": "Original filing URLs and accession metadata were obtained from SEC submissions/index records. Full sources remain outside git; saved existing files were not overwritten.",
+  "submission_sources": [
+    {
+      "ticker": "LLY",
+      "document": "history-submissions-20261017.json",
+      "source_url": "https://data.sec.gov/submissions/CIK0000059478.json",
+      "source_sha256": "9cfe1b2fcefe209f70224999dc353600987764a8ca8278d388fbc01232f4e0d3",
+      "annual_amendments_for_selected_periods": []
+    },
+    {
+      "ticker": "ORCL",
+      "document": "history-submissions-20261017.json",
+      "source_url": "https://data.sec.gov/submissions/CIK0001341439.json",
+      "source_sha256": "bed0ec89b0d273799517d3e332b3a4ba3612168f0e4e9b963759b507f857adec",
+      "annual_amendments_for_selected_periods": []
+    },
+    {
+      "ticker": "VST",
+      "document": "history-submissions-20261017.json",
+      "source_url": "https://data.sec.gov/submissions/CIK0001692819.json",
+      "source_sha256": "a7b4b8483a502498c785d180541a2d5f58a543c039578a72a57fde46983f7cc0",
+      "annual_amendments_for_selected_periods": []
+    }
+  ]
+}
