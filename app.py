@@ -21,6 +21,7 @@ import streamlit as st
 import analysis
 import budget
 import filing_review
+import filing_xbrl
 import reviewed_financing
 import liquidity_simulation
 import scenario_export
@@ -55,6 +56,7 @@ from charts import CHART_CONFIG, build_price_chart
 
 # A Cloud worker can retain imported views across entry-point reruns after deployment.
 # These modules have no network calls or state to preserve; load the current view and review registry.
+reload(filing_xbrl)   # before the modules that read filings through it (fx.parse, Oct 17)
 reload(theme)   # ui reads its colors from theme; reloading ui alone kept old tokens (Oct 17 outage)
 reload(ui)
 reload(oracle_financing)
