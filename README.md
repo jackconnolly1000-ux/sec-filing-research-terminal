@@ -210,3 +210,5 @@ scenario view shows monthly simulated percentile bounds and median cash with a z
 The individual and scenario exports contain matching native charts. See [Oracle charts](docs/oracle_charts.md).
 
 What the presentation pass changed, how it was checked on the live app, what was not checked, and the first-time-reader obstacles still open: [presentation acceptance](docs/presentation_acceptance.md).
+
+What comes next, one pull request per item, with the items gated by date or condition: [roadmap](docs/roadmap.md).
