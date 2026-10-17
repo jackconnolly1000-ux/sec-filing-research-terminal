@@ -180,6 +180,9 @@ def histogram(st, result):
                f"up to all {result['trials']:,} trials. The left axis is a count of trials, not dollars.")
 
 
+TICKS = (0, 4, 8, 11)   # Sep 2026, Jan 2027, May 2027, Aug 2027: at least three months apart, so all fit at 390 px
+
+
 def monthly_figure(path):
     """Pointwise simulated percentiles, not a predicted cash path or a confidence interval."""
     import plotly.graph_objects as go
@@ -187,18 +190,21 @@ def monthly_figure(path):
     fig = go.Figure()
     rgb = tuple(int(T.SERIES_CASH[k:k+2],16) for k in (1,3,5))
     fig.add_trace(go.Scatter(x=ls.MONTH_ENDS, y=path["month_p90"] / B, mode="lines", line=dict(width=0),
-                             showlegend=False, name="90th percentile", hovertemplate="%{x}: %{y:.2f}B<extra>90th percentile</extra>"))
+                             showlegend=False, name="90th percentile", customdata=ls.MONTHS, hovertemplate="%{customdata}: %{y:.2f}B<extra>90th percentile</extra>"))
     fig.add_trace(go.Scatter(x=ls.MONTH_ENDS, y=path["month_p10"] / B, mode="lines", line=dict(width=0),
                              fill="tonexty", fillcolor=f"rgba({rgb[0]},{rgb[1]},{rgb[2]},0.22)", name="Simulated 10th–90th percentiles",
-                             hovertemplate="%{x}: %{y:.2f}B<extra>10th percentile</extra>"))
+                             customdata=ls.MONTHS, hovertemplate="%{customdata}: %{y:.2f}B<extra>10th percentile</extra>"))
     fig.add_trace(go.Scatter(x=ls.MONTH_ENDS, y=path["month_p50"] / B, mode="lines+markers",
                              line=dict(color=T.SERIES_CASH, width=2), marker=dict(size=4), name="Simulated median",
-                             hovertemplate="%{x}: %{y:.2f}B<extra>Median</extra>"))
+                             customdata=ls.MONTHS, hovertemplate="%{customdata}: %{y:.2f}B<extra>Median</extra>"))
     fig.add_hline(y=0, line_color=T.TEXT_MUTED, line_width=1, line_dash="dash")
     fig.update_layout(height=330, margin=dict(l=52,r=8,t=12,b=50), paper_bgcolor="rgba(0,0,0,0)",
                       plot_bgcolor="rgba(0,0,0,0)", font=dict(color=T.TEXT,size=11),
                       legend=dict(orientation="h",y=-.22,x=0),
-                      xaxis=dict(type="date",tickformat="%b %y",nticks=6,gridcolor=T.BORDER),
+                      # Points sit at month ends; date ticks fell on the 1st and read "Oct 26". Label the month-end points
+                      # themselves, every fourth month plus the last, as "Sep 2026"
+                      xaxis=dict(type="date",tickmode="array",tickvals=[ls.MONTH_ENDS[k] for k in TICKS],
+                                 ticktext=[ls.MONTHS[k] for k in TICKS],tickangle=0,gridcolor=T.BORDER),
                       yaxis=dict(title="Cash, USD billions",rangemode="tozero",gridcolor=T.BORDER))
     return fig
 
