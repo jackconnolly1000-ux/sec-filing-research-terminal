@@ -390,6 +390,22 @@ def principal_between(review: dict, start: str, end: str | None) -> int:
     return notes + loan
 
 
+# The ladder's combined FY2032-onward bar, split into the decades its notes fall in (fiscal years end May 31)
+DECADES = (("FY2032–36", "2031-06-01", "2036-05-31"), ("FY2037–46", "2036-06-01", "2046-05-31"),
+           ("FY2047–56", "2046-06-01", "2056-05-31"), ("FY2057–66", "2056-06-01", "2066-05-31"))
+
+
+def by_decade(review: dict) -> list | None:
+    """Dated principal in each decade after FY2031, from the instrument rows. None (Unavailable) unless the decades
+    add up exactly to the calendar's Thereafter amount, so no note is dropped or counted twice."""
+    rows = [{"label": label, "start": start, "end": end, "principal": principal_between(review, start, end)}
+            for label, start, end in DECADES]
+    thereafter = next((b["principal"] for b in review["calendar"] if b["end"] is None), None)
+    if thereafter is None or sum(r["principal"] for r in rows) != thereafter:
+        return None
+    return rows
+
+
 def fingerprint() -> str:
     return hashlib.sha256(SAMPLE.read_bytes()).hexdigest()
 

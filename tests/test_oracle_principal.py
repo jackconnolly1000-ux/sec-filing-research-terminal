@@ -130,6 +130,39 @@ class Calendar(unittest.TestCase):
             self.assertIsNone(op.load(Path(d) / "missing"))
 
 
+class Decades(unittest.TestCase):
+    """The ladder's combined FY2032-onward bar split by decade (roadmap item 11)."""
+    def test_decades_partition_the_thereafter_amount(self):
+        r = op.load()
+        rows = op.by_decade(r)
+        self.assertEqual([x["label"] for x in rows], ["FY2032–36", "FY2037–46", "FY2047–56", "FY2057–66"])
+        self.assertEqual([x["principal"] for x in rows], [26_500 * M, 20_750 * M, 31_000 * M, 12_000 * M])
+        self.assertEqual(sum(x["principal"] for x in rows), next(b["principal"] for b in r["calendar"] if b["end"] is None))
+        self.assertLessEqual(max(x["maturity"] for x in r["remaining"] if x["maturity"]), rows[-1]["end"])
+
+    def test_a_note_outside_the_decades_makes_them_unavailable(self):
+        r = copy.deepcopy(op.load())
+        note = next(x for x in r["remaining"] if x["maturity"] and x["maturity"] > "2056-06-01")
+        note["maturity"] = "2067-01-15"            # beyond FY2066: the decades no longer add up to Thereafter
+        self.assertIsNone(op.by_decade(r))
+        import oracle_principal_view as view
+        self.assertIn("Unavailable", view.decades(r, lambda v, d=2: str(v)))
+
+    def test_app_shows_the_decades_under_the_ladder(self):
+        import html
+        import company_review
+        snapshot = next(s for s in json.loads((ROOT / "samples/liquidity_pilots.json").read_text())["snapshots"]
+                        if s["ticker"] == "ORCL")
+        shown = html.unescape(company_review.render(snapshot))
+        ladder, block = shown.index("Principal maturity ladder"), shown.index("FY2032 onward, by decade")
+        self.assertLess(ladder, block)
+        self.assertLess(block, shown.index("Next twelve months"))
+        for label, amount in (("FY2032–36", "$26.500B"), ("FY2037–46", "$20.750B"), ("FY2047–56", "$31.000B"),
+                              ("FY2057–66", "$12.000B"), ("FY2032 onward", "$90.250B")):
+            self.assertIn(label, shown[block:block + 3000])
+            self.assertIn(amount, shown[block:block + 3000])
+
+
 @unittest.skipUnless((RAW / "orcl-20260531.htm").is_file(), "saved Oracle filings not on this machine")
 class RawFilings(unittest.TestCase):
     def test_full_filings_rebuild_the_saved_calendar(self):
@@ -174,6 +207,18 @@ class Workbook(unittest.TestCase):
         self.assertEqual(self.values.cell(self.find("Next twelve months, excluding commercial paper"), 3).value, 7_317 * M)
         self.assertEqual(self.values.cell(self.find("Total, excluding commercial paper"), 3).value, 125_567 * M)
         self.assertEqual(self.values.cell(self.find("Difference"), 3).value, 0)
+
+    def test_decade_block_sums_the_instrument_rows_and_equals_thereafter(self):
+        rows = op.by_decade(self.r)
+        for k, r in enumerate(rows):
+            self.assertEqual(self.values.cell(49 + k, 5).value, r["label"])
+            self.assertEqual(self.values.cell(49 + k, 6).value, r["principal"])
+            formula = self.formulas.cell(49 + k, 6).value
+            self.assertTrue(formula.startswith("=SUMIFS($E$95:$E$152,$B$95:$B$152,"), formula)
+            self.assertIn(f'DATE({int(r["start"][:4])},6,1)', formula)
+        self.assertEqual(self.formulas["F53"].value, "=SUM(F49:F52)")
+        self.assertEqual(self.values["F53"].value, self.values["C54"].value)       # equals the Thereafter row
+        self.assertEqual((self.formulas["F54"].value, self.values["F54"].value), ("=F53-C54", 0))
 
     def test_unknowns_stay_unavailable_and_are_not_numbers(self):
         cp = self.find("Commercial paper")

@@ -51,6 +51,25 @@ def ladder(review, money):
         'may be extended; this is not funding coverage.</p></div>')
 
 
+def decades(review, money):
+    """The cut FY2032-onward bar, split by decade, so its $90B is not one undifferentiated amount."""
+    import oracle_principal as op
+    rows = op.by_decade(review)
+    output = '<div class="op-decades"><h4>FY2032 onward, by decade</h4>'
+    if rows is None:
+        return output + '<p class="lr-meta">Unavailable: the decades do not add up to the combined amount.</p></div>'
+    nice = lambda iso: (lambda d: f"{d:%b} {d.day}, {d:%Y}")(date.fromisoformat(iso))
+    output += ('<div class="ol-table-wrap"><table class="ol-table"><thead><tr><th>Fiscal years</th><th>Period</th>'
+               '<th>Principal</th></tr></thead><tbody>')
+    for r in rows:
+        output += (f'<tr><td>{esc(r["label"])}</td><td>{esc(nice(r["start"]))} – {esc(nice(r["end"]))}</td>'
+                   f'<td>{esc(money(r["principal"], 3))}</td></tr>')
+    total = sum(r["principal"] for r in rows)
+    return output + (f'<tr><td>FY2032 onward</td><td>Equals the combined bar above</td><td>{esc(money(total, 3))}</td></tr>'
+                     '</tbody></table></div><p class="lr-meta">Senior notes at their stated maturities; no term loan or '
+                     'commercial paper falls in these years. Principal only, excluding interest.</p></div>')
+
+
 def render(snapshot, money):
     """Oracle's August 31 principal by instrument and date; commercial paper stays Unavailable.
 
@@ -76,6 +95,7 @@ def render(snapshot, money):
                f'term loan’s {esc(money(installments, 3))} of installments and {esc(money(tl["final"]["amount"], 3))} remainder on '
                'August 16, 2027. Commercial paper is not included: its August balance and maturity dates are not reported.</p>')
     output += ladder(review, money)
+    output += decades(review, money)
     output += '<div class="lr-grid"><div><h4>Next twelve months</h4><div class="ol-table-wrap"><table class="ol-table">'
     output += '<thead><tr><th>Due</th><th>Instrument</th><th>Principal</th></tr></thead><tbody>'
     for row in near["rows"]:

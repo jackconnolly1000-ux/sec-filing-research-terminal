@@ -76,3 +76,7 @@ FY2028 through Thereafter equal the 10-K's May 31 buckets. Only fiscal 2027 chan
 - Make-whole redemptions or new issuance after August 31 are outside this review. The saved financing screen through October 15 found no later borrowing (`oracle_revolver_reconciliation.md`).
 - Interest payments are excluded.
 - **Not funding coverage:** cash, OCF, prepayments, equity proceeds and the revolver are not matched to these dates here. The Oracle funding conclusion was re-reviewed on October 17 against this calendar: it now states the $7.317B due over the next twelve months, and coverage stays Unavailable (see `funding_conclusions.md`).
+
+## FY2032 onward, by decade (October 17, 2026)
+
+The ladder's combined FY2032-onward bar ($90.250B) is split under it by decade: FY2032–36 $26.500B, FY2037–46 $20.750B, FY2047–56 $31.000B, FY2057–66 $12.000B (`oracle_principal.by_decade`, from the dated senior notes). The split is refused as Unavailable unless it adds up exactly to the Thereafter amount. The Oracle workbook's Payment dates sheet shows the same block in E48:F54 as SUMIFS formulas over the instrument rows, with a check row against Thereafter (`tests/offline/add_oracle_decades.py`, manifest rebound).
