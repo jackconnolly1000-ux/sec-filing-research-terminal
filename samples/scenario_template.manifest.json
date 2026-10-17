@@ -2,7 +2,7 @@
   "sheets": {
     "Results": {
       "path": "xl/worksheets/sheet1.xml",
-      "rows": 5,
+      "rows": 7,
       "cols": 11
     },
     "Monthly path": {
@@ -46,7 +46,7 @@
       "cols": 2
     }
   },
-  "sha256": "f13052d1a27eb48a552f5212cad25eb2522c7e932b36825d8ac2699a3d6ea164",
+  "sha256": "886cf7ba07c0f469efe7d989eeb4a2012aee4347eb2688c9e2b788586a1d6c29",
   "monthly_chart": {
     "path": "xl/drawings/charts/chart1.xml",
     "sheet": "Monthly path by month"

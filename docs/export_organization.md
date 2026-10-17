@@ -13,7 +13,7 @@ fiscal calendars and definitions differ; the summary is not a peer ranking.
 
 ## Scenario record
 
-The separate Oracle scenario workbook opens on Results. Its monthly, correlation and outside-use
+The separate Oracle scenario workbook opens on Results, whose first row states that it is an illustrative scenario from stated assumptions, not a forecast or funding conclusion, and whose second row links to About (template patched by `tests/offline/patch_scenario_results_label.py`). Its monthly, correlation and outside-use
 sensitivity tables retain the current run. Scenario records the chosen distributions and controls;
 Data retains historical filing inputs, exact periods, forms, filed dates, accessions and clickable
 filing URLs. The checked principal calendar is classified as derived rather than a reported subtotal.

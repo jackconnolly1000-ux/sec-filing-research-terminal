@@ -18,6 +18,10 @@ SHARE = "Share of trials below zero"
 USD = " (USD, displayed in millions)"
 SHARE_NOTE = ("Shares of trials below zero describe simulated trials under stated assumptions, not probabilities "
               "of default or of a funding gap.")
+# The first two rows of Results, the sheet the workbook opens on, say what the figures are before any figure appears
+RESULTS_LABEL = ("Illustrative scenario from stated assumptions: not a forecast or a funding conclusion. "
+                 "Shares of trials below zero are not probabilities.")
+RESULTS_POINTER = ("Meaning, units, reproduction and limits: About (last sheet). Inputs and sources: Scenario and Data.")
 
 ROOT = Path(__file__).parent
 TEMPLATE = ROOT / "samples/scenario_template.xlsx"
@@ -212,6 +216,8 @@ def tables(inputs, results, trials, seed, comparison=None, outside=None, uses=No
         ws.append(list(row))
     rho_row = len(ws)
     res = add("Results")
+    res.append([RESULTS_LABEL])
+    res.append([RESULTS_POINTER])
     res.append(["Decision", "Capex" + USD, "Dividends" + USD, "Revolver assumed usable", "Mean ending cash" + USD,
                 "Std dev" + USD, "10th percentile" + USD, "Median" + USD, "90th percentile" + USD,
                 SHARE, "Average shortfall in trials below zero" + USD])
