@@ -57,6 +57,10 @@ class OracleCharts(unittest.TestCase):
         self.assertEqual(list(f.data[0].x),list(ls.MONTH_ENDS))
         self.assertEqual(f.data[1].fill,'tonexty')
         self.assertEqual(f.layout.shapes[0].y0,0)
+        # Month labels name the month of each month-end point, never the day ("Oct 26") or the next month
+        self.assertEqual(list(f.layout.xaxis.ticktext),['Sep 2026','Jan 2027','May 2027','Aug 2027'])
+        self.assertEqual(list(f.layout.xaxis.tickvals),['2026-09-30','2027-01-31','2027-05-31','2027-08-31'])
+        self.assertTrue(all(list(t.customdata)==list(ls.MONTHS) for t in f.data))
 
     def test_scenario_chart_follows_the_selected_decision_and_seed(self):
         i=ls.oracle_inputs();ds=ls.oracle_decisions();rs=[(ls.simulate(i,d,1000,42),d) for d in ds]

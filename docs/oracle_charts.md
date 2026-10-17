@@ -42,7 +42,7 @@ caption explains that each bar counts trials in its range. The decision shown is
 The Oracle scenario view retains its distribution histogram and adds a monthly median line with
 shading between the 10th and 90th percentiles. These are pointwise summaries across the simulated
 trials at each month end, not one individual path, a forecast band or confidence intervals for Oracle.
-The zero reference is explicit. The dated principal is allocated to its calendar month; other flows
+The zero reference is explicit. Axis labels name the month of each month-end point ("Sep 2026", "Jan 2027", "May 2027", "Aug 2027"). The dated principal is allocated to its calendar month; other flows
 are spread evenly by assumption. No payment-date liquidity conclusion follows.
 
 The scenario workbook records median and 90th percentile alongside its existing monthly statistics.
