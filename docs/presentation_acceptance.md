@@ -33,7 +33,7 @@ The offline suite (unit tests, the saved-source audit, and the offline app and a
 
 - Interaction on a physical phone (layouts were checked at 390 px in a browser).
 - Recalculation in desktop Excel after editing a workbook.
-- A run with changed scenario assumptions in the live browser. Automated tests cover the chart bindings for the other decisions.
+- Alternate live scenario check completed October 17 after PR #78: Decision B capex changed from $55.663B to $50B, seed from 2026 to 2027, with no revolver assumed usable. Both charts updated. The actual Excel download recorded those settings, all twelve monthly medians and the selected-decision chart caches, matching an independent run of the production model. This verification uses assumptions, not a new company funding conclusion.
 
 ## Boundaries that still apply
 
@@ -72,3 +72,8 @@ Recorded for a later presentation fix. None is a figure error, and none is fixed
 Smaller notes, not counted above:
 - The scenario's monthly chart labels ticks "Oct 26", "Jan 27", which can read as days of the month rather than October 2026. *Fixed October 17 (PR #75):* ticks sit on the month-end points and read "Sep 2026", "Jan 2027", "May 2027", "Aug 2027", all visible at 390 px.
 - On every company page, the download button and its caption ("editing inputs does not update the checked narrative") sit above the review, before the reader knows what the workbook contains. *Fixed October 17 (PR #76):* the caption and button now follow the header, figures and funding conclusion, before *What it owes*.
+
+
+## Continuation after PR #78
+
+The ladder now explicitly reconciles the $7.317B next-twelve-month principal to the $2.672B remainder of FY2027 plus $4.645B due June–August 2027 inside FY2028. Obstacle 3 above is resolved on current main. The changed-input live check above closes roadmap item 16. Five-year historical expansion requires the additional source review in `five_year_history_plan.md`; the existing two-date history remains checked.
