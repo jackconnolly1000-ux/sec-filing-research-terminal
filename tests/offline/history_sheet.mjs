@@ -1,7 +1,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import {execFileSync} from 'node:child_process';
-import {frame,header} from './workbook_style.mjs';
+import {frame,header,dimensionText} from './workbook_style.mjs';
 
 export function addHistorySheet(wb,root,ticker){
  const model=JSON.parse(execFileSync(process.env.CODEX_PRIMARY_RUNTIME_PYTHON,['-c',
@@ -17,7 +17,7 @@ export async function finishHistorySheet(wb,root,ticker,{model,sheet}){
   const n=start+records.length+1;
   records.push(ticker==='LLY'?[f.label,f.value,date(f.period_start),date(f.period_end),f.form,date(f.filed),f.accession,f.tag,f.context_id||null,f.scale??null,f.decimals??null,f.source_url,f.location||'Annual cash-flow statement',f.detail||'',f.source_sha256||'']:
    [f.label,f.value,f.label,date(f.period_start),date(f.period_end),f.form,date(f.filed),f.accession,f.tag,f.context_id||null,
-    ...(ticker==='VST'?[JSON.stringify(f.dimensions||[]),f.scale??null,f.decimals??null]:[f.scale??null,f.decimals??null]),f.source_url,f.location||'Annual cash-flow statement',f.selection_rule||'',...(ticker==='VST'?[]:[JSON.stringify(f.dimensions||[])]),f.source_sha256||'',f.unit]);
+    ...(ticker==='VST'?[dimensionText(f.dimensions),f.scale??null,f.decimals??null]:[f.scale??null,f.decimals??null]),f.source_url,f.location||'Annual cash-flow statement',f.selection_rule||'',...(ticker==='VST'?[]:[dimensionText(f.dimensions)]),f.source_sha256||'',f.unit]);
   return `IF(ISNUMBER('Data'!B${n}),'Data'!B${n},NA())`;
  }
  const facts=model.annual_facts.map(ref),ocf=ref(model.annual_flows[0]),capex=ref(model.annual_flows[1]);
@@ -35,7 +35,7 @@ export async function finishHistorySheet(wb,root,ticker,{model,sheet}){
  for(const c of ticker==='LLY'?['C','D','F']:['D','E','G'])data.getRange(`${c}${start+1}:${c}${last}`).setNumberFormat('mmm d, yyyy');
  frame(data,`A${start}:${cols}${last}`);header(data,`A${start}:${cols}${start}`);
  sheet.showGridLines=false;sheet.getRange('A2').values=[[model.company+' — dated history']];
- sheet.getRange('A3').values=[['USD millions unless x or %. Fiscal year and later TTM both span twelve months and overlap.']];
+ sheet.getRange('A3').values=[['USD millions, except ratios (x) and percentages (%). Fiscal year and later TTM both span twelve months and overlap.']];
  sheet.getRange('A5:D5').values=[['Measure','As of / FY ended '+model.annual_end,'As of / TTM ended '+model.period_end,'Basis / limits']];
  for(const [i,r] of model.rows.entries()){
   const basis=r.history_basis;

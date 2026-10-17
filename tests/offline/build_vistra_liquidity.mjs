@@ -3,7 +3,7 @@ import {addCoreChartSheet,finishCoreChartSheet} from './core_chart_sheet.mjs';
 import {addBorrowingLeaseSheet,finishBorrowingLeaseSheet} from './borrowing_lease_sheet.mjs';
 import {addRatioSheet,finishRatioSheet} from './ratio_sheet.mjs';
 import {addHistorySheet,finishHistorySheet} from './history_sheet.mjs';
-import {documentationLinks} from './workbook_style.mjs';
+import {documentationLinks,dimensionText} from './workbook_style.mjs';
 import {addFundingSheet,finishFundingSheet} from './funding_sheet.mjs';
 // Build with the Codex spreadsheet runtime in a temporary directory; the app serves saved bytes.
 import fs from 'node:fs/promises';
@@ -36,12 +36,12 @@ const rows=new Map();
 const inputs=Object.entries(r.inputs).map(([key,f],i)=>{
   rows.set(key,i+2);
   return [key,f.value,f.label,date(f.period_start),date(f.period_end),f.form,date(f.filed),f.accession,
-    f.tag,f.context_id,JSON.stringify(f.dimensions),f.scale,f.decimals,f.source_url,f.location,f.detail||null];
+    f.tag,f.context_id,dimensionText(f.dimensions),f.scale,f.decimals,f.source_url,f.location,f.detail||null];
 });
 for(const [key,f] of Object.entries(interest.inputs)){
  rows.set('coverage_'+key,inputs.length+2);
  inputs.push(['coverage_'+key,f.value,f.label,date(f.period_start),date(f.period_end),f.form,date(f.filed),f.accession,
-  f.tag,f.context_id,JSON.stringify(f.dimensions),f.scale,f.decimals,f.source_url,f.location,f.detail||'',
+  f.tag,f.context_id,dimensionText(f.dimensions),f.scale,f.decimals,f.source_url,f.location,f.detail||'',
   f.source_sha256,f.unit+'; '+f.selection_rule]);
 }
 data.getRange(`A1:R${inputs.length+1}`).values=[['Input','USD, displayed millions','Description','Period from','Period through','Form','Filed','Accession','Tag','Context','Dimensions','Scale','Decimals','Source','Location','Reason if unavailable','Reviewed source SHA256','Unit and selection rule'],...inputs.map(r=>r.concat(Array(18-r.length).fill(null)))];

@@ -13,7 +13,17 @@ gridlines to $12B) rather than by the combined FY2032-onward bucket. That bucket
 is drawn cut at the edge, with a visible break and "bar cut" beside its value, so the nearer years stay
 readable. Each row has a rule linking its label, bar and value, and a dollar scale runs under the bars. The note
 reconciles the twelve-month figure: $7.317B due September 2026–August 2027 is Remainder FY2027 ($2.672B) plus
-June–August 2027 ($4.645B of FY2028's $10.145B). The Excel native chart is unchanged (saved, fingerprinted workbook).
+June–August 2027 ($4.645B of FY2028's $10.145B).
+
+**Excel chart (same day).** The native chart on Payment dates uses the same scale: its value axis is fixed at
+$0–$12B in $2B steps, every bar carries a value label in $B, and the Thereafter bar has a hatched fill because
+Excel cannot draw a break mark. The title says that bar (FY2032–FY2066 combined, $90.3B) runs past the scale. The
+series still links to C49:C54 and the cached values are unchanged. Applied by
+`tests/offline/patch_workbook_readability.py`, which also rewrites the Data-sheet dimensions in words
+("None (consolidated total)", or "axis = member") and the unit notes ("USD millions, except ratios (x) and
+percentages (%)") in all three company workbooks. It copies every other byte unchanged and rebinds each
+manifest's workbook fingerprint. The `.mjs` builders now write the same text (`dimensionText` in
+`workbook_style.mjs`); after a rebuild, re-run `add_oracle_ladder.py`, then this patch for the chart.
 
 The individual Oracle workbook adds one native chart beside the existing calendar on Payment dates.
 Its series links directly to C49:C54 and categories to A49:A54, with the same checked caches.

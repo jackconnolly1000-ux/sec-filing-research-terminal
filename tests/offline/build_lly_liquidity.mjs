@@ -3,7 +3,7 @@ import {addCoreChartSheet,finishCoreChartSheet} from './core_chart_sheet.mjs';
 import {addBorrowingLeaseSheet,finishBorrowingLeaseSheet} from './borrowing_lease_sheet.mjs';
 import {addRatioSheet,finishRatioSheet} from './ratio_sheet.mjs';
 import {addHistorySheet,finishHistorySheet} from './history_sheet.mjs';
-import {documentationLinks} from './workbook_style.mjs';
+import {documentationLinks,dimensionText} from './workbook_style.mjs';
 import {addFundingSheet,finishFundingSheet} from './funding_sheet.mjs';
 // Build only Lilly's checked review. No network or application dependency is required.
 import fs from 'node:fs/promises';
@@ -98,7 +98,7 @@ const records=[...Object.entries(review.inputs),...review.disclosures.map(f=>[f.
  ['may_issue_control',{value:financing.reported_issue_total,label:'Reported completed May issue, initial principal',period_start:null,period_end:'2026-05-20',form:issueSource.form,filed:issueSource.filed,accession:issueSource.accession,tag:null,context_id:null,scale:null,decimals:null,source_url:issueSource.url,location:'Item 8.01, completed offering',source_kind:'Reviewed filing text',dimensions:[],sha256:issueSource.sha256,detail:'Initial issue principal, not net cash proceeds, current outstanding debt or unused financing.'}]];
 data.getRange(`A${auditHeader}:R${auditHeader+records.length}`).values=[
  ['Review input key','USD millions','Label','Period start','Date / disclosure basis','Form','Filed','Accession','Tag','Context','Scale','Decimals','Source','Filing location','Source kind','Dimensions','Limitations','Reviewed source SHA256'],
- ...records.map(([key,f],i)=>{auditRows.set(key,auditHeader+i+1);return [key,f.value,f.label,date(f.period_start),/^\d{4}-\d{2}-\d{2}$/.test(f.period_end)?date(f.period_end):f.period_end,f.form,date(f.filed),f.accession,f.tag,f.context_id,f.scale,f.decimals,f.source_url,f.location,f.source_kind,JSON.stringify(f.dimensions),f.detail||'',f.sha256];})];
+ ...records.map(([key,f],i)=>{auditRows.set(key,auditHeader+i+1);return [key,f.value,f.label,date(f.period_start),/^\d{4}-\d{2}-\d{2}$/.test(f.period_end)?date(f.period_end):f.period_end,f.form,date(f.filed),f.accession,f.tag,f.context_id,f.scale,f.decimals,f.source_url,f.location,f.source_kind,dimensionText(f.dimensions),f.detail||'',f.sha256];})];
 data.getRange(`S${auditHeader}:T${auditHeader+records.length}`).values=[['Fixed coupon, fraction','Compounded SOFR margin, fraction'],...records.map(([,f])=>[f.coupon??null,f.sofr_margin??null])];
 function ref(key){const cell=`'Data'!B${auditRows.get(key)}`;return `IF(ISNUMBER(${cell}),${cell},NA())`;}
 repayment.getRange('A2').values=[['Lilly — dated liquidity and repayment review']];

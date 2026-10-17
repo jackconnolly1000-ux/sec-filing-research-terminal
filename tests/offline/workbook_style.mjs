@@ -26,3 +26,6 @@ export function documentationLinks(sheet) {
     sheet.getRange(`C${i+1}`).values=[['https://github.com/jackconnolly1000-ux/sec-filing-research-terminal/blob/main/'+values[i][0]]];
   }
 }
+
+// Data-sheet dimensions in words: "None (consolidated total)" for a fact with no XBRL axis, else "axis = member; ..."
+export const dimensionText=d=>(d&&d.length)?d.map(([axis,member])=>axis+' = '+member).join('; '):'None (consolidated total)';
