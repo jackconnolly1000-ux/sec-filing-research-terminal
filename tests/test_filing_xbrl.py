@@ -2,6 +2,7 @@
 Jun 30, 2026 10-Q inline XBRL (accession 0001692819-26-000019) built by tests/fixtures/make_filing_fixture.py.
 Expected values were read from the printed filing (balance sheet p. 2, Note 12 p. 27; docs/pilot_evidence_vistra.md).
 No network calls."""
+import os
 import sys
 import tempfile
 import unittest
@@ -148,6 +149,17 @@ class Rules(unittest.TestCase):
 
     def test_fixed_zero_ignores_the_dash(self):
         self.assertEqual(self.read(fact("—", format="ixt:fixed-zero"))["value"], 0)
+
+    def test_a_changed_file_is_parsed_again(self):
+        # Parsed documents are cached; an edit of the same size must still be read, not served from the cache
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "doc.htm"
+            path.write_text(HEAD + fact("300") + "</body></html>", encoding="utf-8")
+            self.assertEqual(fx.read_instant(path, "a-1", "x:Borrowed", "2026-06-30")["value"], 300 * M)
+            path.write_text(HEAD + fact("310") + "</body></html>", encoding="utf-8")
+            later = path.stat().st_mtime_ns + 1_000_000_000
+            os.utime(path, ns=(later, later))     # a distinct modification time, as any real edit would have
+            self.assertEqual(fx.read_instant(path, "a-1", "x:Borrowed", "2026-06-30")["value"], 310 * M)
 
 
 if __name__ == "__main__":

@@ -18,6 +18,7 @@ from __future__ import annotations
 import re
 import xml.etree.ElementTree as ET
 from decimal import Decimal, InvalidOperation
+from functools import lru_cache
 from pathlib import Path
 
 IX = "http://www.xbrl.org/2013/inlineXBRL"
@@ -29,6 +30,22 @@ UNAVAILABLE = "Unavailable"
 # Display formats whose text is a number with comma thousands separators and an optional decimal point
 NUMBER_FORMATS = {"num-dot-decimal", "numdotdecimal"}
 ZERO_FORMATS = {"fixed-zero", "zerodash"}
+
+
+def parse(document: str | Path) -> ET.Element:
+    """The parsed root of a saved document, read once per file version.
+
+    Building Oracle's principal calendar reads several facts per instrument, and parsing the whole 10-K for each
+    fact took 187 parses and 15 seconds. The cache key includes the file's size and modification time, so a changed
+    file is parsed again. Callers must not modify the returned tree."""
+    path = Path(document).resolve()
+    stat = path.stat()
+    return _parse(str(path), stat.st_mtime_ns, stat.st_size)
+
+
+@lru_cache(maxsize=8)
+def _parse(path: str, mtime_ns: int, size: int) -> ET.Element:
+    return ET.parse(path).getroot()
 
 
 def _contexts(root: ET.Element) -> dict:
@@ -113,7 +130,7 @@ def _read(document: str | Path, accession: str, tag: str, instant: str, start: s
     def unavailable(why):
         return {**result, "detail": why}
 
-    root = ET.parse(document).getroot()
+    root = parse(document)
     contexts, units = _contexts(root), _units(root)
     facts = [f for f in root.iter(f"{{{IX}}}nonFraction") if f.get("name") == tag]
     if not facts:

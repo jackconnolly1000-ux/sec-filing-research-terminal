@@ -4,6 +4,7 @@ Run from app/:  .venv/bin/python -m unittest discover -s tests -p "test_*.py"
 """
 import sys
 import unittest
+from functools import lru_cache
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -83,6 +84,7 @@ class Paragraphs(unittest.TestCase):
 RAW = Path(__file__).resolve().parents[2] / "data" / "raw" / "sec"
 
 
+@lru_cache(maxsize=None)   # each saved 10-K is parsed once; several tests read the same filing
 def _section(ticker, doc):
     path = next((RAW / ticker).glob(f"*_{doc}.htm"))
     return sec_data.find_section(sec_data.html_to_text(path.read_bytes()), "1a", "10-K")
