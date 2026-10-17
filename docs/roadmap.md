@@ -49,7 +49,7 @@ Offline tests only; any paid Claude run needs the owner's OK first.
 | # | Item | Status |
 |---|---|---|
 | 17 | Label every AI-written figure with its period and source, and stop unlabeled SEC versus Yahoo margin conflicts on the page and in Excel. | Not started |
-| 18 | Make the general research Excel a research record: cover sheet, units in headers, wrapped text, set widths. | Next implementation: general-research export layout |
+| 18 | Make the general research Excel a research record: cover sheet, units in headers, wrapped text, set widths. | Implemented: general_research_export.md; checked company exports unchanged |
 | 19 | Read risk factors incorporated by reference from an annual-report exhibit; JPM is the test case. | Not started; required JPM exhibit not saved here |
 | 20 | Profile the 108-second first run, report where the time goes and fix the biggest piece. | Not started; no paid calls authorized |
 
