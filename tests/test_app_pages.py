@@ -111,6 +111,34 @@ class AppPages(unittest.TestCase):
         self.assertIn(RESEARCH, [b.label for b in app.button])
         self.assertIn("Download LLY review and evidence", self.labels("download_button"))
 
+    def test_download_follows_the_header_and_conclusion_with_its_caption(self):
+        # Presentation note: the download and its caption sat above the review, before the reader knew what it held
+        import export_guide
+        app = self.run_clean()
+        for ticker in ("LLY", "ORCL", "VST"):
+            app.segmented_control[0].set_value(ticker)
+            self.run_clean()
+            order = []
+            def walk(node):
+                for child in getattr(node, "children", {}).values():
+                    kind = getattr(child, "type", "")
+                    if kind == "markdown":
+                        order.append(("markdown", child.value))
+                    elif kind == "caption":
+                        order.append(("caption", child.value))
+                    elif kind == "download_button":
+                        order.append(("download", child.proto.label))
+                    walk(child)
+            walk(app.main)
+            where = lambda test: next(k for k, item in enumerate(order) if test(item))
+            conclusion = where(lambda i: i[0] == "markdown" and f"Funding conclusion for {ticker}" in i[1])
+            button = where(lambda i: i == ("download", f"Download {ticker} review and evidence"))
+            detail = where(lambda i: i[0] == "markdown" and "What it owes" in i[1])
+            self.assertLess(conclusion, button, ticker)
+            self.assertLess(button, detail, ticker)
+            self.assertEqual(order[button - 1], ("caption", export_guide.CAPTION), ticker)   # caption directly above
+            self.assertNotIn("What it owes", order[conclusion][1])                          # detail is below the button
+
     def test_selector_opens_each_checked_review(self):
         app = self.run_clean()
         expected = {"ORCL": ("Oracle Corporation", "125.34B", "Download ORCL review and evidence"),
