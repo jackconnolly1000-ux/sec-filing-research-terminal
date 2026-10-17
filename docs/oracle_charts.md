@@ -8,6 +8,13 @@ FY2027 is only September 2026–May 2027. The last bar combines FY2032 onward an
 as one year's repayment. Commercial paper, interest and leases are excluded. The contractual
 term-loan date can be extended. This chart does not establish funding coverage.
 
+**App layout (October 17 reader review).** The scale is set by the largest single fiscal year (FY2028, so $2B
+gridlines to $12B) rather than by the combined FY2032-onward bucket. That bucket ($90.250B, FY2032 through FY2066)
+is drawn cut at the edge, with a visible break and "bar cut" beside its value, so the nearer years stay
+readable. Each row has a rule linking its label, bar and value, and a dollar scale runs under the bars. The note
+reconciles the twelve-month figure: $7.317B due September 2026–August 2027 is Remainder FY2027 ($2.672B) plus
+June–August 2027 ($4.645B of FY2028's $10.145B). The Excel native chart is unchanged (saved, fingerprinted workbook).
+
 The individual Oracle workbook adds one native chart beside the existing calendar on Payment dates.
 Its series links directly to C49:C54 and categories to A49:A54, with the same checked caches.
 No original cell, formula, cached result or chart is replaced. Author the chart using
@@ -15,6 +22,12 @@ No original cell, formula, cached result or chart is replaced. Author the chart 
 `tests/offline/add_oracle_ladder.py OUTPUT_DIRECTORY`. The workbook hash is rebound.
 
 ## Illustrative monthly cash
+
+The distribution histogram colors trials below zero (caution amber) apart from those at or above zero
+(cash blue), because that split is the reported result; its bins are aligned so zero is a bin edge. Height
+already encodes the count, so a height gradient is not used. The y-axis reads "Simulated trials (of N)" and a
+caption explains that each bar counts trials in its range. The decision shown is chosen with two switches, capex
+(A or B) and the revolver hypothetical (not assumed or assumed usable), which together select one of the four.
 
 The Oracle scenario view retains its distribution histogram and adds a monthly median line with
 shading between the 10th and 90th percentiles. These are pointwise summaries across the simulated

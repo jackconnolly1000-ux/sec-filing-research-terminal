@@ -18,6 +18,13 @@ SHARE = "Share of trials below zero"
 USD = " (USD, displayed in millions)"   # stored in dollars, shown in $ millions
 
 
+def heading(st, text, note=""):
+    """A scenario section heading (ui.py .sim-h): one size above body text, with a rule, so each part is easy to find."""
+    from ui import esc
+    tail = f'<span class="sim-h-note"> · {esc(note)}</span>' if note else ""
+    st.markdown(f'<div class="sim-h">{esc(text)}{tail}</div>', unsafe_allow_html=True)
+
+
 def _billions(st, label, value, key, help=None):
     return st.number_input(label, value=round(value / B, 3), step=0.5, format="%.3f", key=key, help=help,
                            persist_state="session") * B
@@ -25,8 +32,8 @@ def _billions(st, label, value, key, help=None):
 
 def assumptions(st, inputs, decisions):
     """Editable inputs, defaulting to the checked basis. Returns (inputs, decisions, trials, seed) or None."""
-    st.markdown("**Assumptions** · USD billions · defaults are anchored to checked historical figures, which do not "
-                "establish future values")
+    heading(st, "Assumptions", "USD billions · defaults are anchored to checked historical figures, which do not "
+            "establish future values")
     c1, c2, c3 = st.columns(3)
     t = inputs.ocf_ex_prepayments
     low = _billions(c1, "OCF excl. prepayments, assumed low", t.low, "sim_ocf_low")
@@ -133,21 +140,44 @@ def _dollars(text):
     return text.replace("$", "\\$")
 
 
-def histogram(st, result):
+def histogram_figure(result):
+    """Ending cash across trials. Bars below zero are colored apart from the rest because that split is the result
+    the panel reports (the share of trials below zero); height alone already shows the count, so color is not
+    spent repeating it. Bins are aligned so zero is always a bin edge and no bar straddles it."""
+    import math
+    import numpy as np
     import plotly.graph_objects as go
     import theme as T
-    from charts import CHART_CONFIG
-    fig = go.Figure(go.Histogram(x=result["ending_cash"] / B, nbinsx=60, marker_color=T.FLOW_OUT,
-                                 hovertemplate="%{x:.1f}B: %{y} trials<extra></extra>"))
+    cash = result["ending_cash"] / B
+    lo, hi = float(cash.min()), float(cash.max())
+    size = max((hi - lo) / 60, 1e-9)
+    start = math.floor(min(lo, 0) / size) * size
+    bins = dict(start=start, end=max(hi, 0) + size, size=size)
+    trials, below = len(cash), cash < 0
+    hover = "%{x:.2f}B: %{y} of " + f"{trials:,}" + " trials<extra></extra>"
+    fig = go.Figure()
+    for mask, color, name in ((below, T.CAUTION_SOLID, f"Below zero: {below.mean():.1%} of trials"),
+                              (~below, T.SERIES_CASH, f"Zero or above: {(~below).mean():.1%}")):
+        fig.add_trace(go.Histogram(x=cash[mask], xbins=bins, marker_color=color, name=name, hovertemplate=hover,
+                                   showlegend=bool(np.any(mask))))
     fig.add_vline(x=0, line_color=T.TEXT_STRONG, line_width=1)
     fig.add_annotation(x=0, y=1, yref="paper", text="zero", showarrow=False, yanchor="bottom",
                        font=dict(color=T.TEXT_MUTED, size=11))
-    fig.update_layout(height=280, margin=dict(l=56, r=12, t=24, b=40), paper_bgcolor="rgba(0,0,0,0)",
-                      plot_bgcolor="rgba(0,0,0,0)", bargap=0.04, showlegend=False,
-                      font=dict(color=T.TEXT, size=11),
-                      xaxis=dict(title="Ending cash, USD billions", gridcolor=T.BORDER, zerolinecolor=T.BORDER),
-                      yaxis=dict(title="Trials", gridcolor=T.BORDER))
+    fig.update_layout(height=330, margin=dict(l=64, r=12, t=24, b=80), paper_bgcolor="rgba(0,0,0,0)",
+                      plot_bgcolor="rgba(0,0,0,0)", bargap=0.04, barmode="stack", font=dict(color=T.TEXT, size=11),
+                      legend=dict(orientation="h", y=-0.3, x=0, traceorder="normal"),
+                      xaxis=dict(title="Ending cash on Aug 31, 2027, USD billions", gridcolor=T.BORDER,
+                                 zerolinecolor=T.BORDER),
+                      yaxis=dict(title=f"Simulated trials (of {trials:,})", gridcolor=T.BORDER))
+    return fig, size
+
+
+def histogram(st, result):
+    from charts import CHART_CONFIG
+    fig, size = histogram_figure(result)
     st.plotly_chart(fig, width="stretch", theme=None, config=CHART_CONFIG)
+    st.caption(f"Each bar counts the simulated trials whose ending cash fell in that \\${size:.2f}B range; the bars add "
+               f"up to all {result['trials']:,} trials. The left axis is a count of trials, not dollars.")
 
 
 def monthly_figure(path):
@@ -179,6 +209,23 @@ def workbook(inputs, results, trials, seed, comparison=None, outside=None, uses=
     return scenario_export.workbook(inputs, results, trials, seed, comparison, outside, uses, monthly)
 
 
+CAPEX_CHOICES = ("Decision A", "Decision B")
+REVOLVER_CHOICES = ("Not assumed usable", "Assumed usable")
+
+
+def decision_picker(st, decisions):
+    """The four decisions as a 2 x 2: capex level (A or B) beside the revolver hypothetical (off or on).
+    Returns the chosen decision's name, matching the results table."""
+    capex = {d.name: d.capex for d in decisions}
+    c1, c2 = st.columns(2)
+    level = c1.segmented_control("Capex decision", CAPEX_CHOICES, default=CAPEX_CHOICES[0], required=True,
+                                 key="sim_pick_capex", persist_state="session",
+                                 format_func=lambda o: f"{o} · \\${capex[o] / B:.2f}B")
+    revolver = c2.segmented_control("Revolver (hypothetical)", REVOLVER_CHOICES, default=REVOLVER_CHOICES[0],
+                                    required=True, key="sim_pick_revolver", persist_state="session")
+    return f"{level}{', revolver assumed usable' if revolver == REVOLVER_CHOICES[1] else ''}"
+
+
 VIEWS = ("Checked review", "Stress scenario (illustrative)")
 
 
@@ -202,33 +249,38 @@ def render(st, snapshot) -> None:
         st.markdown(notice(ls.LABEL, "Oracle, September 2026 to August 2027. The figures below come from simulated "
                            "trials, not from checked filing facts. The checked review's funding conclusion is "
                            "unchanged: future funding coverage remains Unavailable.", "caution"), unsafe_allow_html=True)
+        heading(st, "How the scenario works")
         st.markdown(_dollars(
             "**Question:** if operating cash flow fell anywhere in the assumed range below, in what share of "
             "simulated trials would August 31 cash plus that cash flow end the twelve months below the cash uses "
-            "the model subtracts, or go below zero at a month end on the way?\n\n"
-            f"**Model, per trial:** ending cash = ${inputs.starting_cash / B:.3f}B cash + OCF excluding prepayments "
-            f"+ prepayments − capex − dividends − ${inputs.principal_due / B:.3f}B dated debt principal − commercial "
-            "paper due (+ a revolver draw up to $10B, only where the decision assumes it is usable; drawable credit "
-            "is Unavailable in the filings). The month-end path subtracts each dated principal payment in its "
-            "calendar month and spreads the other flows evenly.\n\n"
-            "**Checked inputs:** reported starting cash (10-Q balance sheet, August 31, 2026) and derived note and term-loan "
-            "principal due in the window (Oracle's August 31 principal calendar). **Assumptions:** the OCF, "
-            "prepayment and commercial-paper triangles and the correlation; their defaults are anchored to checked "
-            "history, which does not set future bounds. **Decisions:** capex, dividends and the revolver."))
+            "the model subtracts, or go below zero at a month end on the way?"))
+        st.markdown(
+            '<div class="sim-formula"><b>Model, per trial:</b> ending cash = '
+            f'<b>&#36;{inputs.starting_cash / B:.3f}B</b> cash + OCF excluding prepayments + prepayments − capex − '
+            f'dividends − <b>&#36;{inputs.principal_due / B:.3f}B</b> dated debt principal − commercial paper due '
+            '(+ a revolver draw up to &#36;10B, only where the decision assumes it is usable; drawable credit is '
+            'Unavailable in the filings). The month-end path subtracts each dated principal payment in its calendar '
+            'month and spreads the other flows evenly.</div>', unsafe_allow_html=True)
+        st.markdown(_dollars(
+            "- **Checked inputs:** reported starting cash (10-Q balance sheet, August 31, 2026) and derived note and "
+            "term-loan principal due in the window (Oracle's August 31 principal calendar).\n"
+            "- **Assumptions:** the OCF, prepayment and commercial-paper triangles and the correlation; their defaults "
+            "are anchored to checked history, which does not set future bounds.\n"
+            "- **Decisions:** capex, dividends and the revolver."))
         st.caption(ls.TIMING_LIMIT)
         chosen = assumptions(st, inputs, ls.oracle_decisions())
         if chosen is None:
             return
         edited, decisions, trials, seed = chosen
         results = [(ls.simulate(edited, d, trials, seed), d) for d in decisions]
-        st.markdown("**Results by decision**")
+        heading(st, "Results by decision")
         results_table(st, results)
-        pick = st.radio("Show the distribution for", [d.name for d in decisions], horizontal=True, key="sim_pick",
-                        persist_state="session")
-        histogram(st, next(r for r, d in results if d.name == pick))
+        pick = decision_picker(st, decisions)
         shown = next(d for d in decisions if d.name == pick)
+        heading(st, "Distribution of ending cash", shown.name)
+        histogram(st, next(r for r, d in results if d.name == pick))
         monthly = [(d, r, ls.monthly_path(edited, d, trials, seed)) for r, d in results]
-        st.markdown(f"**Cash at each month end** · {shown.name}")
+        heading(st, "Cash at each month end", shown.name)
         monthly_table(st, *next((r, m) for d, r, m in monthly if d.name == pick))
         from charts import CHART_CONFIG
         path = next(m for d, _, m in monthly if d.name == pick)
@@ -237,10 +289,10 @@ def render(st, snapshot) -> None:
                    "These are pointwise summaries of assumed trials, not a forecast band or one individual path. "
                    "The dashed line is zero. Even monthly allocation does not establish payment-date liquidity.")
         comparison = ls.compare_correlations(edited, shown, trials, seed)
-        st.markdown(f"**How correlation changes the spread** · {shown.name}")
+        heading(st, "How correlation changes the spread", shown.name)
         correlation_table(st, comparison, shown.revolver)
         outside = [(d, ls.outside_use_effects(edited, uses, d, trials, seed)) for d in decisions]
-        st.markdown(f"**Sensitivity: cash uses outside the model** · {shown.name}")
+        heading(st, "Sensitivity: cash uses outside the model", shown.name)
         outside_uses(st, next(e for d, e in outside if d.name == pick), uses, shown)
         check = ls.simulate(edited, decisions[0], trials * 5, seed + 1)
         drift = abs(check["share_below_zero"] - results[0][0]["share_below_zero"])

@@ -141,6 +141,19 @@ p.irt-subtitle {{ color: var(--text-muted); margin: 0; font-size: 0.85rem; }}
 .st-key-scenario_view {{ background: var(--surface); border: 1px dashed {T.CAUTION_SOLID};
   border-left: 4px solid {T.CAUTION_SOLID}; border-radius: 8px; padding: 16px 18px; }}
 @media (max-width: 640px) {{ .st-key-scenario_view {{ padding: 12px 10px; }} }}
+/* Inputs sit in compact, darker rounded fields so each number stays next to its -/+ buttons. */
+.st-key-scenario_view [data-testid="stNumberInput"], .st-key-scenario_view [data-testid="stSelectbox"] {{ max-width: 260px; }}
+.st-key-scenario_view [data-testid="stNumberInputContainer"], .st-key-scenario_view [data-testid="stSelectbox"] > div:last-child > div {{
+  background: var(--bg); border: 1px solid var(--border-strong); border-radius: 999px; overflow: hidden; }}
+.st-key-scenario_view [data-testid="stNumberInputContainer"] input {{ background: transparent; padding-left: 14px; font-weight: 600; }}
+.st-key-scenario_view [data-testid="stNumberInputContainer"] button {{ background: transparent; }}
+/* Section headings inside the scenario: one size step above body text, with a rule, so the eye finds each part. */
+.sim-h {{ font-size: 1.1rem; font-weight: 700; color: var(--text-strong); margin: 30px 0 10px; padding-bottom: 6px;
+  border-bottom: 1px solid var(--border-strong); }}
+.sim-h-note {{ font-weight: 500; font-size: 0.92rem; color: var(--text-muted); }}
+.sim-formula {{ background: var(--bg); border-left: 3px solid var(--border-strong); border-radius: 4px; padding: 10px 14px;
+  margin: 6px 0 14px; line-height: 1.6; }}
+.sim-formula b {{ color: var(--text-strong); }}
 
 /* Section headers replace the emoji subheaders */
 .irt-h {{ display: flex; align-items: center; gap: 8px; margin: 22px 0 10px 0; padding-bottom: 6px;

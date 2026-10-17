@@ -27,6 +27,28 @@ class OracleCharts(unittest.TestCase):
         bad=deepcopy(review);bad['calendar'][0]['principal']=None
         with self.assertRaises(ValueError):ov.ladder(bad,company_review.money)
 
+    def test_ladder_scale_keeps_near_years_readable_and_marks_the_cut_bar(self):
+        review=op.load();text=ov.ladder(review,company_review.money)
+        import html;text=html.unescape(text)
+        self.assertEqual(ov._scale(10_144_750_000),(2e9,12e9))       # FY2028 sets the scale: $2B steps to $12B
+        self.assertIn('style="width:84.53958%" data-principal="10144750000"',text)
+        self.assertIn('class="op-ladder-bar cut" style="width:100.00000%" data-principal="90250000000"',text)
+        self.assertEqual(text.count(' cut"'),1)                        # only the combined later bucket is cut
+        self.assertIn('bar cut',text)
+        for tick in ('$0B','$6B','$12B'):self.assertIn(tick,text)
+        self.assertIn('$7.317B due September 2026–August 2027 is Remainder FY2027 ($2.672B) plus June–August 2027 ($4.645B',text)
+        self.assertIn('FY2032 through FY2066',text)
+
+    def test_histogram_splits_at_zero_and_counts_every_trial(self):
+        i=ls.oracle_inputs();r=ls.simulate(i,ls.oracle_decisions()[1],5000,7)
+        fig,size=sv.histogram_figure(r)
+        below,above=fig.data
+        self.assertEqual(len(below.x)+len(above.x),5000)
+        self.assertTrue((np.asarray(below.x)<0).all() and (np.asarray(above.x)>=0).all())
+        self.assertAlmostEqual(round(-below.xbins.start/size,9)%1,0)    # zero is a bin edge, so no bar straddles it
+        self.assertEqual(fig.layout.yaxis.title.text,'Simulated trials (of 5,000)')
+        self.assertIn(f'{r["share_below_zero"]:.1%}',below.name)
+
     def test_monthly_band_is_independently_computed_from_the_trials(self):
         i=ls.oracle_inputs();d=ls.oracle_decisions()[1];p=ls.monthly_path(i,d,1000,42)
         for q in (10,50,90):np.testing.assert_array_equal(p[f'month_p{q}'],np.percentile(p['path'],q,axis=0))
