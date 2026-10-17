@@ -7,11 +7,8 @@ import requests
 import time
 import traceback
 from importlib import reload
-import openpyxl
 import yfinance as yf
 import pandas as pd
-from openpyxl.styles import Font, PatternFill
-from io import BytesIO
 from pathlib import Path
 from datetime import datetime
 from anthropic import Anthropic, APIError
@@ -25,6 +22,7 @@ import filing_xbrl
 import reviewed_financing
 import liquidity_simulation
 import scenario_export
+import research_export
 import simulation_view
 import core_charts
 import company_review
@@ -80,6 +78,7 @@ reload(lly_interest_view)
 reload(lly_liquidity_view)
 reload(liquidity_simulation)
 reload(scenario_export)
+reload(research_export)
 reload(simulation_view)
 reload(core_charts)   # imported lazily by company_review, so a reload of that module alone keeps old chart HTML
 reload(company_review)
@@ -418,95 +417,8 @@ def get_price_history(ticker: str) -> pd.DataFrame:
     return hist
 
 def generate_excel(profiles):
-    """One row per record, one header per column, numbers stored as numbers."""
-    wb = openpyxl.Workbook()
-    header_fill, header_font = PatternFill(start_color="1e222d", end_color="1e222d", fill_type="solid"), Font(color="ffffff", bold=True)
-    formats = {"USD": '"$"#,##0', "fraction": "0.00%", "multiple": '0.0"x"'}
-
-    ws = wb.active
-    ws.title = "Market data"
-    ws.append(["Ticker", "Metric", "Value", "Unit", "Period", "Source", "Retrieved at", "Filings used"])
-    for p in profiles:
-        f = p["financials"]
-        if f["status"] != "ok":
-            ws.append([p["ticker"], "All Yahoo metrics", None, None, None, f"Failed: {f['reason']}", None])
-        else:
-            for m in f["metrics"].values():
-                ws.append([p["ticker"], m["label"], m["value"], m["unit"], m["period"] or "Period not stated",
-                           f"{f['source']}: {m['field']}", f["retrieved_at"]])
-                if m["value"] is not None:
-                    ws.cell(ws.max_row, 3).number_format = '"$"#,##0.00' if m["field"] in ("currentPrice", "regularMarketPrice") else formats[m["unit"]]
-        sec = p.get("sec_metrics")
-        if sec and sec["status"] != "ok":
-            ws.append([p["ticker"], "All SEC metrics", None, None, None, f"Failed: {sec['reason']}", None])
-        elif sec:
-            for key, m in sec["metrics"].items():
-                op = " minus " if key == "free_cash_flow" else " / "   # FCF subtracts capex; the margins divide by revenue
-                tags = op.join(m["tags"]) if m["tags"] else f"{xbrl.NOT_REPORTED} ({m['detail']})"
-                ws.append([p["ticker"], m["label"], m["value"], m["unit"], f"TTM to {m['period_end']}",
-                           f"{sec['source']}: {tags}", sec["retrieved_at"],
-                           "; ".join(f"{x['form']} {x['accession']} (period {x['period']}, filed {x['filed']})" for x in m["filings"])])
-                if m["value"] is not None:
-                    ws.cell(ws.max_row, 3).number_format = formats[m["unit"]]
-
-    ws = wb.create_sheet("Findings")
-    ws.append(["Ticker", "Type", "Headline", "Summary", "Potential implication", "Detail", "Impact (AI assessment)",
-               "Impact basis", "Change vs prior 10-K (code)", "Category", "Source", "Form", "Filed", "Period", "Quote",
-               "Excerpt check", "Figures not in cited source", "Wording flags", "Filing URL", "Other sources for figures"])
-    for p in profiles:
-        for kind in ("catalysts", "risks", "other_risks"):
-            for i in p["analysis"]["sections"][kind]["items"]:
-                s = i["source"]
-                ws.append([p["ticker"], {"catalysts": "Catalyst", "risks": "Risk factor change",
-                                         "other_risks": "Other risk (management's discussion)"}[kind], i["headline"], i["summary"], i["implication"], i["detail"],
-                           i["impact"], i["impact_basis"], ui.trend_text(i) if kind == "risks" else "", i["category"],
-                           s["role"], s["form"], s["filed"], s["period"], i["quote"], i["excerpt"]["status"],
-                           "; ".join(i.get("unsupported_figures", [])), "; ".join(i.get("wording_flags", [])), s["url"],
-                           "; ".join(f"{o['label']} {o['url']}" for o in i.get("other_sources", []))])
-
-    ws = wb.create_sheet("8-K events")
-    ws.append(["Ticker", "Filed", "Event date", "8-K items", "Category", "Headline", "Summary", "Quote", "Excerpt check", "Filing URL"])
-    for p in profiles:
-        for e in p["analysis"]["sections"]["events"]["items"]:
-            s = e["source"]
-            ws.append([p["ticker"], s["filed"], s["period"], s.get("items", ""), e["category"], e["headline"],
-                       e["summary"], e["quote"], e["excerpt"]["status"], s["url"]])
-
-    ws = wb.create_sheet("Evidence")
-    ws.append(["Ticker", "Source ID", "Source", "Status", "Form", "Filed", "Period", "Characters found",
-               "Characters sent", "Characters omitted", "Note", "Filing URL"])
-    for p in profiles:
-        for c in p["evidence"]:
-            ws.append([p["ticker"], c["id"], c["role"], c["status"], c.get("form"), c.get("filed"), c.get("period"),
-                       c["chars"], c["sent_chars"], c["omitted_chars"], c["note"], c.get("url")])
-
-    ws = wb.create_sheet("Filing review")
-    ws.append(["Ticker", "Balance-sheet date", "Index through", "Index status", "Form", "Filed", "Report date",
-               "8-K items", "Accession", "Content review", "EDGAR index", "Index note",
-               "Event date", "Amount type", "Checked finding", "Source document", "Related documents"])
-    for p in profiles:
-        inv = p.get("filing_review")
-        if not inv:
-            ws.append([p["ticker"], None, None, "Not checked", None, None, None, None, None, None, None,
-                       "Saved result has no subsequent-filing index."])
-            continue
-        for f in inv["filings"]:
-            ws.append([p["ticker"], inv["since"], inv["through"], inv["status"], f["form"], f["filed"],
-                       f["period"], f["items"], f["accession"], f["review"], f["url"], "; ".join(inv["notes"]),
-                       f.get("event_date"), f.get("kind"), f.get("finding"), f.get("source_url"),
-                       "; ".join(url for _, url in f.get("related", []))])
-        if not inv["filings"]:
-            ws.append([p["ticker"], inv["since"], inv["through"], inv["status"], None, None, None, None, None,
-                       "Not checked", None, "; ".join(inv["notes"]) or "No candidate forms indexed; contents not reviewed."])
-
-    for ws in wb.worksheets:
-        for cell in ws[1]: cell.fill, cell.font = header_fill, header_font
-        for col in ws.columns: ws.column_dimensions[col[0].column_letter].width = 25
-        ws.freeze_panes = "A2"
-
-    buf = BytesIO()
-    wb.save(buf)
-    return buf.getvalue()
+    """A dated research record using the verified offline-authored layout."""
+    return research_export.workbook(profiles)
 
 # --- RESULTS RENDERING ---
 def _when(iso: str) -> str:
@@ -720,9 +632,14 @@ def render_results(results: dict) -> None:
                    + (f" · {len(skipped)} skipped by the spending limit" if skipped else ""))
     col_sum.markdown(f"<p class='irt-subtitle irt-mark-results'>{ui.esc(summary)}</p>", unsafe_allow_html=True)
     if profiles:
-        col_dl.download_button("Download Excel", data=generate_excel([profiles[t] for t in done]),
-                               file_name=f"Research_Record_{'_'.join(done)}_{results['run_at']:%Y-%m-%d}.xlsx",
-                               mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+        try:
+            record = generate_excel([profiles[t] for t in done])
+        except (OSError, ValueError, KeyError):
+            col_dl.caption("Excel export Unavailable: its layout or calculation inputs could not be validated.")
+        else:
+            col_dl.download_button("Download Excel", data=record,
+                                   file_name=f"Research_Record_{'_'.join(done)}_{results['run_at']:%Y-%m-%d}.xlsx",
+                                   mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
     if not results.get("sample") and sorted(st.session_state.ticker_select) != sorted(results["tickers"]):
         st.caption("Your ticker selection changed. Click Run analysis to update these results.")
 

@@ -212,3 +212,7 @@ The individual and scenario exports contain matching native charts. See [Oracle 
 What the presentation pass changed, how it was checked on the live app, what was not checked, and the first-time-reader obstacles still open: [presentation acceptance](docs/presentation_acceptance.md).
 
 What comes next, one pull request per item, with the items gated by date or condition: [roadmap](docs/roadmap.md).
+
+### General research Excel
+
+The experimental research download now includes a cover, retained findings/events, SEC component inputs and an About sheet. SEC results use formulas with matching saved caches; source dates, units and links remain explicit. Layout and reproduction: [general research export](docs/general_research_export.md). Runtime: `research_export.py`; offline Artifact Tool builder: `tests/offline/build_research_template.mjs`.

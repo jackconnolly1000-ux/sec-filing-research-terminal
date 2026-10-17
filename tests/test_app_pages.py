@@ -191,7 +191,8 @@ class AppPages(unittest.TestCase):
         self.assertIn("Archived filing-research example (AAPL, STRL). Analysis run Oct 10, 2026", text)
         self.assertEqual([t.label for t in app.tabs], ["AAPL", "STRL"])
         workbook = load_workbook(BytesIO(download_bytes(app.get("download_button")[0])))
-        self.assertEqual(workbook.sheetnames, ["Market data", "Findings", "8-K events", "Evidence", "Filing review"])
+        self.assertEqual(workbook.sheetnames, ["Research record", "Market data", "Findings", "8-K events",
+                                             "Evidence", "Filing review", "Data", "About"])
         self.assertIn("AAPL", [c.value for c in workbook["Findings"]["A"]])
 
         app = self.click("Debt and liquidity reviews")
