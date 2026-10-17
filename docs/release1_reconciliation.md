@@ -1,6 +1,6 @@
 # Release 1 final reconciliation
 
-Release 1 is complete within the agreed scope when this final reconciliation PR merges. Steps 5–7 merged as PRs #45 (two-date history), #46 (two common chart questions) and #47 (individual Excel parity). Financial review dates do not change: latest balance sheets are June 30, 2026 for LLY/VST and August 31, 2026 for ORCL; the saved financing screens stop at their stated dates. This audit does not claim a new SEC search or automatic refresh.
+Release 1 is complete within the agreed scope: this final reconciliation merged as PR #48 (`0294a7e`). Steps 5–7 merged as PRs #45 (two-date history), #46 (two common chart questions) and #47 (individual Excel parity). Financial review dates do not change: latest balance sheets are June 30, 2026 for LLY/VST and August 31, 2026 for ORCL; the saved financing screens stop at their stated dates. This audit does not claim a new SEC search or automatic refresh.
 
 ## Final corrections
 
