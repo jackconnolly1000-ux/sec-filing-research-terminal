@@ -126,6 +126,9 @@ CSS = """<style>
 .lr-review .lr-group {font-size:.95rem;font-weight:600;line-height:1.3;letter-spacing:.02em;color:var(--text);margin:36px 0 0;padding:14px 0 0;border-top:2px solid var(--border-strong);}
 .lr-group + section {border-top:0;}
 .lr-block {padding:12px 0 22px;}
+.lr-annual-charts {margin:18px 0 6px;}
+.lr-review .lr-annual-charts h4.lr-annual-title {font-size:1rem;font-weight:600;margin:22px 0 4px;}
+.lr-annual-year {font-size:.82rem;font-weight:600;color:var(--text-strong);margin:14px 0 2px;}
 .lr-bal-grid {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:32px;margin:16px 0 6px;}
 .lr-bal-panel h4 {display:flex;align-items:center;gap:8px;font-size:.9rem;font-weight:600;margin:0 0 6px;color:var(--text-strong);}
 .lr-swatch {display:inline-block;width:10px;height:10px;border-radius:2px;flex:none;margin-right:6px;}

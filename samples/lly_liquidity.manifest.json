@@ -23,7 +23,7 @@
       "samples/vistra_interest.json": "6a18cf366130ac1aeaf1edccb748b96a1abc3361864651a13b99504d2defa2d4"
     },
     "annual": {
-      "annual_history_view.py": "69d48d27c8a103789051e6bd98dcb87fced116de59a15448f6d32e0e531329bc",
+      "annual_history_view.py": "a39ac5a2647696bf4a71f15a35a04de769c0f6d60ab765608d62920ba1e0098a",
       "annual_history.py": "0f07612478feaa28529fbdcb37d9dd70b7ac695996aa61e7272081c29aacc320",
       "samples/annual_history_reconciliation.json": "db4b88c8f0c1e0e3704ed49d63c253bb5a1ea79b7b28d78b8efdd2ff9031354f",
       "samples/annual_source_inventory.json": "dc5862826a37a44f47b3b80463306f1345fa826838cb046213769c361c53539f"
@@ -44,7 +44,7 @@
         "samples/vistra_interest.json": "6a18cf366130ac1aeaf1edccb748b96a1abc3361864651a13b99504d2defa2d4"
       },
       "annual": {
-        "annual_history_view.py": "69d48d27c8a103789051e6bd98dcb87fced116de59a15448f6d32e0e531329bc",
+        "annual_history_view.py": "a39ac5a2647696bf4a71f15a35a04de769c0f6d60ab765608d62920ba1e0098a",
         "annual_history.py": "0f07612478feaa28529fbdcb37d9dd70b7ac695996aa61e7272081c29aacc320",
         "samples/annual_history_reconciliation.json": "db4b88c8f0c1e0e3704ed49d63c253bb5a1ea79b7b28d78b8efdd2ff9031354f",
         "samples/annual_source_inventory.json": "dc5862826a37a44f47b3b80463306f1345fa826838cb046213769c361c53539f"
@@ -61,9 +61,9 @@
     "lly_financing.json": "d13be6bc052357ce2745b83131784d2c52c95ab1addcef36fa81c7965ed9425e",
     "lly_interest.json": "9a82bb4336cf164825a2502de10a0cdc038b139ec505485ea914d6c1e038a614"
   },
-  "workbook_sha256": "2cf7111654854a1dce51d9c250a99246490c2ad118c2c0376bef196679302e4d",
+  "workbook_sha256": "49a37ca20a1e9e75bd3a88aa7128493440d54f33cf381623356d34e46f82aa89",
   "annual_history_sha256": {
-    "annual_history_view.py": "69d48d27c8a103789051e6bd98dcb87fced116de59a15448f6d32e0e531329bc",
+    "annual_history_view.py": "a39ac5a2647696bf4a71f15a35a04de769c0f6d60ab765608d62920ba1e0098a",
     "annual_history.py": "0f07612478feaa28529fbdcb37d9dd70b7ac695996aa61e7272081c29aacc320",
     "samples/annual_history_reconciliation.json": "db4b88c8f0c1e0e3704ed49d63c253bb5a1ea79b7b28d78b8efdd2ff9031354f",
     "samples/annual_source_inventory.json": "dc5862826a37a44f47b3b80463306f1345fa826838cb046213769c361c53539f"
