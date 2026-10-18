@@ -144,23 +144,28 @@ def render_leases(model, money):
 
 
 def liability_figure(snapshot):
-    """One dated balance-sheet total, split horizontally; never put an instant on a time axis."""
+    """Compare the two dated liability classes on a common dollar scale."""
     import plotly.graph_objects as go
     import funding_detail
     import theme as T
     m=funding_detail.build(snapshot)
-    fig=go.Figure()
-    total=sum(f['value'] for f in m['liabilities'])/1e9
-    for f,color in zip(m['liabilities'],(T.SERIES_BORROWING,T.SERIES_CASH)):
-        fig.add_bar(name=f['label'],x=[f['value']/1e9],y=['Total liabilities'],orientation='h',
-                    marker_color=color,text=[f"${f['value']/1e9:,.1f}B"],textposition='inside',
-                    insidetextfont=dict(color=T.TEXT_STRONG,size=14),
-                    customdata=[[f['status'],f.get('formula') or f['tag']]],
-                    hovertemplate='%{fullData.name}<br>%{x:.3f}B · %{customdata[0]}<br>%{customdata[1]}<extra></extra>')
-    fig.update_layout(barmode='stack',height=215,margin=dict(l=8,r=28,t=54,b=40),paper_bgcolor='rgba(0,0,0,0)',
-                      plot_bgcolor='rgba(0,0,0,0)',font=dict(color=T.TEXT,size=12),
-                      legend=dict(orientation='h',y=1.22,x=0),uniformtext=dict(mode='hide',minsize=12),
-                      xaxis=dict(title='USD billions',range=[0,total*1.08],gridcolor=T.BORDER,fixedrange=True),
-                      yaxis=dict(showticklabels=False,fixedrange=True))
+    facts=m['liabilities']
+    values=[f['value']/1e9 for f in facts]
+    total=sum(values)
+    fig=go.Figure(go.Bar(
+        x=values,y=[f['label'] for f in facts],orientation='h',
+        marker_color=T.TEXT_MUTED,
+        text=[f'${v:,.1f}B' for v in values],textposition='outside',
+        textfont=dict(color=T.TEXT_STRONG,size=13),cliponaxis=False,
+        customdata=[[f['status'],f.get('formula') or f['tag']] for f in facts],
+        hovertemplate='%{y}<br>%{x:.3f}B · %{customdata[0]}<br>%{customdata[1]}<extra></extra>'))
+    fig.update_layout(height=235,margin=dict(l=170,r=75,t=10,b=48),paper_bgcolor='rgba(0,0,0,0)',
+                      plot_bgcolor='rgba(0,0,0,0)',font=dict(color=T.TEXT,size=12),showlegend=False,
+                      bargap=0.52,
+                      xaxis=dict(title='USD billions',range=[0,max(values)*1.20],gridcolor=T.BORDER,fixedrange=True),
+                      yaxis=dict(categoryorder='array',categoryarray=[f['label'] for f in reversed(facts)],
+                                 fixedrange=True,automargin=True))
     basis='Vistra noncurrent is derived as total less current.' if snapshot['ticker']=='VST' else 'Both components are reported.'
-    return fig,f"Total liabilities at {m['period_end']}. {basis} Borrowing and recognized leases are already included; do not add them again."
+    return fig,(f"At {m['period_end']}: ${total:,.3f}B total = ${values[0]:,.3f}B current + "
+                f"${values[1]:,.3f}B noncurrent. {basis} Borrowing and recognized leases are already included; "
+                "do not add them again.")

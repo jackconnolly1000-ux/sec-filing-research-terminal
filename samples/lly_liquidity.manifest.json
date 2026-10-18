@@ -1,6 +1,6 @@
 {
   "funding_sha256": "258ac0680f47732e1d5b71f9c6d217feee7cc94c3e0964d170bd8b0aa9872cfc",
-  "borrowing_leases_sha256": "daba5d3f852b2ca4e64eeee56b11da65bb53fd5713405a160014a112680f90fd",
+  "borrowing_leases_sha256": "263f78021922ea8b824d37d462b1a3d14c830269e63046f3cbb62c1be112bf2c",
   "ratios_sha256": {
     "ratio_review.py": "efe06493218912afce97c5d49a5a3093f8cfbf530b1cbbd1cb784851350a5f9d",
     "liquidity_pilot.py": "457bae8f65fb8a3f56a6892321e1caebb734a0499cff21d6e642727abb224bfd",
