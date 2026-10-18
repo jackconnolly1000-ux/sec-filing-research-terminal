@@ -21,7 +21,7 @@ export async function finishHistorySheet(wb,root,ticker,{model,sheet}){
   return `IF(ISNUMBER('Data'!B${n}),'Data'!B${n},NA())`;
  }
  const facts=model.annual_facts.map(ref),ocf=ref(model.annual_flows[0]),capex=ref(model.annual_flows[1]);
- const annual={cash:'='+facts[0],gross_debt:ticker==='VST'?null:'='+facts.slice(3).join('+'),net_debt:'=B7-B6',
+ const annual={cash:'='+facts[0],gross_debt:model.annual_facts.length>3?'='+facts.slice(3).join('+'):null,net_debt:'=B7-B6',
   current_ratio:`=IF(${facts[2]}>0,${facts[1]}/${facts[2]},NA())`,operating_cash_flow:'='+ocf,capital_spending:'='+capex,
   free_cash_flow:'=B10-B11',ocf_to_debt:'=IF(B7>0,B10/B7,NA())',fcf_to_debt:'=IF(B7>0,B12/B7,NA())'};
  const [owner,op,interest,checks]=ticker==='LLY'?['Debt and liquidity','B40','B46','AND(B44=0)']:ticker==='ORCL'?['Cash analysis','B45','B46',null]:['Cash review','B56','B57','B65=0'];
@@ -53,7 +53,7 @@ export async function finishHistorySheet(wb,root,ticker,{model,sheet}){
  [43,29,29,85].forEach((w,i)=>sheet.getRangeByIndexes(0,i,19,1).format.columnWidth=w);
  sheet.getRange('A2').format.font.bold=true;sheet.getRange('A2').format.font.size=14;sheet.getRange('A2:A3').format.wrapText=false;sheet.getRange('A5:D5').format.rowHeight=32;
  sheet.getRange('A17:D17').format.rowHeight=70;frame(sheet,'A5:D15');header(sheet,'A5:D5');
- const n=about.getUsedRange().values.length+1;about.getRange(`A${n}:C${n}`).values=[['History','Two dated observations per company. Fiscal-year and TTM flows are overlapping twelve-month windows. Unsupported older Vistra borrowing and dependent ratios remain Unavailable.','https://github.com/jackconnolly1000-ux/sec-filing-research-terminal/blob/main/docs/company_history.md']];
+ const n=about.getUsedRange().values.length+1;about.getRange(`A${n}:C${n}`).values=[['History','Two dated observations per company. Fiscal-year and TTM flows are overlapping twelve-month windows. Vistra FY2025 borrowing now uses the checked annual presentation.','https://github.com/jackconnolly1000-ux/sec-filing-research-terminal/blob/main/docs/company_history.md']];
  const af=about.getRange(`A${n}:C${n}`).format;af.font.name='Arial';af.font.size=10;af.wrapText=true;af.rowHeight=70;frame(about,`A${n}:C${n}`);
  wb.recalculate();
  for(const [i,r] of model.rows.entries())for(const [col,want] of [['B',r.annual_value],['C',r.value]]){

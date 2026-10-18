@@ -27,7 +27,7 @@
         "facts_found": 1,
         "source_url": "https://www.sec.gov/Archives/edgar/data/59478/000005947826000013/lly-20251231.htm",
         "source_sha256": "d45f8d1e0945df0b7b30254e96ff8c5dbd1df7d15b17c8ef7399c8e0206b7d7f",
-        "location": "10-K balance sheet p. 56; cash flows p. 58"
+        "location": "10-K balance sheet p. 59; cash flows p. 61"
       },
       {
         "source": "SEC XBRL company facts (data.sec.gov)",
@@ -52,7 +52,7 @@
         "facts_found": 1,
         "source_url": "https://www.sec.gov/Archives/edgar/data/59478/000005947826000013/lly-20251231.htm",
         "source_sha256": "d45f8d1e0945df0b7b30254e96ff8c5dbd1df7d15b17c8ef7399c8e0206b7d7f",
-        "location": "10-K balance sheet p. 56; cash flows p. 58"
+        "location": "10-K balance sheet p. 59; cash flows p. 61"
       },
       {
         "source": "SEC XBRL company facts (data.sec.gov)",
@@ -77,7 +77,7 @@
         "facts_found": 1,
         "source_url": "https://www.sec.gov/Archives/edgar/data/59478/000005947826000013/lly-20251231.htm",
         "source_sha256": "d45f8d1e0945df0b7b30254e96ff8c5dbd1df7d15b17c8ef7399c8e0206b7d7f",
-        "location": "10-K balance sheet p. 56; cash flows p. 58"
+        "location": "10-K balance sheet p. 59; cash flows p. 61"
       },
       {
         "source": "SEC XBRL company facts (data.sec.gov)",
@@ -102,7 +102,7 @@
         "facts_found": 2,
         "source_url": "https://www.sec.gov/Archives/edgar/data/59478/000005947826000013/lly-20251231.htm",
         "source_sha256": "d45f8d1e0945df0b7b30254e96ff8c5dbd1df7d15b17c8ef7399c8e0206b7d7f",
-        "location": "10-K balance sheet p. 56; cash flows p. 58"
+        "location": "10-K balance sheet p. 59; cash flows p. 61"
       },
       {
         "source": "SEC XBRL company facts (data.sec.gov)",
@@ -127,7 +127,7 @@
         "facts_found": 2,
         "source_url": "https://www.sec.gov/Archives/edgar/data/59478/000005947826000013/lly-20251231.htm",
         "source_sha256": "d45f8d1e0945df0b7b30254e96ff8c5dbd1df7d15b17c8ef7399c8e0206b7d7f",
-        "location": "10-K balance sheet p. 56; cash flows p. 58"
+        "location": "10-K balance sheet p. 59; cash flows p. 61"
       }
     ],
     "debt_detail": ""

@@ -214,6 +214,9 @@ def workbook_bytes(review):
     try:
         content=WORKBOOK.read_bytes()
         m=json.loads(WORKBOOK.with_suffix('.manifest.json').read_text())
+        import annual_history_view
+        if m.get("annual_history_sha256") != annual_history_view.fingerprint():
+            return None
         import export_guide
         if m.get("guide_sha256") != export_guide.fingerprint():
             return None

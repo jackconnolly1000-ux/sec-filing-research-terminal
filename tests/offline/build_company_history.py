@@ -12,7 +12,7 @@ import xbrl
 
 EXPECTED = {"LLY": [7268, 55629, 35228, 1635, 40868],
             "ORCL": [31289, 46567, 41764, 7199, 122342], "VST": [785, 9179, 11814]}
-LOCATIONS = {"LLY": "10-K balance sheet p. 56; cash flows p. 58",
+LOCATIONS = {"LLY": "10-K balance sheet p. 59; cash flows p. 61",
              "ORCL": "10-K balance sheet p. 64; cash/restricted cash policy p. 70",
              "VST": "10-K balance sheet p. 80; cash/restricted cash reconciliation"}
 out = {}

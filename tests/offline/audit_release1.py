@@ -87,8 +87,8 @@ def audit(downloads=None, raw=None):
                 require(values["Core charts"].cell(i, 2).value == expected, t + ": chart flow mismatch")
             require(sum(f["value"] for f in leases["borrowing"]) == snapshot["metrics"]["gross_debt"]["value"], t + ": borrowing does not reconcile")
             if t == "VST":
-                require(charts["series"] == ["Cash and equivalents"] and
-                        values["History"]["B7"].value == "Unavailable", "VST: unsupported older debt plotted or calculated")
+                require(charts["series"] == ["Cash and equivalents", "Baseline borrowing"] and
+                        values["History"]["B7"].value == 20_068_000_000, "VST: checked annual borrowing differs")
             facts = {}
             for f in reported_facts([snapshot["metrics"], history["annual_facts"], leases, interest["inputs"]]):
                 require(f.get("unit") in ("USD", "iso4217:USD") and math.isfinite(f["value"]), t + ": invalid fact unit/value")

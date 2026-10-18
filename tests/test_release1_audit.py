@@ -13,7 +13,7 @@ class ReleaseReconciliation(unittest.TestCase):
     def test_checked_release_reconciles_without_network_or_ai(self):
         results=audit.audit()
         self.assertEqual([r['ticker'] for r in results],['LLY','ORCL','VST'])
-        self.assertEqual([r['sheets'] for r in results],[8,10,10])
+        self.assertEqual([r['sheets'] for r in results],[9,11,11])
         self.assertTrue(all(r['metrics']==10 and r['core_charts']==2 and r['future_funding_coverage']=='Unavailable' for r in results))
 
     def test_wrong_company_download_is_rejected(self):

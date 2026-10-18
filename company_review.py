@@ -346,6 +346,8 @@ def render(snapshot):
     import company_history
     output += company_history.render(snapshot, money)
     output += core_charts.render_balances(snapshot, money)
+    import annual_history_view
+    output += annual_history_view.render(snapshot["ticker"])
     output += '<section class="lr-limits"><h3>What remains unresolved?</h3>'
     remaining = {"VST": "Historical interest-component coverage is shown above. Receivables/Nuveen allocation, Other composition and an all-in financing-cost denominator remain Unavailable.",
                  "ORCL": "Historical reported-line interest coverage is shown above; borrowing-only coverage, capitalization basis and covenant headroom remain Unavailable.",
@@ -654,6 +656,9 @@ def saved_workbook(snapshots, folder=None, ticker=None):
         if snapshots != saved["snapshots"]:
             return None
         if ticker == "LLY":
+            import annual_history_view
+            if manifest.get("annual_history_sha256") != annual_history_view.fingerprint():
+                return None
             import export_guide
             if manifest.get("guide_sha256") != export_guide.fingerprint():
                 return None
