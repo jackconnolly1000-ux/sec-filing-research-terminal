@@ -22,10 +22,10 @@ def ladder_years(review):
 
 
 def ladder_figure(review):
-    """Every fiscal year's principal as a column, oldest left, with its caption."""
+    """The first ten fiscal years on a readable annual scale; full calendar remains reconciled below."""
     import plotly.graph_objects as go
     import theme as T
-    years = ladder_years(review)
+    years = ladder_years(review)[:10]
     nice = lambda iso: (lambda d: f"{d:%b} {d.day}, {d:%Y}")(date.fromisoformat(iso))
     labels = [y["label"] for y in years]
     fig = go.Figure(go.Bar(
@@ -33,16 +33,17 @@ def ladder_figure(review):
         customdata=[(nice(y["start"]), nice(y["end"]), f"${y['principal'] / 1e9:,.3f}B" if y["principal"] else "none dated")
                     for y in years],
         hovertemplate="%{x}: %{customdata[0]} – %{customdata[1]}<br>Principal due: %{customdata[2]}<extra></extra>"))
-    fig.update_layout(height=300, margin=dict(l=56, r=8, t=12, b=40), bargap=0.25, paper_bgcolor="rgba(0,0,0,0)",
+    fig.update_layout(height=300, margin=dict(l=56, r=8, t=12, b=54), bargap=0.35, paper_bgcolor="rgba(0,0,0,0)",
                       plot_bgcolor="rgba(0,0,0,0)", font=dict(color=T.TEXT, size=12), showlegend=False,
                       xaxis=dict(type="category", fixedrange=True, showgrid=False, tickangle=0,
-                                 tickvals=[y["label"] for y in years if y["fy"] % 10 == 0]),   # the first column is named in the caption
+                                 tickvals=labels,ticktext=["FY27 rem." if y["fy"]==2027 else f"FY{y['fy']%100:02d}" for y in years]),
                       yaxis=dict(title="USD billions", fixedrange=True, gridcolor=T.BORDER, zeroline=True,
                                  zerolinecolor=T.TEXT_MUTED, rangemode="tozero"))
     near = review["next_twelve_months"]["principal"]
     first = years[0]["principal"]
-    caption = (f"One column per fiscal year (June–May), on one scale; the first column is the remainder of FY2027, September 2026–May 2027. "
-               f"Years without a column have no dated principal. The ${near / 1e9:,.3f}B due September 2026–August 2027 "
+    caption = (f"Chart shows the first ten fiscal years (June–May), FY2027–FY2036, on one scale. FY2027 starts September 2026. "
+               "The dated table below covers the complete calendar, including later years; no column here means no dated principal in that year. "
+               f"The ${near / 1e9:,.3f}B due September 2026–August 2027 "
                f"is the FY2027 remainder (${first / 1e9:,.3f}B) plus June–August 2027 (${(near - first) / 1e9:,.3f}B of FY2028). "
                "Excludes commercial paper (Unavailable), interest and leases. The term-loan date may be extended; "
                "this is not funding coverage.")
@@ -93,7 +94,7 @@ def render(snapshot, money):
                f'term loan’s {esc(money(installments, 3))} of installments and {esc(money(tl["final"]["amount"], 3))} remainder on '
                'August 16, 2027. Commercial paper is not included: its August balance and maturity dates are not reported.</p>')
     from company_review import chart_slot
-    output += '<p class="lr-annual-title">Principal due in each fiscal year · USD billions</p>' + chart_slot("oracle_ladder", "lr-maturity")
+    output += '<p class="lr-annual-title">Principal due, FY2027–FY2036 · USD billions</p>' + chart_slot("oracle_ladder", "lr-maturity")
     output += decades(review, money)
     output += '<div class="lr-grid"><div><h4>Next twelve months</h4><div class="ol-table-wrap"><table class="ol-table">'
     output += '<thead><tr><th>Due</th><th>Instrument</th><th>Principal</th></tr></thead><tbody>'

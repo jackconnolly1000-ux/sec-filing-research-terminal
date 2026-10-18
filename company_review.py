@@ -297,6 +297,10 @@ def draw_chart(st, name, snapshot):
             choice=st.selectbox("Principal view",["Maturity concentration","Fixed-rate coupon distribution","Instrument composition"],key="review_debt_detail_ORCL")
             model=debt_detail.build()
             st.plotly_chart(debt_detail.figure(model,choice),width="stretch",theme=None,config=config,key="review_debt_detail_chart")
+            if choice=="Maturity concentration":
+                st.caption("FY2027–FY2031 show individual years; later columns combine ten fiscal years, except the final range. "
+                           "Color and cell labels show known principal in USD billions. Blank cells have no dated principal; "
+                           "commercial paper is Unavailable and excluded.")
             st.caption(model["note"].replace("$","\\$"))
             if choice=="Fixed-rate coupon distribution":st.caption("Height is principal; color is principal-weighted fixed coupon. Floating SOFR spreads and term-loan amortization rates are excluded.")
     if name == "annual":

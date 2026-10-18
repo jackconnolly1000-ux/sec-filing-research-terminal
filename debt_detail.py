@@ -12,6 +12,22 @@ CLASS={'Fixed-rate senior notes':KINDS[0],'Floating-rate senior notes':KINDS[1],
 NOTE=('At August 31, 2026. Known note and term-loan principal only; commercial paper is Unavailable and excluded. '
       'Excludes interest and leases. Term-loan maturity assumes no optional extension. Not funding coverage.')
 
+def maturity_periods(model):
+    """Five nearby annual columns and four later ranges; retain every dated principal dollar."""
+    years=model['years']
+    groups=[(2027,2027),(2028,2028),(2029,2029),(2030,2030),(2031,2031),
+            (2032,2041),(2042,2051),(2052,2061),(2062,years[-1]['fy'])]
+    periods=[]
+    for lo,hi in groups:
+        rows=[i for i,y in enumerate(years) if lo<=y['fy']<=hi]
+        if not rows:continue
+        label=('FY27 rem.' if lo==2027 else f'FY{lo%100:02d}' if lo==hi
+               else f'FY{lo}–{hi}')
+        periods.append(dict(label=label,start=years[rows[0]]['start'],end=years[rows[-1]]['end'],indices=rows))
+    if [i for p in periods for i in p['indices']]!=list(range(len(years))):
+        raise ValueError('Maturity periods must cover each fiscal year exactly once')
+    return periods
+
 def build(review=None):
     r=review if review is not None else op.load()
     if r is None:raise ValueError('Checked principal calendar required')
@@ -56,10 +72,21 @@ def figure(model,view):
     import plotly.graph_objects as go
     import theme as T
     if view=='Maturity concentration':
-        years=model['years'];z=[[v/1e9 for v in row] for row in model['matrix']]
-        custom=[[[y['start'],y['end'],k] for y in years] for k in KINDS]
-        f=go.Figure(go.Heatmap(x=[y['label'] for y in years],y=model['kinds'],z=z,customdata=custom,colorscale='Blues',zmin=0,
-                            colorbar=dict(title='USD B'),hovertemplate='%{y}, %{x}<br>%{customdata[0]} to %{customdata[1]}<br>%{z:.3f}B principal<extra></extra>'))
+        periods=maturity_periods(model)
+        z=[[sum(row[i] for i in p['indices'])/1e9 for p in periods] for row in model['matrix']]
+        if abs(sum(map(sum,z))-model['total']/1e9)>1e-8:raise ValueError('Grouped maturity chart does not reconcile')
+        custom=[[[p['start'],p['end']] for p in periods] for _ in KINDS]
+        labels=[[f'${v:.1f}B' if v>=0.5 else '' for v in row] for row in z]
+        f=go.Figure(go.Heatmap(x=[p['label'] for p in periods],y=model['kinds'],z=z,customdata=custom,
+                            text=labels,texttemplate='%{text}',textfont=dict(color=T.TEXT_STRONG,size=12),
+                            colorscale=[[0,T.SURFACE],[0.01,'#203450'],[1,T.SERIES_CASH]],zmin=0,zmax=max(map(max,z)),
+                            xgap=3,ygap=3,colorbar=dict(title='USD B',tickfont=dict(color=T.TEXT),titlefont=dict(color=T.TEXT)),
+                            hovertemplate='%{y}, %{x}<br>%{customdata[0]} to %{customdata[1]}<br>%{z:.3f}B principal<extra></extra>'))
+        f.update_layout(height=345,margin=dict(l=175,r=75,t=50,b=65),
+                        title=dict(text='Principal by instrument and fiscal period · USD billions',font=dict(size=14),x=0.02),
+                        plot_bgcolor=T.BG)
+        f.update_xaxes(tickangle=0,side='bottom',fixedrange=True)
+        f.update_yaxes(automargin=True,fixedrange=True)
     elif view=='Fixed-rate coupon distribution':
         bins=model['bins'];f=go.Figure(go.Bar(x=[f"{b['coupon_low_pct']}–<{b['coupon_high_pct']}%" for b in bins],y=[b['principal_usd']/1e9 for b in bins],
             marker=dict(color=[b['weighted_coupon_pct'] if b['weighted_coupon_pct'] is not None else 0 for b in bins],colorscale='Blues',colorbar=dict(title='Weighted<br>coupon %')),
@@ -69,5 +96,7 @@ def figure(model,view):
         f=go.Figure(go.Pie(labels=[c['kind'] for c in model['composition']],values=[c['principal_usd']/1e9 for c in model['composition']],hole=.55,
                           marker=dict(colors=[T.SERIES_BORROWING,T.SERIES_CASH,T.SERIES_SMA_FAST]),textinfo='label+percent',hovertemplate='%{label}<br>%{value:.3f}B<extra></extra>'))
     else:raise ValueError('Unknown debt detail view')
-    f.update_layout(height=350,margin=dict(l=50,r=20,t=25,b=65),paper_bgcolor='rgba(0,0,0,0)',plot_bgcolor='rgba(0,0,0,0)',font=dict(color=T.TEXT,size=12),showlegend=False)
+    f.update_layout(paper_bgcolor='rgba(0,0,0,0)',font=dict(color=T.TEXT,size=12),showlegend=False)
+    if view!='Maturity concentration':
+        f.update_layout(height=350,margin=dict(l=65,r=50,t=25,b=75),plot_bgcolor='rgba(0,0,0,0)')
     return f

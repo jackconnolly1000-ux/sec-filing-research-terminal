@@ -27,8 +27,9 @@ class OracleCharts(unittest.TestCase):
         self.assertEqual(sum(y['principal'] for y in years if y['fy']>=2032),by_bucket['Thereafter'])
         self.assertEqual(max(y['principal'] for y in years),10_750_000_000)       # one scale, nothing to cut
         fig,caption=ov.ladder_figure(review)
-        self.assertEqual(list(fig.data[0].y),[y['principal']/1e9 for y in years])
-        self.assertEqual(list(fig.layout.xaxis.tickvals),['FY2030','FY2040','FY2050','FY2060'])
+        self.assertEqual(list(fig.data[0].y),[y['principal']/1e9 for y in years[:10]])
+        self.assertEqual(list(fig.layout.xaxis.tickvals),[y['label'] for y in years[:10]])
+        self.assertIn('complete calendar, including later years',caption)
         self.assertIn('$7.317B due September 2026–August 2027 is the FY2027 remainder ($2.672B) plus June–August 2027 ($4.645B',caption)
         self.assertIn('commercial paper (Unavailable)',caption)
         bad=deepcopy(review);bad['remaining'][3]['principal_aug_31']+=1

@@ -73,7 +73,9 @@ def inject_css() -> None:
 /* Streamlit draws a red-to-yellow gradient line across the top of every app; it carries no meaning */
 [data-testid="stDecoration"] {{ display: none; }}
 /* Streamlit's default top padding is about 6rem; the toolbar should sit near the top */
-.main .block-container {{ padding-top: 2.2rem; padding-bottom: 3rem; }}
+.main .block-container, [data-testid="stMainBlockContainer"] {{
+  max-width: 1244px; width: 100%; padding: 2.2rem 32px 3rem;
+}}
 /* Page header: title, then a one-line description under it. A div, not an h1: Streamlit adds a
    link-anchor icon to markdown headings, which pushed the description sideways. */
 .irt-header {{ margin: 0 0 14px 0; }}

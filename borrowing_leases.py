@@ -144,18 +144,23 @@ def render_leases(model, money):
 
 
 def liability_figure(snapshot):
-    """Total liabilities, not a debt composition chart; Vistra noncurrent is explicitly derived."""
+    """One dated balance-sheet total, split horizontally; never put an instant on a time axis."""
     import plotly.graph_objects as go
     import funding_detail
     import theme as T
     m=funding_detail.build(snapshot)
     fig=go.Figure()
+    total=sum(f['value'] for f in m['liabilities'])/1e9
     for f,color in zip(m['liabilities'],(T.SERIES_BORROWING,T.SERIES_CASH)):
-        fig.add_bar(name=f['label'],x=[m['period_end']],y=[f['value']/1e9],marker_color=color,
+        fig.add_bar(name=f['label'],x=[f['value']/1e9],y=['Total liabilities'],orientation='h',
+                    marker_color=color,text=[f"${f['value']/1e9:,.1f}B"],textposition='inside',
+                    insidetextfont=dict(color=T.TEXT_STRONG,size=14),
                     customdata=[[f['status'],f.get('formula') or f['tag']]],
-                    hovertemplate='%{fullData.name}<br>%{y:.3f}B · %{customdata[0]}<br>%{customdata[1]}<extra></extra>')
-    fig.update_layout(barmode='stack',height=300,margin=dict(l=50,r=8,t=35,b=35),paper_bgcolor='rgba(0,0,0,0)',
-                      plot_bgcolor='rgba(0,0,0,0)',font=dict(color=T.TEXT,size=12),legend=dict(orientation='h',y=1.02),
-                      yaxis=dict(title='USD billions',rangemode='tozero',gridcolor=T.BORDER))
+                    hovertemplate='%{fullData.name}<br>%{x:.3f}B · %{customdata[0]}<br>%{customdata[1]}<extra></extra>')
+    fig.update_layout(barmode='stack',height=215,margin=dict(l=8,r=28,t=54,b=40),paper_bgcolor='rgba(0,0,0,0)',
+                      plot_bgcolor='rgba(0,0,0,0)',font=dict(color=T.TEXT,size=12),
+                      legend=dict(orientation='h',y=1.22,x=0),uniformtext=dict(mode='hide',minsize=12),
+                      xaxis=dict(title='USD billions',range=[0,total*1.08],gridcolor=T.BORDER,fixedrange=True),
+                      yaxis=dict(showticklabels=False,fixedrange=True))
     basis='Vistra noncurrent is derived as total less current.' if snapshot['ticker']=='VST' else 'Both components are reported.'
     return fig,f"Total liabilities at {m['period_end']}. {basis} Borrowing and recognized leases are already included; do not add them again."
