@@ -149,7 +149,7 @@ FALLBACK_DIRECTORY = pd.DataFrame([
 def sec_get(url: str, retries: int = 3) -> bytes:
     """GET from SEC EDGAR with retries. Raises if every attempt fails."""
     last = "no response"
-    headers = {"User-Agent": f"SEC Filing Research Terminal {sec_contact()}"}
+    headers = {"User-Agent": f"Debt and Liquidity Research Terminal {sec_contact()}"}
     for attempt in range(retries):
         try:
             resp = requests.get(url, headers=headers, timeout=12)
@@ -527,9 +527,9 @@ def open_view(view: str) -> None:
 def render_header() -> None:
     st.markdown(
         "<div class='irt-header'><div class='irt-title' role='heading' aria-level='1'>Debt &amp; Liquidity Research Terminal</div>"
-        "<div class='irt-sub'>Saved reviews of what Eli Lilly, Oracle and Vistra owe, the cash and cash generation "
-        "behind it, and the SEC filing evidence for each figure. Every review is dated and frozen; opening one makes "
-        "no live request. A research tool, not investment advice.</div></div>",
+        "<div class='irt-sub'>Trace SEC filing facts through reconciled calculations to funding and repayment conclusions "
+        "for Eli Lilly, Oracle and Vistra. Explore dated reviews, source-linked Excel evidence and Oracle’s separate "
+        "illustrative stress scenario. Research, not investment advice.</div></div>",
         unsafe_allow_html=True,
     )
 

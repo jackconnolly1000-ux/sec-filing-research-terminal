@@ -2,7 +2,7 @@
 
 **As of October 17, 2026.** What comes after Release 1 (the three checked company reviews) and Release 2 (Oracle's illustrative stress scenario). Each numbered item is one pull request on its own branch, merged once CI passes and followed by a check of the live site. The status column is updated as items merge.
 
-Rules for every item: no invented metrics. Anything a filing does not establish stays Unavailable; it is never estimated and never plotted as zero. Shares of simulated trials are not probabilities. Checked figures, funding conclusions and source gates change only when an item says so. A saved workbook changes only through a byte-preserving patch script in `tests/offline` that rebinds its manifest fingerprints.
+Rules for every item: no invented metrics. Anything a filing does not establish stays Unavailable; it is never estimated and never plotted as zero. Shares of simulated trials are not probabilities. Checked figures, funding conclusions and source gates change only when an item says so. Rebuild saved workbooks through `python tests/offline/build_workbooks.py`, which authors the exports and their manifests together. Do not replay retired patch scripts. View-only fingerprint updates require verification that the workbook content remains valid.
 
 ## A. Safety net and housekeeping
 
