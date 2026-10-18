@@ -145,7 +145,8 @@ class AppPages(unittest.TestCase):
             app.segmented_control[0].set_value(ticker)
             self.run_clean()
             charts = app.get("plotly_chart")
-            self.assertEqual(len(charts), 2, ticker)
+            # the two five-year charts, plus Lilly's and Oracle's cash bridges and Oracle's maturity chart
+            self.assertEqual(len(charts), {"LLY": 3, "ORCL": 4, "VST": 2}[ticker], ticker)
             captions = [c.value for c in app.caption]
             self.assertTrue(any(c.startswith("Cash and baseline borrowing at each fiscal year end") for c in captions))
             self.assertTrue(any("capital spending (below zero, a use of cash)" in c for c in captions))

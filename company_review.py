@@ -87,7 +87,9 @@ CSS = """<style>
 .lr-equation strong {display:block;font-size:1.35rem;font-weight:650;color:var(--text-strong);}
 .lr-eq-op {font-size:1.35rem;color:var(--text-muted);padding-bottom:2px;}
 @media(max-width:560px) {.lr-equation {gap:10px;flex-wrap:nowrap;} .lr-equation strong,.lr-eq-op {font-size:1.08rem;} .lr-equation .lr-stat-label {font-size:.7rem;}}
-.st-key-annual_charts {max-width:1180px;margin:0 auto;width:100%;}
+[class*="st-key-review_chart_"] {max-width:1180px;margin:0 auto;width:100%;}
+.lr-review .lr-continued {border-top:0;margin-top:0;padding-top:0;}
+.lr-review .op-decades h4 {font-size:1rem;font-weight:600;margin:18px 0 8px;padding:0;}
 .lr-ratios {display:grid;grid-template-columns:1fr 1fr;gap:18px;border-top:1px solid var(--border);padding-top:14px;margin-top:20px;}
 .lr-ratios strong {display:block;font-size:1.2rem;color:var(--text-strong);}
 .lr-obligations {border-top:1px solid var(--border);padding:22px 0 8px;}
@@ -99,26 +101,9 @@ CSS = """<style>
 .lr-maturity-row {display:grid;grid-template-columns:85px minmax(20px,1fr) 90px;gap:12px;align-items:center;margin:15px 0;font-size:.82rem;}
 .lr-maturity-track {height:14px;background:var(--surface-raised);}
 .lr-maturity-bar {display:block;height:14px;background:var(--text-muted);}
-.op-ladder {margin:20px 0;}
-.op-ladder h4 {font-size:.95rem;margin:0 0 12px;color:var(--text-strong);}
-.op-ladder-row {display:grid;grid-template-columns:190px minmax(30px,1fr) 96px;gap:12px;align-items:center;font-size:.84rem;margin:0;padding:7px 0;border-bottom:1px solid var(--border);}
-.op-ladder-row:hover {background:var(--surface);}
 /* Vertical gridlines, one per scale step, so each bar reads against the dollar scale below. */
-.op-ladder-track {display:flex;align-items:center;height:22px;border-left:1px solid var(--text-muted);border-right:1px solid var(--border);
   background-image:repeating-linear-gradient(to right,var(--border-strong) 0 1px,transparent 1px 100%);background-size:calc(100% / var(--ticks)) 100%;}
-.op-ladder-bar {display:block;position:relative;height:14px;background:var(--series-borrowing);border-radius:0 3px 3px 0;}
 /* A cut bar runs past the scale: a gap near its end marks the break, and the value says "bar cut". */
-.op-ladder-bar.cut {border-radius:0;}
-.op-ladder-bar.cut::after {content:"";position:absolute;right:12px;top:-3px;bottom:-3px;width:5px;background:var(--bg);transform:skewX(-20deg);}
-.op-ladder-row strong {text-align:right;white-space:nowrap;color:var(--text-strong);}
-.op-ladder-row strong em {display:block;font-style:normal;font-weight:400;font-size:.72rem;color:var(--text-muted);}
-.op-ladder-axis {border-bottom:0;padding-top:2px;}
-.op-ladder-axis:hover {background:none;}
-.op-ladder-scale {position:relative;height:16px;font-size:.72rem;color:var(--text-muted);}
-.op-ladder-scale span {position:absolute;top:0;transform:translateX(-50%);white-space:nowrap;}
-.op-ladder-scale span:first-child {transform:none;}
-.op-ladder-scale span:last-child {transform:translateX(-100%);}
-@media(max-width:600px){.op-ladder-row{grid-template-columns:104px minmax(24px,1fr) 70px;gap:6px;font-size:.76rem;} .op-ladder-scale span:nth-child(even){display:none;}}
 .lr-event {display:grid;grid-template-columns:145px minmax(0,1fr);gap:20px;border-top:1px solid var(--border);padding:14px 0;}
 .lr-event p {margin:0 0 7px;}
 .lr-review a {color:var(--link);}
@@ -262,6 +247,45 @@ def maturity_html(snapshot):
 # Where the page places the company's download: after the header, figures and funding conclusion, before the detail.
 # render() ends one review section and opens the next here, so its single-string output is unchanged in effect.
 SPLIT = '</section><!-- lr-download --><section class="lr-review">'
+
+
+CHART_SLOT = r"<!-- chart:(\w+) -->"
+
+
+def chart_slot(name, section_class):
+    """Where a Plotly chart sits in the review HTML; render_app splits on it. It closes the section it interrupts and
+    reopens one with the same class, so the text after the chart keeps its styles. As one string it renders nothing."""
+    return f'</section><!-- chart:{name} --><section class="{section_class} lr-continued">'
+
+
+def draw_chart(st, name, snapshot):
+    """Draw one review chart by slot name, with its title and caption, from the same checked data as the text."""
+    from charts import CHART_CONFIG
+    config = {**CHART_CONFIG, "displayModeBar": False}
+    if name == "annual":
+        import annual_history_view
+        model = annual_history_view.build(snapshot["ticker"])
+        latest = annual_history_view.latest_balances(snapshot)
+        charts = zip(("Cash and baseline borrowing: five fiscal year ends and the latest quarter",
+                      "Annual operating cash flow, capital spending and FCF"),
+                     annual_history_view.figures(model, latest), annual_history_view.chart_captions(model, latest))
+    elif name == "oracle_ladder":
+        import oracle_principal, oracle_principal_view
+        charts = [(None, *oracle_principal_view.ladder_figure(oracle_principal.load()))]
+    elif name == "oracle_bridge":
+        import oracle_liquidity_view
+        charts = [(None, *oracle_liquidity_view.bridge_figure(snapshot))]
+    elif name == "lly_bridge":
+        import lly_liquidity_view
+        charts = [(None, *lly_liquidity_view.bridge_figure(snapshot))]
+    else:
+        raise ValueError(f"Unknown review chart {name}")
+    for title, fig, caption in charts:
+        if title:
+            st.markdown(f'<p class="lr-annual-title">{title}</p>', unsafe_allow_html=True)
+        st.plotly_chart(fig, width="stretch", theme=None, config=config)
+        if caption:
+            st.caption(caption.replace("$", "\\$"))   # two "$" would otherwise render as LaTeX math
 
 
 def ttm_equation(flow, money):
@@ -797,23 +821,14 @@ def render_app() -> None:
     head, body = page.split(SPLIT, 1)
     st.markdown(head + '</section>', unsafe_allow_html=True)
     render_download(st, snapshot, saved["snapshots"])
-    # The five-year table ends at a marker; its two Plotly charts sit directly under it, then the notes follow
-    import annual_history_view
-    before, _, after = body.partition(annual_history_view.CHARTS_MARK)
-    st.markdown('<section class="lr-review">' + before + '</section>', unsafe_allow_html=True)   # first block's styles apply page-wide
-    if after:
-        from charts import CHART_CONFIG
-        model = annual_history_view.build(snapshot["ticker"])
-        latest = annual_history_view.latest_balances(snapshot)
-        captions = annual_history_view.chart_captions(model, latest)
-        with st.container(key="annual_charts"):          # the review's 1180px column, not the full page width
-            for title, fig, caption in zip(("Cash and baseline borrowing: five fiscal year ends and the latest quarter",
-                                            "Annual operating cash flow, capital spending and FCF"),
-                                           annual_history_view.figures(model, latest), captions):
-                st.markdown(f'<p class="lr-annual-title">{title}</p>', unsafe_allow_html=True)
-                st.plotly_chart(fig, width="stretch", theme=None, config={**CHART_CONFIG, "displayModeBar": False})
-                st.caption(caption.replace("$", "\\$"))   # two "$" would otherwise render as LaTeX math
-        st.markdown('<section class="lr-review">' + after, unsafe_allow_html=True)
+    # The review HTML marks where each Plotly chart goes (<!-- chart:name -->); draw it there, in the review's column
+    import re
+    parts = re.split(CHART_SLOT, body)
+    st.markdown('<section class="lr-review">' + parts[0] + '</section>', unsafe_allow_html=True)   # first block's styles apply page-wide
+    for name, rest in zip(parts[1::2], parts[2::2]):
+        with st.container(key=f"review_chart_{name}"):
+            draw_chart(st, name, snapshot)
+        st.markdown('<section class="lr-review">' + rest + '</section>', unsafe_allow_html=True)
     if simulation_view.available(snapshot):
         st.caption(f"An illustrative stress scenario for these obligations is under View → {simulation_view.VIEWS[1]}, "
                    "above. It uses stated assumptions and does not change this review.")

@@ -54,3 +54,20 @@ decision's twelve rows. Rebuild the scenario template with `SCENARIO_ONLY=1` and
 The model adds monthly percentile summaries only. Existing trial arrays, historical figures, funding
 conclusions and ending-cash statistics are unchanged. No missing amount is converted to a chart zero.
 Excel native recalculation and physical-phone interaction remain unverified in this environment.
+
+## App changes, October 17, 2026 (reader review)
+
+- **Principal by fiscal year, not a cut ladder.** The app's ladder drew FY2032 onward as one $90.25B bar cut at the
+  edge of a $12B scale, which read as a stray mark. It now shows one column per fiscal year, from the FY2027
+  remainder to FY2066, on one scale (`oracle_principal_view.ladder_years`, `ladder_figure`). No single year exceeds
+  $10.75B, so nothing is cut, and the long tail of maturities is visible. The years must add up to the checked
+  principal total or the chart is refused. The decade table below it is unchanged. The Excel Payment dates chart is
+  unchanged (its hatched later bucket is explained on the sheet).
+- **Cash bridges as waterfalls.** Oracle's June–August and Lilly's January–June cash movements are framed Plotly
+  waterfalls from the opening to the closing balance (`oracle_liquidity_view.waterfall`). Blue adds cash and grey
+  uses it, the review's direction colors; red and green would read as good and bad, and red-green is the most common
+  color-vision confusion. Additions are listed before uses, because in statement order Lilly's running total dipped
+  below zero, which cash never did; the caption says the order is not timing.
+- **"Thereafter" set apart** in "What falls due, by fiscal period": a heavier rule, a "Later years, combined" label
+  and "From Jun 2032, all later years".
+

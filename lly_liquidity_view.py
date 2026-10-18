@@ -26,20 +26,10 @@ def render(snapshot, money):
         out += '<div class="ol-balances">'
         for label, key in [("December 31 cash", "opening"), ("Half-year increase", "change"), ("June 30 cash", "closing")]:
             out += f'<div><span>{label}</span><strong>{amount(f[key]["value"])}</strong></div>'
-        out += '</div><p><strong>Which half-year flows added to or used cash?</strong></p>'
-        steps = [("Operating cash flow", f["ocf"]["value"]), ("Cash PP&E spending", -f["capex"]["value"]),
-                 ("Acquisitions and purchased IPR&D", -c["acquisitions_iprd"]),
-                 ("Dividends and buybacks", -c["payouts"]), ("Net borrowing", c["net_borrowing"]), ("Other cash flows, net", c["other"])]
-        out += ('<div class="ol-bridge" role="figure" aria-label="Lilly half-year cash changes, uses left and sources right">'
-                '<div class="ol-axis"><span>January–June 2026</span><div class="ol-axis-scale">'
-                '<span><span class="ol-key out" aria-hidden="true"></span>−$20B · used</span><span>0</span>'
-                '<span><span class="ol-key in" aria-hidden="true"></span>added · +$20B</span></div><span>USD</span></div>')
-        for label, value in steps:
-            bar = f'<span class="ol-fill{" in" if value > 0 else ""}" style="width:{abs(value)/20_000_000_000*100:.4f}%"></span>'
-            out += (f'<div class="ol-step"><span>{esc(label)}</span><div class="ol-track" aria-hidden="true">'
-                    f'<div class="ol-side">{bar if value < 0 else ""}</div><div class="ol-side">{bar if value > 0 else ""}</div>'
-                    f'</div><strong>{"+" if value > 0 else ""}{amount(value)}</strong></div>')
-        out += ('</div><p class="lr-meta">The six signed flows sum to the $1.682B increase. Net borrowing is '
+        from company_review import chart_slot
+        out += ('</div><p><strong>How did cash move from December 31 to June 30?</strong></p>'
+                + chart_slot("lly_bridge", "lr-maturity"))
+        out += ('<p class="lr-meta">The six signed flows sum to the $1.682B increase. Net borrowing is '
                 '$5.284B short-term inflow + $8.941B net long-term proceeds − $1.623B repayments. Other flows '
                 'are investment purchases, other investing and financing, and FX. The approximately $13.3B '
                 'business-development disclosure describes the acquisition/IPR&amp;D spending already counted. '
@@ -137,3 +127,19 @@ def financing_html(snapshot, money):
     out += '<p>' + esc(audit["inventory_detail"]) + ' <a href="' + esc(audit["inventory"]["source_url"]) + '" target="_blank" rel="noopener noreferrer">SEC submissions index</a>.</p>'
     out += '<p>' + esc(audit["credit_detail"]) + ' ' + source("renewal_2025", "September 2025 10-Q, Note 7") + '.</p>'
     return out + '</details>'
+
+
+def bridge_figure(snapshot):
+    """Lilly's January–June 2026 cash bridge from the checked review, December 31 to June 30 cash."""
+    import lly_liquidity as ll
+    from oracle_liquidity_view import waterfall
+    r = ll.for_snapshot(snapshot)
+    f, c = r["inputs"], r["cash"]
+    steps = [("Operating cash flow", f["ocf"]["value"]), ("Cash PP&E spending", -f["capex"]["value"]),
+             ("Acquisitions and purchased IPR&D", -c["acquisitions_iprd"]), ("Dividends and buybacks", -c["payouts"]),
+             ("Net borrowing", c["net_borrowing"]), ("Other cash flows, net", c["other"])]
+    if f["opening"]["value"] + sum(x for _, x in steps) != f["closing"]["value"]:
+        raise ValueError("Lilly cash bridge does not reconcile")
+    fig = waterfall(f["opening"]["value"], steps, f["closing"]["value"], "Dec 31 cash", "Jun 30 cash")
+    return fig, ("Blue adds cash, grey uses it; additions are listed first, which is not their timing. January 1–June 30, 2026, "
+                 "from the 10-Q cash-flow statement.")

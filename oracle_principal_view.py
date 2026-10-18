@@ -4,51 +4,49 @@ from datetime import date
 from ui import esc
 
 
-def _scale(top):
-    """A round gridline step (in USD) giving at most six intervals, and the axis end it reaches."""
-    import math
-    for step in (1, 2, 2.5, 5, 10, 20, 25, 50):
-        if top / (step * 1e9) <= 6:
-            return step * 1e9, math.ceil(top / (step * 1e9)) * step * 1e9
-    raise ValueError("Ladder scale out of range")
+def ladder_years(review):
+    """Dated note and term-loan principal in every fiscal year from the remainder of FY2027 to the last maturity.
+
+    One scale for all years: no single year exceeds about $11B, so nothing is cut. Refused (ValueError) unless the
+    years add up to the checked principal total; commercial paper has no dates and is excluded, never a zero."""
+    import oracle_principal as op
+    last = max(op.fiscal_year(r["maturity"]) for r in review["remaining"] if r["maturity"])
+    years = []
+    for fy in range(2027, last + 1):
+        start = "2026-09-01" if fy == 2027 else f"{fy - 1}-06-01"
+        years.append({"fy": fy, "label": "Rem. FY2027" if fy == 2027 else f"FY{fy}", "start": start, "end": f"{fy}-05-31",
+                      "principal": op.principal_between(review, start, f"{fy}-05-31")})
+    if sum(y["principal"] for y in years) != review["reconciliation"]["known_principal_excluding_cp"]:
+        raise ValueError("Fiscal-year principal does not add up to the checked calendar")
+    return years
 
 
-def ladder(review, money):
-    """The checked calendar on one zero-based scale with gridlines.
-
-    The scale is set by the single fiscal years, so the near-term bars stay readable; the combined FY2032-onward
-    bucket is drawn cut at the edge (and says so) rather than compressing every other bar to a sliver."""
-    buckets = review["calendar"]
-    if any(b["principal"] is None for b in buckets):
-        raise ValueError("Unavailable maturity is not a chart zero")
-    step, axis = _scale(max(b["principal"] for b in buckets if b["end"]))
-    ticks = round(axis / step)
-    output = ('<div class="op-ladder" role="img" aria-label="Oracle principal maturity ladder at August 31, 2026">'
-              '<h4>Principal maturity ladder · USD billions</h4>')
-    for b in buckets:
-        label = b["label"] if b["end"] else "FY2032 onward (combined)"
-        cut = b["principal"] > axis
-        width = min(b["principal"] / axis, 1) * 100
-        output += (f'<div class="op-ladder-row"><span>{esc(label)}</span>'
-                   f'<div class="op-ladder-track" style="--ticks:{ticks}">'
-                   f'<span class="op-ladder-bar{" cut" if cut else ""}" style="width:{width:.5f}%" '
-                   f'data-principal="{b["principal"]}"></span></div><strong>{esc(money(b["principal"],3))}'
-                   f'{"<em>bar cut</em>" if cut else ""}</strong></div>')
-    labels = "".join(f'<span style="left:{k / ticks * 100:.4f}%">${k * step / 1e9:g}B</span>' for k in range(ticks + 1))
-    output += (f'<div class="op-ladder-row op-ladder-axis" aria-hidden="true"><span></span>'
-               f'<div class="op-ladder-scale">{labels}</div><strong></strong></div>')
-    last = max(r["maturity"] for r in review["remaining"] if r["maturity"])
-    from oracle_principal import fiscal_year
-    near, first = review["next_twelve_months"]["principal"], buckets[0]
-    second = next(b for b in buckets if b["label"] == "FY2028")
-    return output + (
-        f'<p class="lr-meta">Zero-based bars on one scale, gridlines every {esc(money(step, 0))}. The FY2032-onward '
-        f'bar combines FY2032 through FY{fiscal_year(last)} and is cut at the edge so the nearer years stay '
-        f'readable. The {esc(money(near, 3))} due September 2026–August 2027 is {esc(first["label"])} '
-        f'({esc(money(first["principal"], 3))}) plus June–August 2027 ({esc(money(near - first["principal"], 3))} '
-        f'of FY2028’s {esc(money(second["principal"], 3))}). FY2027 covers September 2026–May 2027; subsequent '
-        'fiscal years end May 31. Excludes commercial paper (Unavailable), interest and leases. The term-loan date '
-        'may be extended; this is not funding coverage.</p></div>')
+def ladder_figure(review):
+    """Every fiscal year's principal as a column, oldest left, with its caption."""
+    import plotly.graph_objects as go
+    import theme as T
+    years = ladder_years(review)
+    nice = lambda iso: (lambda d: f"{d:%b} {d.day}, {d:%Y}")(date.fromisoformat(iso))
+    labels = [y["label"] for y in years]
+    fig = go.Figure(go.Bar(
+        x=labels, y=[y["principal"] / 1e9 for y in years], marker=dict(color=T.SERIES_BORROWING, line=dict(width=0)),
+        customdata=[(nice(y["start"]), nice(y["end"]), f"${y['principal'] / 1e9:,.3f}B" if y["principal"] else "none dated")
+                    for y in years],
+        hovertemplate="%{x}: %{customdata[0]} – %{customdata[1]}<br>Principal due: %{customdata[2]}<extra></extra>"))
+    fig.update_layout(height=300, margin=dict(l=56, r=8, t=12, b=40), bargap=0.25, paper_bgcolor="rgba(0,0,0,0)",
+                      plot_bgcolor="rgba(0,0,0,0)", font=dict(color=T.TEXT, size=12), showlegend=False,
+                      xaxis=dict(type="category", fixedrange=True, showgrid=False, tickangle=0,
+                                 tickvals=[y["label"] for y in years if y["fy"] % 10 == 0]),   # the first column is named in the caption
+                      yaxis=dict(title="USD billions", fixedrange=True, gridcolor=T.BORDER, zeroline=True,
+                                 zerolinecolor=T.TEXT_MUTED, rangemode="tozero"))
+    near = review["next_twelve_months"]["principal"]
+    first = years[0]["principal"]
+    caption = (f"One column per fiscal year (June–May), on one scale; the first column is the remainder of FY2027, September 2026–May 2027. "
+               f"Years without a column have no dated principal. The ${near / 1e9:,.3f}B due September 2026–August 2027 "
+               f"is the FY2027 remainder (${first / 1e9:,.3f}B) plus June–August 2027 (${(near - first) / 1e9:,.3f}B of FY2028). "
+               "Excludes commercial paper (Unavailable), interest and leases. The term-loan date may be extended; "
+               "this is not funding coverage.")
+    return fig, caption
 
 
 def decades(review, money):
@@ -65,7 +63,7 @@ def decades(review, money):
         output += (f'<tr><td>{esc(r["label"])}</td><td>{esc(nice(r["start"]))} – {esc(nice(r["end"]))}</td>'
                    f'<td>{esc(money(r["principal"], 3))}</td></tr>')
     total = sum(r["principal"] for r in rows)
-    return output + (f'<tr><td>FY2032 onward</td><td>Equals the combined bar above</td><td>{esc(money(total, 3))}</td></tr>'
+    return output + (f'<tr><td>FY2032 onward</td><td>All dated principal from FY2032</td><td>{esc(money(total, 3))}</td></tr>'
                      '</tbody></table></div><p class="lr-meta">Senior notes at their stated maturities; no term loan or '
                      'commercial paper falls in these years. Principal only, excluding interest.</p></div>')
 
@@ -94,7 +92,8 @@ def render(snapshot, money):
                f'from September 2026 through August 2027: {esc(money(2_250_000_000, 3))} of notes on April 1, 2027, and the '
                f'term loan’s {esc(money(installments, 3))} of installments and {esc(money(tl["final"]["amount"], 3))} remainder on '
                'August 16, 2027. Commercial paper is not included: its August balance and maturity dates are not reported.</p>')
-    output += ladder(review, money)
+    from company_review import chart_slot
+    output += '<p class="lr-annual-title">Principal due in each fiscal year · USD billions</p>' + chart_slot("oracle_ladder", "lr-maturity")
     output += decades(review, money)
     output += '<div class="lr-grid"><div><h4>Next twelve months</h4><div class="ol-table-wrap"><table class="ol-table">'
     output += '<thead><tr><th>Due</th><th>Instrument</th><th>Principal</th></tr></thead><tbody>'

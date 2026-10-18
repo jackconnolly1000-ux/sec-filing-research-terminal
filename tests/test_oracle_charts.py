@@ -16,28 +16,52 @@ ROOT=Path(__file__).resolve().parents[1]
 
 
 class OracleCharts(unittest.TestCase):
-    def test_ladder_is_the_complete_checked_calendar(self):
-        review=op.load();text=ov.ladder(review,company_review.money)
-        for b in review['calendar']:
-            self.assertIn(f'data-principal="{b["principal"]}"',text)
-        self.assertIn('FY2032 onward (combined)',text)
-        self.assertIn('September 2026–May 2027',text)
-        self.assertIn('commercial paper (Unavailable)',text)
-        self.assertAlmostEqual(sum(b['principal'] for b in review['calendar']),review['reconciliation']['known_principal_excluding_cp'])
-        bad=deepcopy(review);bad['calendar'][0]['principal']=None
-        with self.assertRaises(ValueError):ov.ladder(bad,company_review.money)
+    def test_every_fiscal_year_is_one_column_on_one_scale(self):
+        # Replaces the cut "FY2032 onward" bar: each year from the FY2027 remainder to FY2066 has its own column
+        review=op.load();years=ov.ladder_years(review)
+        self.assertEqual([y['fy'] for y in years],list(range(2027,2067)))
+        self.assertEqual(sum(y['principal'] for y in years),review['reconciliation']['known_principal_excluding_cp'])
+        by_bucket={b['label']:b['principal'] for b in review['calendar']}
+        self.assertEqual(years[0]['principal'],by_bucket['Remainder FY2027'])
+        self.assertEqual(years[1]['principal'],by_bucket['FY2028'])
+        self.assertEqual(sum(y['principal'] for y in years if y['fy']>=2032),by_bucket['Thereafter'])
+        self.assertEqual(max(y['principal'] for y in years),10_750_000_000)       # one scale, nothing to cut
+        fig,caption=ov.ladder_figure(review)
+        self.assertEqual(list(fig.data[0].y),[y['principal']/1e9 for y in years])
+        self.assertEqual(list(fig.layout.xaxis.tickvals),['FY2030','FY2040','FY2050','FY2060'])
+        self.assertIn('$7.317B due September 2026–August 2027 is the FY2027 remainder ($2.672B) plus June–August 2027 ($4.645B',caption)
+        self.assertIn('commercial paper (Unavailable)',caption)
+        bad=deepcopy(review);bad['remaining'][3]['principal_aug_31']+=1
+        with self.assertRaises(ValueError):ov.ladder_years(bad)                    # must add up to the checked total
 
-    def test_ladder_scale_keeps_near_years_readable_and_marks_the_cut_bar(self):
-        review=op.load();text=ov.ladder(review,company_review.money)
-        import html;text=html.unescape(text)
-        self.assertEqual(ov._scale(10_144_750_000),(2e9,12e9))       # FY2028 sets the scale: $2B steps to $12B
-        self.assertIn('style="width:84.53958%" data-principal="10144750000"',text)
-        self.assertIn('class="op-ladder-bar cut" style="width:100.00000%" data-principal="90250000000"',text)
-        self.assertEqual(text.count(' cut"'),1)                        # only the combined later bucket is cut
-        self.assertIn('bar cut',text)
-        for tick in ('$0B','$6B','$12B'):self.assertIn(tick,text)
-        self.assertIn('$7.317B due September 2026–August 2027 is Remainder FY2027 ($2.672B) plus June–August 2027 ($4.645B',text)
-        self.assertIn('FY2032 through FY2066',text)
+    def test_cash_bridges_reconcile_list_additions_first_and_never_go_below_zero(self):
+        import json,lly_liquidity_view as lv,oracle_liquidity_view as olv
+        snaps={x['ticker']:x for x in json.loads((ROOT/'samples/liquidity_pilots.json').read_text())['snapshots']}
+        for fig,first,last in ((olv.bridge_figure(snaps['ORCL'])[0],'$31.289B','$38.934B'),
+                               (lv.bridge_figure(snaps['LLY'])[0],'$7.268B','$8.950B')):
+            w=fig.data[0];text=list(w.text);x=list(w.x)
+            self.assertEqual(w.type,'waterfall')
+            self.assertEqual((text[0],text[-1]),(first,last))
+            self.assertEqual(list(w.measure),['absolute']+['relative']*(len(x)-2)+['total'])
+            steps=x[1:-1];signs=[v>0 for v in steps]
+            self.assertEqual(signs,sorted(signs,reverse=True))                       # additions, then uses
+            running=x[0]
+            for v in steps:
+                running+=v;self.assertGreaterEqual(running,0)
+            self.assertAlmostEqual(running,x[-1],places=6)
+            import theme as T
+            self.assertEqual((w.increasing.marker.color,w.decreasing.marker.color),(T.FLOW_IN,T.FLOW_OUT))   # direction, not good/bad
+        with self.assertRaises(ValueError):
+            olv.waterfall(1e9,[("Use",-2e9)],-1e9,"Open","Close")                   # negative in any order: refused
+
+    def test_thereafter_row_is_set_apart_as_combined_years(self):
+        import json,html,oracle_liquidity_view as olv
+        snap=next(x for x in json.loads((ROOT/'samples/liquidity_pilots.json').read_text())['snapshots'] if x['ticker']=='ORCL')
+        text=html.unescape(olv.repayment_html(snap,company_review.money))
+        head=text.index('class="ol-later-head"');row=text.index('class="ol-later"')
+        self.assertLess(text.index('FY2032'),head);self.assertLess(head,row)
+        self.assertIn('Later years, combined',text);self.assertIn('Thereafter (combined)',text)
+        self.assertIn('From Jun 2032, all later years',text)
 
     def test_histogram_splits_at_zero_and_counts_every_trial(self):
         i=ls.oracle_inputs();r=ls.simulate(i,ls.oracle_decisions()[1],5000,7)
