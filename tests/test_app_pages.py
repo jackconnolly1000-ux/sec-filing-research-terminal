@@ -149,6 +149,10 @@ class AppPages(unittest.TestCase):
             captions = [c.value for c in app.caption]
             self.assertTrue(any(c.startswith("Cash and baseline borrowing at each fiscal year end") for c in captions))
             self.assertTrue(any("capital spending (below zero, a use of cash)" in c for c in captions))
+            text = page_text(app)
+            self.assertNotIn("How did borrowing and cash change?", text)          # folded into the five-year chart
+            self.assertTrue(any('class="lr-equation"' in m.value for m in app.markdown))   # TTM as one line
+            self.assertTrue(any(c.startswith("Cash and baseline borrowing") and "Hatched" in c for c in captions))
 
     def test_selector_opens_each_checked_review(self):
         app = self.run_clean()

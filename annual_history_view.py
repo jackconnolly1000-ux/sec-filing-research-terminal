@@ -67,7 +67,20 @@ CHARTS_MARK = "<!-- lr-annual-charts -->"
 OCF_COLOR, CAPEX_COLOR, FCF_COLOR = "#3987e5", "#9598a1", "#d4a72c"
 
 
-def figures(model):
+def _day(iso):
+    from datetime import date
+    d = date.fromisoformat(iso)
+    return f"{d:%b} {d.day}, {d:%Y}"
+
+
+def latest_balances(snapshot):
+    """The review's checked latest-quarter cash and borrowing: point-in-time balances like the fiscal year ends, so
+    they can sit beside them (flows cannot: the latest TTM overlaps the last fiscal year)."""
+    m = snapshot["metrics"]
+    return {"period_end": m["cash"]["period_end"], "cash": m["cash"]["value"], "gross_debt": m["gross_debt"]["value"]}
+
+
+def figures(model, latest=None):
     """Two grouped-column charts, fiscal years left to right, from the same checked rows as the table.
 
     Balances: cash and baseline borrowing at each fiscal year end. Flows: OCF, capital spending drawn below zero as
@@ -77,18 +90,25 @@ def figures(model):
     import theme as T
     rows = model["rows"]
     years = [f"FY{r['fiscal_year']}" for r in rows]
-    ends = [r["source"]["period_end"] for r in rows]
+    ends = [_day(r["source"]["period_end"]) for r in rows]
     value = lambda key: [None if r["metrics"][key]["value"] is None else r["metrics"][key]["value"] / 1e9 for r in rows]
     capex = [None if v is None else -v for v in value("capital_spending")]
 
-    def chart(series, title):
+    def chart(series, title, extra=None):
         fig = go.Figure()
         for name, values, color in series:
+            x, at, pattern = list(years), list(ends), [""] * len(years)
+            if extra:                                   # the latest quarter: hatched, after a divider
+                x.append(extra["label"]); at.append(extra["date"]); pattern.append("/")
+                values = list(values) + [extra[name]]
             shown = ["Unavailable" if v is None else f"{'−' if v < 0 else ''}${abs(v):,.2f}B" for v in values]
-            fig.add_trace(go.Bar(x=years, y=values, name=name, marker=dict(color=color, line=dict(width=0)),
-                                 customdata=list(zip(ends, shown)),
-                                 hovertemplate=f"{name}<br>%{{x}}, to %{{customdata[0]}}: %{{customdata[1]}}<extra></extra>"))
+            fig.add_trace(go.Bar(x=x, y=values, name=name,
+                                 marker=dict(color=color, line=dict(width=0), pattern=dict(shape=pattern, fillmode="overlay", fgcolor=T.SURFACE, size=6, solidity=0.3)),
+                                 customdata=list(zip(at, shown)),
+                                 hovertemplate=f"{name}<br>%{{x}}, at %{{customdata[0]}}: %{{customdata[1]}}<extra></extra>"))
         fig.add_hline(y=0, line_color=T.TEXT_MUTED, line_width=1)
+        if extra:
+            fig.add_vline(x=len(years) - 0.5, line_color=T.TEXT_MUTED, line_width=1, line_dash="dot")
         fig.update_layout(height=340, margin=dict(l=56, r=8, t=48, b=36), barmode="group", bargap=0.28, bargroupgap=0.08,
                           paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", font=dict(color=T.TEXT, size=12),
                           legend=dict(orientation="h", y=1.02, yanchor="bottom", x=0, title=None),
@@ -98,23 +118,42 @@ def figures(model):
                           hoverlabel=dict(font=dict(size=12)))
         return fig
 
+    extra = None
+    if latest:
+        b = lambda v: None if v is None else v / 1e9
+        from datetime import date
+        extra = {"label": f"{date.fromisoformat(latest['period_end']):%b %Y}<br>10-Q", "date": _day(latest["period_end"]),
+                 "Cash and equivalents": b(latest["cash"]), "Baseline borrowing": b(latest["gross_debt"])}
     balances = chart([("Cash and equivalents", value("cash"), T.SERIES_CASH),
-                      ("Baseline borrowing", value("gross_debt"), T.SERIES_BORROWING)], "USD billions")
+                      ("Baseline borrowing", value("gross_debt"), T.SERIES_BORROWING)], "USD billions", extra)
     flows = chart([("Operating cash flow", value("operating_cash_flow"), OCF_COLOR),
                    ("Capital spending (use of cash)", capex, CAPEX_COLOR),
                    ("Free cash flow", value("free_cash_flow"), FCF_COLOR)], "USD billions")
     return balances, flows
 
 
-def chart_captions(model):
+def chart_captions(model, latest=None):
     """What each chart shows, with any Unavailable year named, so a gap is never read as zero."""
     missing = lambda keys: [f"FY{r['fiscal_year']}" for r in model["rows"] if any(r["metrics"][k]["value"] is None for k in keys)]
     gap = lambda years: f" Unavailable, no bar: {', '.join(years)}." if years else ""
-    from datetime import date
-    day = lambda iso: (lambda d: f"{d:%b} {d.day}, {d:%Y}")(date.fromisoformat(iso))
-    first, last = day(model["rows"][0]["source"]["period_end"]), day(model["rows"][-1]["source"]["period_end"])
-    return (f"Cash and baseline borrowing at each fiscal year end, {first} to {last}. Borrowing excludes leases; cash "
-            "excludes restricted cash." + gap(missing(("cash", "gross_debt"))),
+    first, last = _day(model["rows"][0]["source"]["period_end"]), _day(model["rows"][-1]["source"]["period_end"])
+    since = ""
+    if latest:
+        final = model["rows"][-1]["metrics"]
+        def change(key, name):
+            a, b = final[key]["value"], latest[key]
+            if a is None or b is None:
+                return f"{name} change Unavailable"
+            d = b - a
+            from decimal import Decimal, ROUND_HALF_UP   # the review's own rounding (company_review.money)
+            sign = '+' if d > 0 else '−' if d < 0 else ''
+            if abs(d) < 10**9:
+                return f"{name} {sign}${(Decimal(abs(d)) / Decimal(10**6)).quantize(Decimal('1'), rounding=ROUND_HALF_UP):,}M"
+            return f"{name} {sign}${(Decimal(abs(d)) / Decimal(10**9)).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP):,}B"
+        since = (f" Hatched, after the dotted line: the latest 10-Q balance at {_day(latest['period_end'])}; since {last}, "
+                 f"{change('cash', 'cash')}, {change('gross_debt', 'borrowing')}.")
+    return (f"Cash and baseline borrowing at each fiscal year end, {first} to {last}.{since} Borrowing excludes leases; "
+            "cash excludes restricted cash. Balances do not establish repayment coverage." + gap(missing(("cash", "gross_debt"))),
             "Operating cash flow, capital spending (below zero, a use of cash) and FCF = OCF − capital spending, for "
             "each completed fiscal year. Separate from the overlapping latest TTM."
             + gap(missing(("operating_cash_flow", "capital_spending", "free_cash_flow"))))

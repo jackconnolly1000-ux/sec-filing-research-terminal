@@ -110,6 +110,22 @@ class AnnualCharts(unittest.TestCase):
         self.assertIn('Unavailable, no bar: FY2023.', second)
         self.assertNotIn('Unavailable', a.chart_captions(a.build('VST'))[0])
 
+    def test_latest_quarter_balances_sit_after_the_fiscal_years_and_are_marked(self):
+        snaps = {x['ticker']: x for x in json.loads((ROOT / 'samples/liquidity_pilots.json').read_text())['snapshots']}
+        for ticker, label, since in (('LLY', 'Jun 2026<br>10-Q', 'cash +$1.68B, borrowing +$12.41B'),
+                                     ('ORCL', 'Aug 2026<br>10-Q', 'cash +$5.08B, borrowing −$4.20B'),
+                                     ('VST', 'Jun 2026<br>10-Q', 'cash −$350M, borrowing −$173M')):
+            m, latest = a.build(ticker), a.latest_balances(snaps[ticker])
+            balances, flows = a.figures(m, latest)
+            self.assertEqual(list(balances.data[0].x)[-1], label)
+            self.assertEqual(balances.data[0].y[-1], snaps[ticker]['metrics']['cash']['value'] / 1e9)
+            self.assertEqual(balances.data[1].y[-1], snaps[ticker]['metrics']['gross_debt']['value'] / 1e9)
+            self.assertEqual(list(balances.data[0].marker.pattern.shape)[-1], '/')       # hatched
+            self.assertEqual(set(list(balances.data[0].marker.pattern.shape)[:-1]), {''})
+            self.assertEqual(len(balances.layout.shapes), 2)                              # zero line, divider
+            self.assertEqual(len(list(flows.data[0].x)), 5)                              # flows stay annual only
+            self.assertIn(since, a.chart_captions(m, latest)[0])
+
     def test_charts_sit_between_the_table_and_its_notes(self):
         html = a.render('LLY')
         self.assertLess(html.index('</table>'), html.index(a.CHARTS_MARK))
