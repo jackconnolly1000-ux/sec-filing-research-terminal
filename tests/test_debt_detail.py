@@ -36,12 +36,16 @@ class DebtDetail(unittest.TestCase):
         self.assertAlmostEqual(sum(d.figure(m,'Instrument composition').data[0].values),125.567)
         self.assertIn('Unavailable',m['note'])
 
-    def test_total_liabilities_are_a_separate_stack_with_derived_vistra(self):
+    def test_total_liabilities_compare_two_dated_classes_with_derived_vistra(self):
+        import funding_detail
         for s in json.loads((ROOT/'samples/liquidity_pilots.json').read_text())['snapshots']:
-            f,note=b.liability_figure(s);self.assertEqual(f.layout.barmode,'stack');self.assertEqual(len(f.data),2)
-            self.assertEqual([trace.orientation for trace in f.data],['h','h'])
-            self.assertEqual([trace.y[0] for trace in f.data],['Total liabilities']*2)
-            if s['ticker']=='VST':self.assertAlmostEqual(f.data[1].x[0],26.552);self.assertIn('derived',note)
+            f,note=b.liability_figure(s);self.assertEqual(len(f.data),1)
+            self.assertEqual(f.data[0].orientation,'h')
+            self.assertEqual(list(f.data[0].y),['Current liabilities','Noncurrent liabilities'])
+            self.assertFalse(f.layout.showlegend)
+            self.assertEqual(list(f.data[0].x),[v['value']/1e9 for v in funding_detail.build(s)['liabilities']])
+            self.assertIn('total =',note)
+            if s['ticker']=='VST':self.assertAlmostEqual(f.data[0].x[1],26.552);self.assertIn('derived',note)
 
     def test_maturity_heatmap_aggregates_every_annual_fact_and_keeps_labels_visible(self):
         m=d.build();periods=d.maturity_periods(m);f=d.figure(m,'Maturity concentration')
