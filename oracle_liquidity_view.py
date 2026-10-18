@@ -6,22 +6,12 @@ import oracle_liquidity as ol
 import oracle_financing as of
 
 CSS = """
-.ol-bridge {margin:22px 0 12px;}
-.ol-step,.ol-axis {display:grid;grid-template-columns:220px minmax(80px,1fr) 100px;gap:16px;align-items:center;margin:16px 0;font-size:.85rem;}
 /* Rows touch and each track fills its row, so the zero line runs unbroken from the first bar to the last */
-.ol-step {margin:0;min-height:40px;}
-.ol-axis {font-size:.75rem;color:var(--text-muted);margin:0 0 12px;}
-.ol-axis-scale {display:flex;justify-content:space-between;}
-.ol-track {display:grid;grid-template-columns:1fr 1fr;align-self:stretch;}
-.ol-side {display:flex;align-items:center;min-width:0;}
-.ol-side:first-child {justify-content:flex-end;border-right:1px solid var(--text-muted);}
-.ol-fill {display:block;height:14px;background:var(--flow-out);min-width:1px;}
-.ol-fill.in {background:var(--flow-in);}
-.ol-side:first-child .ol-fill {border-radius:4px 0 0 4px;}
-.ol-side:last-child .ol-fill {border-radius:0 4px 4px 0;}
+.ol-table tr.ol-later-head td {padding:18px 8px 6px;border-top:2px solid var(--border-strong);border-bottom:0;font-size:.75rem;color:var(--text-muted);text-align:left;}
+.ol-table tr.ol-later td {font-style:normal;color:var(--text-strong);}
+@media(max-width:760px) {.ol-balances {grid-template-columns:1fr;} .ol-balances > div {display:flex;justify-content:space-between;gap:10px;align-items:center;padding:10px 12px;} .ol-balances > div + div {border-left:0;border-top:1px solid var(--border);} .ol-balances strong {font-size:1.15rem;white-space:nowrap;} .ol-table th,.ol-table td {padding:9px 5px;font-size:.72rem;}}
 .ol-key {display:inline-block;width:10px;height:10px;border-radius:2px;margin:0 6px 0 0;vertical-align:-1px;}
 .ol-key.in {background:var(--flow-in);} .ol-key.out {background:var(--flow-out);}
-.ol-step strong {text-align:right;white-space:nowrap;font-weight:600;}
 .ol-balances {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border:1px solid var(--border);margin:18px 0;}
 .ol-balances > div {padding:14px 16px;}
 .ol-balances > div + div {border-left:1px solid var(--border);}
@@ -41,8 +31,61 @@ CSS = """
 .ol-obligation {display:flex;justify-content:space-between;gap:16px;margin:14px 0 4px;}
 .ol-obligation strong {white-space:nowrap;}
 @media(max-width:760px) {.ol-resource {display:flex;flex-wrap:wrap;gap:8px 12px;} .ol-resource > div {flex:1;min-width:0;} .ol-resource p {flex-basis:100%;width:100%;} .ol-repayments {overflow-wrap:anywhere;}}
-@media(max-width:760px) {.ol-step {display:flex;flex-wrap:wrap;justify-content:space-between;gap:7px 12px;font-size:.82rem;margin:18px 0;} .ol-step > span {flex:1;max-width:calc(100% - 100px);} .ol-step strong {order:1;width:90px;} .ol-step .ol-track {order:2;flex-basis:100%;width:100%;min-height:24px;} .ol-axis {display:block;} .ol-axis > span {display:none;} .ol-balances {grid-template-columns:1fr;} .ol-balances > div {display:flex;justify-content:space-between;gap:10px;align-items:center;padding:10px 12px;} .ol-balances > div + div {border-left:0;border-top:1px solid var(--border);} .ol-balances strong {font-size:1.15rem;white-space:nowrap;} .ol-table th,.ol-table td {padding:9px 5px;font-size:.72rem;}}
 """
+
+
+def waterfall(start, steps, end, opening_label, closing_label):
+    """A cash bridge: opening balance, each signed flow from where the last left off, closing balance (USD).
+
+    Additions are the review's inflow blue and uses its outflow grey: direction, not good or bad. Balances are a
+    light neutral. Axes and gridlines frame it, so the figures don't float."""
+    import plotly.graph_objects as go
+    import theme as T
+    # Additions first, then uses. The flows happen across the period, not in this order; in statement order a large
+    # use before a later inflow drew a running total below zero (Lilly's half-year), which cash never was.
+    steps = [x for x in steps if x[1] > 0] + [x for x in steps if x[1] <= 0]
+    running = start
+    for _, value in steps:
+        running += value
+        if running < 0:
+            raise ValueError("Cash bridge running total would fall below zero")
+    def wrap(text, width=18):
+        """Two lines for long labels, so the bars keep their width on a phone."""
+        if len(text) <= width or " " not in text:
+            return text
+        cut = min((i for i, ch in enumerate(text) if ch == " "), key=lambda i: abs(i - len(text) / 2))
+        return text[:cut] + "<br>" + text[cut + 1:]
+    labels = [wrap(x) for x in [opening_label] + [label for label, _ in steps] + [closing_label]]
+    values = [start] + [v for _, v in steps] + [end]
+    shown = [f"${start / 1e9:,.3f}B"] + [f"{'+' if v > 0 else '−'}${abs(v) / 1e9:,.3f}B" for _, v in steps] + [f"${end / 1e9:,.3f}B"]
+    fig = go.Figure(go.Waterfall(
+        orientation="h", y=labels, x=[v / 1e9 for v in values],
+        measure=["absolute"] + ["relative"] * len(steps) + ["total"],
+        text=shown, textposition="outside", cliponaxis=False, textfont=dict(color=T.TEXT, size=12),
+        increasing=dict(marker=dict(color=T.FLOW_IN)), decreasing=dict(marker=dict(color=T.FLOW_OUT)),
+        totals=dict(marker=dict(color=T.TEXT)), connector=dict(line=dict(color=T.BORDER_STRONG, width=1, dash="dot")),
+        hovertemplate="%{y}: %{text}<extra></extra>"))
+    fig.update_layout(height=60 + 42 * len(labels), margin=dict(l=8, r=72, t=8, b=36), paper_bgcolor="rgba(0,0,0,0)",
+                      plot_bgcolor="rgba(0,0,0,0)", font=dict(color=T.TEXT, size=12), showlegend=False,
+                      yaxis=dict(autorange="reversed", fixedrange=True, automargin=True, showline=True, linecolor=T.BORDER),
+                      xaxis=dict(title="USD billions", fixedrange=True, gridcolor=T.BORDER, rangemode="tozero",
+                                 zeroline=True, zerolinecolor=T.TEXT_MUTED, showline=True, linecolor=T.BORDER))
+    return fig
+
+
+def bridge_figure(snapshot):
+    """Oracle's June–August 2026 cash bridge from the checked review, May 31 to August 31 (including restricted)."""
+    review = ol.for_snapshot(snapshot)
+    v = {k: f["value"] for k, f in review["inputs"].items()}
+    c = review["cash"]
+    steps = [("OCF excl. specified prepayments", c["ocf_less_prepay"]), ("Specified customer prepayments", v["prepay"]),
+             ("Equity proceeds, net", v["equity"]), ("Cash capital spending", -v["capex"]),
+             ("Debt repayments", -v["debt_repayments"]), ("Other cash flows, net", c["other_net"])]
+    if v["opening_total"] + sum(x for _, x in steps) != v["closing_total"]:
+        raise ValueError("Oracle cash bridge does not reconcile")
+    fig = waterfall(v["opening_total"], steps, v["closing_total"], "May 31 cash incl. restricted", "Aug 31 cash incl. restricted")
+    return fig, ("Blue adds cash, grey uses it; additions are listed first, which is not their timing. Balances include restricted cash. "
+                 "June 1–August 31, 2026, from the 10-Q cash-flow statement.")
 
 
 def render(snapshot, money):
@@ -66,26 +109,10 @@ def render(snapshot, money):
                          ("Quarter change", v["change"]),
                          ("August 31 cash including restricted", v["closing_total"])):
         out += f'<div><span>{esc(label)}</span><strong>{amount(value)}</strong></div>'
-    out += '</div><p><strong>What added to or used cash during the quarter?</strong></p>'
-    steps = [("OCF excluding specified prepayments", c["ocf_less_prepay"]),
-             ("Specified customer prepayments", v["prepay"]),
-             ("Equity proceeds, net", v["equity"]),
-             ("Cash capital spending", -v["capex"]),
-             ("Debt repayments", -v["debt_repayments"]),
-             ("Other cash flows, net", c["other_net"])]
-    # Every bar shares zero. Balance totals sit outside the changes so they cannot be added twice.
-    maximum = 30_000_000_000
-    out += ('<div class="ol-bridge" role="figure" aria-label="Quarter cash contributions: uses left, sources right">'
-            '<div class="ol-axis"><span>Quarter cash contribution</span><div class="ol-axis-scale">'
-            '<span><span class="ol-key out" aria-hidden="true"></span>−$30B · cash used</span><span>0</span>'
-            '<span><span class="ol-key in" aria-hidden="true"></span>cash added · +$30B</span></div><span>USD</span></div>')
-    for label, value in steps:
-        bar = f'<span class="ol-fill{" in" if value > 0 else ""}" style="width:{abs(value)/maximum*100:.4f}%"></span>'
-        shown = ("+" if value > 0 else "") + money(value, 3)
-        out += (f'<div class="ol-step"><span>{esc(label)}</span><div class="ol-track" aria-hidden="true">'
-                f'<div class="ol-side">{bar if value < 0 else ""}</div>'
-                f'<div class="ol-side">{bar if value > 0 else ""}</div></div><strong>{esc(shown)}</strong></div>')
-    out += ('</div><p class="lr-meta">The six signed contributions sum to the quarter’s cash increase. '
+    from company_review import chart_slot
+    out += ('</div><p><strong>How did cash move from May 31 to August 31?</strong></p>'
+            + chart_slot("oracle_bridge", "lr-maturity"))
+    out += ('<p class="lr-meta">The six signed contributions sum to the quarter’s cash increase. '
             'The first two together equal reported OCF. Prepayments are separated once. '
             'Other cash flows include dividends, investments and other financing. All rows cover June–August 2026.</p>')
     out += (f'<p>Closing cash including restricted cash was {amount(v["closing_total"])}. Excluding '
@@ -229,8 +256,12 @@ def repayment_html(snapshot, money):
         rows = {r["label"]: r["value"] for r in review["obligations"][index*3:index*3+3]}
         principal = (money(oracle_principal.principal_between(calendar, start, end), 3) if calendar else "Unavailable")
         nice = lambda iso: date.fromisoformat(iso).strftime("%b %Y")
-        period = f'{nice(start)}–{nice(end)}' if end else f'From {nice(start)}'
-        out += (f'<tr><td>{esc(label)}<div class="lr-meta">{esc(period)}</div></td><td>{esc(principal)}</td>'
+        period = f'{nice(start)}–{nice(end)}' if end else f'From {nice(start)}, all later years'
+        if end is None:   # many years in one row: set apart so it doesn't read as one more year
+            out += '<tr class="ol-later-head"><td colspan="5">Later years, combined</td></tr>'
+            label = "Thereafter (combined)"
+        row_class = ' class="ol-later"' if end is None else ''
+        out += (f'<tr{row_class}><td>{esc(label)}<div class="lr-meta">{esc(period)}</div></td><td>{esc(principal)}</td>'
                 + "".join(f'<td>{esc(money(rows[k], 3))}</td>' for k in
                           ("Operating leases", "Finance leases", "Purchase and other obligations")) + '</tr>')
     out += '</tbody></table></div>'

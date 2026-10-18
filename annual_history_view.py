@@ -62,7 +62,7 @@ def build(ticker):
 
 
 # The marker company_review.render_app splits on to draw the two Plotly charts directly under the table
-CHARTS_MARK = "<!-- lr-annual-charts -->"
+CHARTS_MARK = "<!-- chart:annual -->"
 # Flow colors: inflow blue and use grey as in the latest-TTM chart; FCF amber, a result, distinct from both
 OCF_COLOR, CAPEX_COLOR, FCF_COLOR = "#3987e5", "#9598a1", "#d4a72c"
 
