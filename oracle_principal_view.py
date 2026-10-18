@@ -35,13 +35,14 @@ def ladder_figure(review):
         hovertemplate="%{x}: %{customdata[0]} – %{customdata[1]}<br>Principal due: %{customdata[2]}<extra></extra>"))
     fig.update_layout(height=300, margin=dict(l=56, r=8, t=12, b=54), bargap=0.35, paper_bgcolor="rgba(0,0,0,0)",
                       plot_bgcolor="rgba(0,0,0,0)", font=dict(color=T.TEXT, size=12), showlegend=False,
-                      xaxis=dict(type="category", fixedrange=True, showgrid=False, tickangle=0,
-                                 tickvals=labels,ticktext=["FY27 rem." if y["fy"]==2027 else f"FY{y['fy']%100:02d}" for y in years]),
+                      xaxis=dict(type="category", fixedrange=True, showgrid=False, tickangle=-45,
+                                 tickfont=dict(size=10),
+                                 tickvals=labels,ticktext=["FY27*" if y["fy"]==2027 else f"FY{y['fy']%100:02d}" for y in years]),
                       yaxis=dict(title="USD billions", fixedrange=True, gridcolor=T.BORDER, zeroline=True,
                                  zerolinecolor=T.TEXT_MUTED, rangemode="tozero"))
     near = review["next_twelve_months"]["principal"]
     first = years[0]["principal"]
-    caption = (f"Chart shows the first ten fiscal years (June–May), FY2027–FY2036, on one scale. FY2027 starts September 2026. "
+    caption = (f"Chart shows the first ten fiscal years (June–May), FY2027–FY2036, on one scale. FY27* is the remainder starting September 2026. "
                "The dated table below covers the complete calendar, including later years; no column here means no dated principal in that year. "
                f"The ${near / 1e9:,.3f}B due September 2026–August 2027 "
                f"is the FY2027 remainder (${first / 1e9:,.3f}B) plus June–August 2027 (${(near - first) / 1e9:,.3f}B of FY2028). "

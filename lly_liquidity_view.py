@@ -141,5 +141,6 @@ def bridge_figure(snapshot):
     if f["opening"]["value"] + sum(x for _, x in steps) != f["closing"]["value"]:
         raise ValueError("Lilly cash bridge does not reconcile")
     fig = waterfall(f["opening"]["value"], steps, f["closing"]["value"], "Dec 31 cash", "Jun 30 cash")
-    return fig, ("Blue adds cash, grey uses it; additions are listed first, which is not their timing. January 1–June 30, 2026, "
+    return fig, ("Blue adds cash, grey uses it; additions are listed first, which is not their timing. "
+                 "Hover or tap for amounts, including small bars without labels. January 1–June 30, 2026, "
                  "from the 10-Q cash-flow statement.")

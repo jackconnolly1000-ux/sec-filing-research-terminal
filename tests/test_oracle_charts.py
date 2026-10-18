@@ -29,6 +29,8 @@ class OracleCharts(unittest.TestCase):
         fig,caption=ov.ladder_figure(review)
         self.assertEqual(list(fig.data[0].y),[y['principal']/1e9 for y in years[:10]])
         self.assertEqual(list(fig.layout.xaxis.tickvals),[y['label'] for y in years[:10]])
+        self.assertEqual(fig.layout.xaxis.ticktext[0],'FY27*')
+        self.assertEqual(fig.layout.xaxis.tickangle,-45)
         self.assertIn('complete calendar, including later years',caption)
         self.assertIn('$7.317B due September 2026–August 2027 is the FY2027 remainder ($2.672B) plus June–August 2027 ($4.645B',caption)
         self.assertIn('commercial paper (Unavailable)',caption)
@@ -42,7 +44,9 @@ class OracleCharts(unittest.TestCase):
                                (lv.bridge_figure(snaps['LLY'])[0],'$7.268B','$8.950B')):
             w=fig.data[0];text=list(w.text);x=list(w.x)
             self.assertEqual(w.type,'waterfall')
-            self.assertEqual((text[0],text[-1]),(first,last))
+            self.assertEqual((w.customdata[0],w.customdata[-1]),(first,last))
+            self.assertEqual((text[0],text[-1]),(f'${x[0]:,.2f}B',f'${x[-1]:,.2f}B'))
+            self.assertEqual(w.hovertemplate,'%{y}: %{customdata}<extra></extra>')
             self.assertEqual(list(w.measure),['absolute']+['relative']*(len(x)-2)+['total'])
             steps=x[1:-1];signs=[v>0 for v in steps]
             self.assertEqual(signs,sorted(signs,reverse=True))                       # additions, then uses
@@ -72,6 +76,7 @@ class OracleCharts(unittest.TestCase):
         self.assertTrue((np.asarray(below.x)<0).all() and (np.asarray(above.x)>=0).all())
         self.assertAlmostEqual(round(-below.xbins.start/size,9)%1,0)    # zero is a bin edge, so no bar straddles it
         self.assertEqual(fig.layout.yaxis.title.text,'Simulated trials (of 5,000)')
+        self.assertEqual(fig.layout.xaxis.title.text,'Ending cash · USD billions')
         self.assertIn(f'{r["share_below_zero"]:.1%}',below.name)
 
     def test_monthly_band_is_independently_computed_from_the_trials(self):
