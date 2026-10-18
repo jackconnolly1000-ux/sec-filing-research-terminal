@@ -2,6 +2,7 @@
 import hashlib
 import json
 import math
+import theme
 from pathlib import Path
 
 ROOT = Path(__file__).parent
@@ -15,9 +16,9 @@ NOTE = ("Annual cash and borrowing are fiscal-year-end balances. OCF and capital
 
 
 def fingerprint():
-    return {p: hashlib.sha256((ROOT / p).read_bytes()).hexdigest() for p in
+    return {**{"palette": hashlib.sha256(json.dumps(theme.review_palette(),sort_keys=True).encode()).hexdigest()}, **{p: hashlib.sha256((ROOT / p).read_bytes()).hexdigest() for p in
             ("annual_history_view.py", "annual_history.py", "samples/annual_history_reconciliation.json",
-             "samples/annual_source_inventory.json")}
+             "samples/annual_source_inventory.json")}}
 
 
 def build(ticker):
@@ -57,14 +58,14 @@ def build(ticker):
         notes.append("2021/2022 cash flows use FY2023’s disclosed IPR&D milestone reclassification. OCF increased by $105.2M/$501.3M through classification, not new cash generation. Cash and borrowing retain their original balance sheets. FCF does not deduct IPR&D purchases.")
     if ticker == "VST":
         notes.append("2021/2024 use complete comparative snapshots from the following 10-K, including reported zero short-term borrowing. Original missing facts were not treated as zero. Capex includes nuclear fuel and LTSA prepayments. The 2025 financing line is counted once; its facility split remains unresolved.")
-    return {"ticker": ticker, "rows": rows, "keys": list(KEYS), "labels": list(LABELS), "notes": notes,
+    return {"palette": theme.review_palette(), "ticker": ticker, "rows": rows, "keys": list(KEYS), "labels": list(LABELS), "notes": notes,
             "as_of": captured["as_of"]}
 
 
 # The marker company_review.render_app splits on to draw the two Plotly charts directly under the table
 CHARTS_MARK = "<!-- chart:annual -->"
 # Flow colors: inflow blue and use grey as in the latest-TTM chart; FCF amber, a result, distinct from both
-OCF_COLOR, CAPEX_COLOR, FCF_COLOR = "#3987e5", "#9598a1", "#d4a72c"
+OCF_COLOR, CAPEX_COLOR, FCF_COLOR = theme.FLOW_IN, theme.FLOW_OUT, theme.FLOW_RESULT
 
 
 def _day(iso):
@@ -187,3 +188,22 @@ def render(ticker):
         out += ' · '.join(f'<a href="{esc(f["source_url"])}">10-K filed {esc(f["filed"])} ({esc(acc)})</a>' for acc, f in sources.items())
         out += '</p>'
     return out + '</details></section>'
+
+
+def funding_history(model):
+    """Aligned panels avoid suggesting a mechanical relation between dollars and a second-axis ratio."""
+    import plotly.graph_objects as go
+    from plotly.subplots import make_subplots
+    import theme as T
+    years=[f"FY{r['fiscal_year']}" for r in model['rows']]
+    debt=[r['metrics']['gross_debt']['value'] for r in model['rows']]
+    ocf=[r['metrics']['operating_cash_flow']['value'] for r in model['rows']]
+    ratio=[None if d is None or d<=0 or o is None else o/d for o,d in zip(ocf,debt)]
+    f=make_subplots(rows=2,cols=1,shared_xaxes=True,vertical_spacing=.16)
+    f.add_trace(go.Bar(x=years,y=[None if d is None else d/1e9 for d in debt],name='Year-end borrowing',marker_color=T.SERIES_BORROWING),row=1,col=1)
+    f.add_trace(go.Scatter(x=years,y=ratio,name='Annual OCF / year-end borrowing',mode='lines+markers',connectgaps=False,line_color=T.SERIES_CASH),row=2,col=1)
+    f.update_yaxes(title_text='USD billions',rangemode='tozero',row=1,col=1)
+    f.update_yaxes(title_text='Historical flow / debt',tickformat='.0%',row=2,col=1)
+    f.add_hline(y=0,line_color=T.TEXT_MUTED,row=2,col=1)
+    f.update_layout(height=440,margin=dict(l=65,r=12,t=35,b=35),showlegend=False,paper_bgcolor='rgba(0,0,0,0)',plot_bgcolor='rgba(0,0,0,0)',font=dict(color=T.TEXT,size=12))
+    return f,'Full-year operating cash flow divided by same-date year-end baseline borrowing. A historical flow/debt measure, not leverage, covenant coverage or future repayment coverage. No cross-company ranking.'

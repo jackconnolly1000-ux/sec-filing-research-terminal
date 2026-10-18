@@ -3,7 +3,6 @@
 The website loads a frozen, reproducible sample. Opening it makes no SEC, Yahoo or Claude request.
 """
 
-import json
 from pathlib import Path
 
 import xbrl
@@ -119,8 +118,8 @@ def financing_html(snapshot: dict) -> str:
 
 
 def workbook(snapshots: list[dict]) -> bytes:
-    import company_review
-    return company_review.workbook(snapshots)
+    from summary_export import workbook as export
+    return export(snapshots)
 
 
 def render() -> None:

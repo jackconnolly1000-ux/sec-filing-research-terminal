@@ -45,7 +45,7 @@ class BorrowingLeasePresentation(unittest.TestCase):
 
     def test_no_new_instrument_breakdown_or_lease_addition(self):
         m = bl.build(self.snapshots[1])
-        self.assertEqual([f["label"] for f in m["borrowing"]], ["Current borrowing", "Noncurrent borrowing"])
+        self.assertEqual([f["label"] for f in m["borrowing"]], ["Current notes and other borrowing — instrument split unavailable", "Noncurrent borrowing"])
         text = html.unescape(view.render(self.snapshots[1]))
         self.assertIn("does not split these borrowing lines by instrument", text)
         self.assertIn("Neither is added to baseline gross debt", text)

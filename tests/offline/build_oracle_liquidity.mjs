@@ -1,3 +1,6 @@
+import {addDebtDetail,finishDebtDetail} from './debt_detail_sheet.mjs';
+import {finalizeWorkbook} from './finalize_workbook.mjs';
+import {finishPrincipal} from './principal_sheet.mjs';
 import {finishExportGuide} from './export_guide.mjs';
 import {addCoreChartSheet,finishCoreChartSheet} from './core_chart_sheet.mjs';
 import {addBorrowingLeaseSheet,finishBorrowingLeaseSheet} from './borrowing_lease_sheet.mjs';
@@ -43,6 +46,7 @@ const coreCharts=addCoreChartSheet(wb,root,'ORCL');
 const repay = wb.worksheets.add('Repayment review');
 const main = wb.worksheets.add('Cash analysis');
 const due = wb.worksheets.add('Payment dates');
+const debtDetail=addDebtDetail(wb);
 const data = wb.worksheets.add('Data');
 const about = wb.worksheets.add('About');
 const USD = '#,##0,,;(#,##0,,);"-"';
@@ -469,7 +473,10 @@ Object.assign(fundingManifest,await finishBorrowingLeaseSheet(wb,root,'ORCL',bor
 Object.assign(fundingManifest,await finishRatioSheet(wb,root,'ORCL',ratios));
 Object.assign(fundingManifest,await finishHistorySheet(wb,root,'ORCL',history));
 Object.assign(fundingManifest,await finishCoreChartSheet(wb,root,'ORCL',coreCharts));
+Object.assign(fundingManifest,await finishPrincipal(wb,root));
+finishDebtDetail(wb,root,debtDetail);
 Object.assign(fundingManifest,await finishExportGuide(wb,root,'ORCL'));
+await finalizeWorkbook(wb,root,'ORCL');
 const output=path.join(root,'samples/oracle_liquidity.xlsx');
 await (await SpreadsheetFile.exportXlsx(wb)).save(output);
 await fs.rm(output+'.inspect.ndjson',{force:true});

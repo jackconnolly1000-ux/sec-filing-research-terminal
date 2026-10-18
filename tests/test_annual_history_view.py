@@ -136,21 +136,23 @@ class AnnualCharts(unittest.TestCase):
         for ticker, stem in self.STEMS.items():
             path = ROOT / f'samples/{stem}_liquidity.xlsx'
             ws = load_workbook(path)['Annual history']; vs = load_workbook(path, data_only=True)['Annual history']
-            self.assertEqual(len(ws._charts), 2)
+            self.assertEqual(len(ws._charts), 3)
             for c in 'BCDEF':
                 self.assertEqual(ws[f'{c}61'].value, f'=IF(ISNUMBER({c}9),-{c}9,NA())')
                 self.assertEqual(vs[f'{c}61'].value, -vs[f'{c}9'].value)
             m = a.build(ticker)
-            with zipfile.ZipFile(path) as z:
-                charts = [z.read(n).decode() for n in z.namelist() if n.startswith('xl/drawings/charts/') and "'Annual history'" in z.read(n).decode()]
-            self.assertEqual(len(charts), 2)
-            refs = sorted(set(re.findall(r"<c:f>'Annual history'!\$B\$(\d+):\$F\$\1</c:f>", ''.join(charts))))
-            self.assertEqual(refs, sorted(['5', '6', '7', '8', '10', '61']))      # FY labels, the table rows, the helper row
-            balances = next(x for x in charts if 'Fiscal-year-end cash' in x)
-            cash = [float(v) for v in re.findall(r'<c:pt idx="\d"><c:v>([-\d.e+]+)</c:v>', balances.split('$B$6:$F$6')[1].split('</c:numCache>')[0])]
-            self.assertEqual(cash, [r['metrics']['cash']['value'] for r in m['rows']])
-            for x in charts:
-                self.assertIn('<c:dispBlanksAs val="gap"/>', x)
+            for chart,first,source_rows,keys in [(ws._charts[0],64,[6,7],['cash','gross_debt']),
+                                               (ws._charts[1],73,[8,61,10],['operating_cash_flow','capital_spending','free_cash_flow'])]:
+                self.assertEqual(chart.type,'col');self.assertEqual(chart.grouping,'clustered')
+                self.assertEqual(len(chart.series),len(keys))
+                for j,(series,key,sr) in enumerate(zip(chart.series,keys,source_rows),2):
+                    letter='ABCD'[j-1]
+                    self.assertEqual(series.val.numRef.f,f"'Annual history'!${letter}${first+1}:${letter}${first+5}")
+                    for i,c in enumerate('BCDEF',first+1):
+                        self.assertEqual(ws.cell(i,j).value,f'=IF(ISNUMBER({c}{sr}),{c}{sr},NA())')
+                    expected=[r['metrics'][key]['value']*(-1 if sr==61 else 1) for r in m['rows']]
+                    self.assertEqual([float(p.v) for p in series.val.numRef.numCache.pt],expected)
+                self.assertEqual(chart.display_blanks,'gap')
 
     def test_chart_writer_leaves_a_missing_point_out(self):
         import importlib.util

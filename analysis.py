@@ -585,5 +585,5 @@ def is_cacheable(checked: dict) -> bool:
 
 
 def request_fingerprint(prompt: str, tool: dict) -> str:
-    """Stable text for st.cache_data to key the Claude call on."""
+    """Stable model, prompt and tool identity for coordinated request reuse."""
     return json.dumps({"model": MODEL, "max_tokens": MAX_OUTPUT_TOKENS, "prompt": prompt, "tool": tool}, sort_keys=True)

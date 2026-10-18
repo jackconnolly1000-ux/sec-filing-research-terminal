@@ -137,26 +137,39 @@ class OracleFinancing(unittest.TestCase):
         self.assertEqual(view.maturity_html(self.snapshots[0]), "")
 
     def test_excel_keeps_numeric_inputs_formulas_dates_and_chart(self):
-        wb = load_workbook(BytesIO(view.workbook(self.snapshots)))
-        schedule, raw, events = (wb[n] for n in ("Oracle maturities", "Oracle debt inputs", "Oracle financing"))
-        self.assertEqual([raw.cell(i, 2).value for i in range(2, 8)], [7210*M, 10145*M, 5500*M, 7250*M, 9750*M, 90250*M])
-        self.assertEqual(schedule["D8"].value, "=SUM(D2:D7)")
-        self.assertEqual(schedule["D12"].value, "=D8-D11")
-        self.assertEqual(schedule["D14"].value, "=D12-D13")
-        self.assertEqual(schedule["D16"].value, "=D15/D8")
-        self.assertEqual(schedule["E17"].value, "Unavailable")
-        self.assertIsNone(schedule["D17"].value)
-        self.assertEqual(raw["C2"].value, datetime(2026, 5, 31))
-        self.assertEqual((events["A5"].value, events["H5"].value), (datetime(2026, 9, 12), datetime(2026, 9, 14)))
-        self.assertEqual(raw["H2"].value, of.ACCESSION)
-        self.assertEqual(events["E2"].value, "='Oracle debt inputs'!B11")
-        self.assertIsNone(events["E4"].value)  # earnings filing is not another equity transaction
-        self.assertEqual(len(schedule._charts), 1)
-        self.assertEqual(schedule._charts[0].series[0].val.numRef.f, "'Oracle maturities'!$D$2:$D$6")
-        self.assertEqual(wb["Debt and liquidity"]["C12"].value, "='Liquidity inputs'!D14+'Liquidity inputs'!D15")
-        for name in ("Oracle maturities", "Oracle debt inputs", "Oracle financing"):
-            self.assertEqual(wb[name]["A1"].font.name, "Arial")
+        # The optional metric export no longer duplicates detailed Oracle schedules.
+        combined=load_workbook(BytesIO(view.workbook(self.snapshots)))
+        self.assertNotIn("Oracle maturities",combined.sheetnames)
+        combined.close()
+        import oracle_liquidity as ol
+        content=ol.workbook_bytes(ol.for_snapshot(self.oracle))
+        self.assertIsNotNone(content)
+        wb=load_workbook(BytesIO(content));values=load_workbook(BytesIO(content),data_only=True)
+        schedule,raw,events=wb['Payment dates'],values['Data'],values['Repayment review']
+        rows={raw.cell(r,1).value:r for r in range(2,raw.max_row+1)}
+        self.assertEqual([raw.cell(rows['annual_'+str(i)],2).value for i in range(6)],
+                         [7210*M,10145*M,5500*M,7250*M,9750*M,90250*M])
+        self.assertEqual(raw.cell(rows['annual_0'],5).value,datetime(2026,5,31))
+        self.assertEqual(raw.cell(rows['annual_0'],8).value,of.ACCESSION)
+        self.assertEqual(schedule['C71'].value,'=SUM(C95:C152)')
+        self.assertEqual(schedule['C73'].value,'=C71-C72')
+        self.assertEqual(values['Payment dates']['C71'].value,130105*M)
+        self.assertEqual(values['Payment dates']['C73'].value,0)
+        self.assertEqual(values['History']['B7'].value,129541*M)
+        self.assertEqual(values['Payment dates']['B26'].value,'Unavailable')
+        self.assertEqual(values['Payment dates']['C152'].value,1468*M)
+        self.assertEqual(values['Payment dates']['E152'].value,'Unavailable')
+        self.assertEqual((events['C77'].value,events['A77'].value),(datetime(2026,9,12),datetime(2026,9,14)))
+        self.assertIn('No corporate revolver update',events['D77'].value)
+        self.assertEqual(values['Cash analysis']['B9'].value,19909*M)
+        self.assertIn("'Data'!",wb['Cash analysis']['B9'].value)
+        self.assertEqual(len(schedule._charts),1)
+        self.assertEqual(schedule._charts[0].series[0].val.numRef.f,"'Payment dates'!$I$62:$I$101")
+        self.assertIn("'Data'!",wb['Debt and liquidity']['B7'].value)
+        for name in ('Payment dates','Data','Repayment review'):
+            self.assertEqual(wb[name]['A2'].font.name,'Arial')
             self.assertFalse(wb[name].sheet_view.showGridLines)
+        wb.close();values.close()
 
     @unittest.skipUnless((RAW / "orcl-20260531.htm").exists(), "full saved Oracle filings not available")
     def test_full_saved_sources_match_trimmed_fixtures_and_eight_k_findings(self):

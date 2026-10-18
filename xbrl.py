@@ -52,7 +52,8 @@ LTD_AND_LEASES_NONCURRENT = "LongTermDebtAndCapitalLeaseObligations"
 SHORT_TERM_BORROWINGS = "ShortTermBorrowings"
 INSTANT_TAGS = [CASH, CURRENT_ASSETS, CURRENT_LIABILITIES, DEBT_CURRENT, LONG_TERM_DEBT_NONCURRENT, DEBT_TOTAL,
                 NOTES_PAYABLE_CURRENT, LONG_TERM_NOTES_AND_LOANS, LTD_AND_LEASES_CURRENT, LTD_AND_LEASES_NONCURRENT,
-                SHORT_TERM_BORROWINGS]
+                SHORT_TERM_BORROWINGS, "CommercialPaper", "Liabilities", "LiabilitiesNoncurrent",
+                "OperatingLeaseLiabilityCurrent", "FinanceLeaseLiabilityCurrent"]
 
 # Borrowing presentations verified per company from its filings (docs/pilot_evidence_*.md). Debt tags are not
 # universal (plan, source rules), so a company without an entry gets Unavailable, never a guessed set of tags.

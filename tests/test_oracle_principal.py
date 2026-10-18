@@ -222,10 +222,10 @@ class Workbook(unittest.TestCase):
 
     def test_unknowns_stay_unavailable_and_are_not_numbers(self):
         cp = self.find("Commercial paper")
-        self.assertIsNone(self.values.cell(cp, 3).value)
+        self.assertEqual(self.values.cell(cp, 3).value, "Unavailable")
         self.assertIn("Unavailable", self.values.cell(cp, 4).value)
         table = next(r for r in range(35, self.values.max_row + 1) if self.values.cell(r, 1).value == "Commercial paper notes")
-        self.assertIsNone(self.values.cell(table, 5).value)
+        self.assertEqual(self.values.cell(table, 5).value, "Unavailable")
         low = self.find("Commercial paper implied, low")
         self.assertEqual((self.values.cell(low, 3).value, self.values.cell(low + 1, 3).value), (287 * M, 387 * M))
 

@@ -228,3 +228,12 @@ The frozen app review now shows checked TTM operating cash flow, reported capita
 ## Release 1 borrowing and lease presentation (October 16, 2026)
 
 The app and individual workbook now separate the checked borrowing components, recognized lease liabilities and leases not yet commenced. All amounts keep their own dates; missing latest-date lease amounts remain Unavailable. No borrowing, net-debt or coverage value changes. See [the reconciliation and remaining gaps](borrowing_lease_presentation.md).
+
+
+## Current funding detail checked October 18, 2026
+
+Zero short-term borrowings does not mean zero current financing obligations. June 30, 2026 current baseline borrowing is $2.176B: $1.876B current long-term debt, a reported zero short-term balance and $300M receivables financing. The revolver was undrawn on that date despite H1 drawings of $400M and repayments of $780M. Its $4.408B reported availability already deducts $1.092B of letters of credit. Availability, debt and cash are separate measures.
+
+The source checkpoint is `samples/funding_detail.json`, rebuilt by `tests/offline/build_funding_detail.py`. It records exact contexts, permitted dimensions, source hashes and a fact registry. Current/noncurrent **total liabilities** are a separate classification from borrowing; recognized leases already sit within liabilities and are never added a second time.
+
+Noncurrent liabilities are derived: $37,109M total minus $10,557M current = $26,552M. FY2021–2025 short-term borrowing is 0/650/0/0/1,800M; receivables financing is 0/425/0/750/1,225M. Reported zeros retain their checked comparative-filing basis.

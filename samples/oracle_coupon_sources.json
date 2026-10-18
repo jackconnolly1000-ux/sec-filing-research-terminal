@@ -1,0 +1,1115 @@
+{
+  "orcl:FixedRateSeniorNotesDueApril2027Member": {
+    "value": 0.028,
+    "context_id": "C_a743ec6f-8eeb-46ab-9053-3f4f619edb0e",
+    "decimals": "INF",
+    "scale": "-2",
+    "dimensions": [
+      [
+        "us-gaap:DebtInstrumentAxis",
+        "orcl:FixedRateSeniorNotesDueApril2027Member"
+      ]
+    ],
+    "tag": "us-gaap:DebtInstrumentInterestRateStatedPercentage",
+    "unit": "pure",
+    "form": "10-K",
+    "filed": "2026-06-22",
+    "accession": "0001193125-26-277521",
+    "period_end": "2026-05-31",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1341439/000119312526277521/orcl-20260531.htm",
+    "source_sha256": "61a353e222f961e516bb3e8eed024a5245cfadbf30e3cc16a4a520129f1bdf63",
+    "location": "10-K Note 6, pp. 83\u201384"
+  },
+  "orcl:FixedRateSeniorNotesDueNovember2027Member": {
+    "value": 0.0325,
+    "context_id": "C_4c58a11e-87b8-42bf-abc3-7205aad3686f",
+    "decimals": "INF",
+    "scale": "-2",
+    "dimensions": [
+      [
+        "us-gaap:DebtInstrumentAxis",
+        "orcl:FixedRateSeniorNotesDueNovember2027Member"
+      ]
+    ],
+    "tag": "us-gaap:DebtInstrumentInterestRateStatedPercentage",
+    "unit": "pure",
+    "form": "10-K",
+    "filed": "2026-06-22",
+    "accession": "0001193125-26-277521",
+    "period_end": "2026-05-31",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1341439/000119312526277521/orcl-20260531.htm",
+    "source_sha256": "61a353e222f961e516bb3e8eed024a5245cfadbf30e3cc16a4a520129f1bdf63",
+    "location": "10-K Note 6, pp. 83\u201384"
+  },
+  "orcl:FixedRateSeniorNotesDueMarch2028Member": {
+    "value": 0.023,
+    "context_id": "C_4a760de7-ba70-4c1c-ac7b-173b0770c81c",
+    "decimals": "INF",
+    "scale": "-2",
+    "dimensions": [
+      [
+        "us-gaap:DebtInstrumentAxis",
+        "orcl:FixedRateSeniorNotesDueMarch2028Member"
+      ]
+    ],
+    "tag": "us-gaap:DebtInstrumentInterestRateStatedPercentage",
+    "unit": "pure",
+    "form": "10-K",
+    "filed": "2026-06-22",
+    "accession": "0001193125-26-277521",
+    "period_end": "2026-05-31",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1341439/000119312526277521/orcl-20260531.htm",
+    "source_sha256": "61a353e222f961e516bb3e8eed024a5245cfadbf30e3cc16a4a520129f1bdf63",
+    "location": "10-K Note 6, pp. 83\u201384"
+  },
+  "orcl:FixedRateSeniorNotesDueMay2028Member": {
+    "value": 0.045,
+    "context_id": "C_9142af28-1adb-4c96-b444-3af20bbae4be",
+    "decimals": "INF",
+    "scale": "-2",
+    "dimensions": [
+      [
+        "us-gaap:DebtInstrumentAxis",
+        "orcl:FixedRateSeniorNotesDueMay2028Member"
+      ]
+    ],
+    "tag": "us-gaap:DebtInstrumentInterestRateStatedPercentage",
+    "unit": "pure",
+    "form": "10-K",
+    "filed": "2026-06-22",
+    "accession": "0001193125-26-277521",
+    "period_end": "2026-05-31",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1341439/000119312526277521/orcl-20260531.htm",
+    "source_sha256": "61a353e222f961e516bb3e8eed024a5245cfadbf30e3cc16a4a520129f1bdf63",
+    "location": "10-K Note 6, pp. 83\u201384"
+  },
+  "orcl:Fixed-RateSeniorNotesDueAugust2028Member": {
+    "value": 0.048,
+    "context_id": "C_6d6ee105-8c7d-4446-b600-b6b3bf8abe98",
+    "decimals": "INF",
+    "scale": "-2",
+    "dimensions": [
+      [
+        "us-gaap:DebtInstrumentAxis",
+        "orcl:Fixed-RateSeniorNotesDueAugust2028Member"
+      ]
+    ],
+    "tag": "us-gaap:DebtInstrumentInterestRateStatedPercentage",
+    "unit": "pure",
+    "form": "10-K",
+    "filed": "2026-06-22",
+    "accession": "0001193125-26-277521",
+    "period_end": "2026-05-31",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1341439/000119312526277521/orcl-20260531.htm",
+    "source_sha256": "61a353e222f961e516bb3e8eed024a5245cfadbf30e3cc16a4a520129f1bdf63",
+    "location": "10-K Note 6, pp. 83\u201384"
+  },
+  "orcl:Fixed-RateSeniorNotesDueFebruary2029Member": {
+    "value": 0.0455,
+    "context_id": "C_65c60c9a-dbfb-41bd-abf8-5f20f2aaba3f",
+    "decimals": "INF",
+    "scale": "-2",
+    "dimensions": [
+      [
+        "us-gaap:DebtInstrumentAxis",
+        "orcl:Fixed-RateSeniorNotesDueFebruary2029Member"
+      ]
+    ],
+    "tag": "us-gaap:DebtInstrumentInterestRateStatedPercentage",
+    "unit": "pure",
+    "form": "10-K",
+    "filed": "2026-06-22",
+    "accession": "0001193125-26-277521",
+    "period_end": "2026-05-31",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1341439/000119312526277521/orcl-20260531.htm",
+    "source_sha256": "61a353e222f961e516bb3e8eed024a5245cfadbf30e3cc16a4a520129f1bdf63",
+    "location": "10-K Note 6, pp. 83\u201384"
+  },
+  "orcl:Fixed-RateSeniorNotesDueSeptember2029Member": {
+    "value": 0.042,
+    "context_id": "C_4b945cce-a91e-4713-8804-16879a87ff5b",
+    "decimals": "INF",
+    "scale": "-2",
+    "dimensions": [
+      [
+        "us-gaap:DebtInstrumentAxis",
+        "orcl:Fixed-RateSeniorNotesDueSeptember2029Member"
+      ]
+    ],
+    "tag": "us-gaap:DebtInstrumentInterestRateStatedPercentage",
+    "unit": "pure",
+    "form": "10-K",
+    "filed": "2026-06-22",
+    "accession": "0001193125-26-277521",
+    "period_end": "2026-05-31",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1341439/000119312526277521/orcl-20260531.htm",
+    "source_sha256": "61a353e222f961e516bb3e8eed024a5245cfadbf30e3cc16a4a520129f1bdf63",
+    "location": "10-K Note 6, pp. 83\u201384"
+  },
+  "orcl:FixedRateSeniorNotesDueNovember2029Member": {
+    "value": 0.0615,
+    "context_id": "C_8aa7e201-edc6-4920-8256-35f8ee18f4b8",
+    "decimals": "INF",
+    "scale": "-2",
+    "dimensions": [
+      [
+        "us-gaap:DebtInstrumentAxis",
+        "orcl:FixedRateSeniorNotesDueNovember2029Member"
+      ]
+    ],
+    "tag": "us-gaap:DebtInstrumentInterestRateStatedPercentage",
+    "unit": "pure",
+    "form": "10-K",
+    "filed": "2026-06-22",
+    "accession": "0001193125-26-277521",
+    "period_end": "2026-05-31",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1341439/000119312526277521/orcl-20260531.htm",
+    "source_sha256": "61a353e222f961e516bb3e8eed024a5245cfadbf30e3cc16a4a520129f1bdf63",
+    "location": "10-K Note 6, pp. 83\u201384"
+  },
+  "orcl:FixedRateSeniorNotesDueApril2030Member": {
+    "value": 0.0295,
+    "context_id": "C_b19b50e6-b222-456d-9fea-1bca5e3fb634",
+    "decimals": "INF",
+    "scale": "-2",
+    "dimensions": [
+      [
+        "us-gaap:DebtInstrumentAxis",
+        "orcl:FixedRateSeniorNotesDueApril2030Member"
+      ]
+    ],
+    "tag": "us-gaap:DebtInstrumentInterestRateStatedPercentage",
+    "unit": "pure",
+    "form": "10-K",
+    "filed": "2026-06-22",
+    "accession": "0001193125-26-277521",
+    "period_end": "2026-05-31",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1341439/000119312526277521/orcl-20260531.htm",
+    "source_sha256": "61a353e222f961e516bb3e8eed024a5245cfadbf30e3cc16a4a520129f1bdf63",
+    "location": "10-K Note 6, pp. 83\u201384"
+  },
+  "orcl:FixedRateSeniorNotesDueMay2030Member": {
+    "value": 0.0465,
+    "context_id": "C_c76136cd-2797-4fef-883c-79d66d5a2837",
+    "decimals": "INF",
+    "scale": "-2",
+    "dimensions": [
+      [
+        "us-gaap:DebtInstrumentAxis",
+        "orcl:FixedRateSeniorNotesDueMay2030Member"
+      ]
+    ],
+    "tag": "us-gaap:DebtInstrumentInterestRateStatedPercentage",
+    "unit": "pure",
+    "form": "10-K",
+    "filed": "2026-06-22",
+    "accession": "0001193125-26-277521",
+    "period_end": "2026-05-31",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1341439/000119312526277521/orcl-20260531.htm",
+    "source_sha256": "61a353e222f961e516bb3e8eed024a5245cfadbf30e3cc16a4a520129f1bdf63",
+    "location": "10-K Note 6, pp. 83\u201384"
+  },
+  "orcl:Fixed-RateSeniorNotesDueMay2030Member": {
+    "value": 0.0325,
+    "context_id": "C_70c2256f-1f16-4e15-bc5c-53c1fc629421",
+    "decimals": "INF",
+    "scale": "-2",
+    "dimensions": [
+      [
+        "us-gaap:DebtInstrumentAxis",
+        "orcl:Fixed-RateSeniorNotesDueMay2030Member"
+      ]
+    ],
+    "tag": "us-gaap:DebtInstrumentInterestRateStatedPercentage",
+    "unit": "pure",
+    "form": "10-K",
+    "filed": "2026-06-22",
+    "accession": "0001193125-26-277521",
+    "period_end": "2026-05-31",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1341439/000119312526277521/orcl-20260531.htm",
+    "source_sha256": "61a353e222f961e516bb3e8eed024a5245cfadbf30e3cc16a4a520129f1bdf63",
+    "location": "10-K Note 6, pp. 83\u201384"
+  },
+  "orcl:FixedRateSeniorNotesDueSeptember2030Member": {
+    "value": 0.0445,
+    "context_id": "C_113e803d-da69-4c22-a39c-a109d7514b35",
+    "decimals": "INF",
+    "scale": "-2",
+    "dimensions": [
+      [
+        "us-gaap:DebtInstrumentAxis",
+        "orcl:FixedRateSeniorNotesDueSeptember2030Member"
+      ]
+    ],
+    "tag": "us-gaap:DebtInstrumentInterestRateStatedPercentage",
+    "unit": "pure",
+    "form": "10-K",
+    "filed": "2026-06-22",
+    "accession": "0001193125-26-277521",
+    "period_end": "2026-05-31",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1341439/000119312526277521/orcl-20260531.htm",
+    "source_sha256": "61a353e222f961e516bb3e8eed024a5245cfadbf30e3cc16a4a520129f1bdf63",
+    "location": "10-K Note 6, pp. 83\u201384"
+  },
+  "orcl:FixedRateSeniorNotesDueFebruary2031Member": {
+    "value": 0.0495,
+    "context_id": "C_87f6716e-b1b9-4a3d-9ba1-858589593ee3",
+    "decimals": "INF",
+    "scale": "-2",
+    "dimensions": [
+      [
+        "us-gaap:DebtInstrumentAxis",
+        "orcl:FixedRateSeniorNotesDueFebruary2031Member"
+      ]
+    ],
+    "tag": "us-gaap:DebtInstrumentInterestRateStatedPercentage",
+    "unit": "pure",
+    "form": "10-K",
+    "filed": "2026-06-22",
+    "accession": "0001193125-26-277521",
+    "period_end": "2026-05-31",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1341439/000119312526277521/orcl-20260531.htm",
+    "source_sha256": "61a353e222f961e516bb3e8eed024a5245cfadbf30e3cc16a4a520129f1bdf63",
+    "location": "10-K Note 6, pp. 83\u201384"
+  },
+  "orcl:FixedRateSeniorNotesDueMarch2031Member": {
+    "value": 0.02875,
+    "context_id": "C_48f76007-8b8f-482c-ae4e-cc2d13f4241b",
+    "decimals": "INF",
+    "scale": "-2",
+    "dimensions": [
+      [
+        "us-gaap:DebtInstrumentAxis",
+        "orcl:FixedRateSeniorNotesDueMarch2031Member"
+      ]
+    ],
+    "tag": "us-gaap:DebtInstrumentInterestRateStatedPercentage",
+    "unit": "pure",
+    "form": "10-K",
+    "filed": "2026-06-22",
+    "accession": "0001193125-26-277521",
+    "period_end": "2026-05-31",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1341439/000119312526277521/orcl-20260531.htm",
+    "source_sha256": "61a353e222f961e516bb3e8eed024a5245cfadbf30e3cc16a4a520129f1bdf63",
+    "location": "10-K Note 6, pp. 83\u201384"
+  },
+  "orcl:Fixed-RateSeniorNotesDueFebruary2032Member": {
+    "value": 0.0525,
+    "context_id": "C_e42f7f37-e8c5-46a8-90f7-e218c66724e4",
+    "decimals": "INF",
+    "scale": "-2",
+    "dimensions": [
+      [
+        "us-gaap:DebtInstrumentAxis",
+        "orcl:Fixed-RateSeniorNotesDueFebruary2032Member"
+      ]
+    ],
+    "tag": "us-gaap:DebtInstrumentInterestRateStatedPercentage",
+    "unit": "pure",
+    "form": "10-K",
+    "filed": "2026-06-22",
+    "accession": "0001193125-26-277521",
+    "period_end": "2026-05-31",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1341439/000119312526277521/orcl-20260531.htm",
+    "source_sha256": "61a353e222f961e516bb3e8eed024a5245cfadbf30e3cc16a4a520129f1bdf63",
+    "location": "10-K Note 6, pp. 83\u201384"
+  },
+  "orcl:Fixed-RateSeniorNotesDueSeptember2032Member": {
+    "value": 0.048,
+    "context_id": "C_50527f49-e9c6-4c52-a8ec-b1c2a0068c55",
+    "decimals": "INF",
+    "scale": "-2",
+    "dimensions": [
+      [
+        "us-gaap:DebtInstrumentAxis",
+        "orcl:Fixed-RateSeniorNotesDueSeptember2032Member"
+      ]
+    ],
+    "tag": "us-gaap:DebtInstrumentInterestRateStatedPercentage",
+    "unit": "pure",
+    "form": "10-K",
+    "filed": "2026-06-22",
+    "accession": "0001193125-26-277521",
+    "period_end": "2026-05-31",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1341439/000119312526277521/orcl-20260531.htm",
+    "source_sha256": "61a353e222f961e516bb3e8eed024a5245cfadbf30e3cc16a4a520129f1bdf63",
+    "location": "10-K Note 6, pp. 83\u201384"
+  },
+  "orcl:FixedRateSeniorNotesDueNovember2032Member": {
+    "value": 0.0625,
+    "context_id": "C_3baaf4b5-05a7-4e95-a2c7-fdbbde90234a",
+    "decimals": "INF",
+    "scale": "-2",
+    "dimensions": [
+      [
+        "us-gaap:DebtInstrumentAxis",
+        "orcl:FixedRateSeniorNotesDueNovember2032Member"
+      ]
+    ],
+    "tag": "us-gaap:DebtInstrumentInterestRateStatedPercentage",
+    "unit": "pure",
+    "form": "10-K",
+    "filed": "2026-06-22",
+    "accession": "0001193125-26-277521",
+    "period_end": "2026-05-31",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1341439/000119312526277521/orcl-20260531.htm",
+    "source_sha256": "61a353e222f961e516bb3e8eed024a5245cfadbf30e3cc16a4a520129f1bdf63",
+    "location": "10-K Note 6, pp. 83\u201384"
+  },
+  "orcl:FixedRateSeniorNotesDueFebruary2033Member": {
+    "value": 0.049,
+    "context_id": "C_532c52db-e3a7-41dc-a1d8-5abc4267e4d1",
+    "decimals": "INF",
+    "scale": "-2",
+    "dimensions": [
+      [
+        "us-gaap:DebtInstrumentAxis",
+        "orcl:FixedRateSeniorNotesDueFebruary2033Member"
+      ]
+    ],
+    "tag": "us-gaap:DebtInstrumentInterestRateStatedPercentage",
+    "unit": "pure",
+    "form": "10-K",
+    "filed": "2026-06-22",
+    "accession": "0001193125-26-277521",
+    "period_end": "2026-05-31",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1341439/000119312526277521/orcl-20260531.htm",
+    "source_sha256": "61a353e222f961e516bb3e8eed024a5245cfadbf30e3cc16a4a520129f1bdf63",
+    "location": "10-K Note 6, pp. 83\u201384"
+  },
+  "orcl:FixedRateSeniorNotesDueMay2033Member": {
+    "value": 0.0535,
+    "context_id": "C_b9924291-37c4-4597-bf81-6b6f7148423e",
+    "decimals": "INF",
+    "scale": "-2",
+    "dimensions": [
+      [
+        "us-gaap:DebtInstrumentAxis",
+        "orcl:FixedRateSeniorNotesDueMay2033Member"
+      ]
+    ],
+    "tag": "us-gaap:DebtInstrumentInterestRateStatedPercentage",
+    "unit": "pure",
+    "form": "10-K",
+    "filed": "2026-06-22",
+    "accession": "0001193125-26-277521",
+    "period_end": "2026-05-31",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1341439/000119312526277521/orcl-20260531.htm",
+    "source_sha256": "61a353e222f961e516bb3e8eed024a5245cfadbf30e3cc16a4a520129f1bdf63",
+    "location": "10-K Note 6, pp. 83\u201384"
+  },
+  "orcl:FixedRateSeniorNotesDueJuly2034Member": {
+    "value": 0.043,
+    "context_id": "C_f735565f-4060-4ea6-9a9b-a17b4d097aca",
+    "decimals": "INF",
+    "scale": "-2",
+    "dimensions": [
+      [
+        "us-gaap:DebtInstrumentAxis",
+        "orcl:FixedRateSeniorNotesDueJuly2034Member"
+      ]
+    ],
+    "tag": "us-gaap:DebtInstrumentInterestRateStatedPercentage",
+    "unit": "pure",
+    "form": "10-K",
+    "filed": "2026-06-22",
+    "accession": "0001193125-26-277521",
+    "period_end": "2026-05-31",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1341439/000119312526277521/orcl-20260531.htm",
+    "source_sha256": "61a353e222f961e516bb3e8eed024a5245cfadbf30e3cc16a4a520129f1bdf63",
+    "location": "10-K Note 6, pp. 83\u201384"
+  },
+  "orcl:Fixed-RateSeniorNotesDueSeptember2034Member": {
+    "value": 0.047,
+    "context_id": "C_15416320-28ee-45bd-9193-de9adecf8103",
+    "decimals": "INF",
+    "scale": "-2",
+    "dimensions": [
+      [
+        "us-gaap:DebtInstrumentAxis",
+        "orcl:Fixed-RateSeniorNotesDueSeptember2034Member"
+      ]
+    ],
+    "tag": "us-gaap:DebtInstrumentInterestRateStatedPercentage",
+    "unit": "pure",
+    "form": "10-K",
+    "filed": "2026-06-22",
+    "accession": "0001193125-26-277521",
+    "period_end": "2026-05-31",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1341439/000119312526277521/orcl-20260531.htm",
+    "source_sha256": "61a353e222f961e516bb3e8eed024a5245cfadbf30e3cc16a4a520129f1bdf63",
+    "location": "10-K Note 6, pp. 83\u201384"
+  },
+  "orcl:FixedRateSeniorNotesDueMay2035Member": {
+    "value": 0.039,
+    "context_id": "C_01f50072-c7e6-47ea-9b91-24a078772c62",
+    "decimals": "INF",
+    "scale": "-2",
+    "dimensions": [
+      [
+        "us-gaap:DebtInstrumentAxis",
+        "orcl:FixedRateSeniorNotesDueMay2035Member"
+      ]
+    ],
+    "tag": "us-gaap:DebtInstrumentInterestRateStatedPercentage",
+    "unit": "pure",
+    "form": "10-K",
+    "filed": "2026-06-22",
+    "accession": "0001193125-26-277521",
+    "period_end": "2026-05-31",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1341439/000119312526277521/orcl-20260531.htm",
+    "source_sha256": "61a353e222f961e516bb3e8eed024a5245cfadbf30e3cc16a4a520129f1bdf63",
+    "location": "10-K Note 6, pp. 83\u201384"
+  },
+  "orcl:Fixed-RateSeniorNotesDueAugust2035Member": {
+    "value": 0.055,
+    "context_id": "C_aac57422-340d-4fbf-b85b-5fcc96306c34",
+    "decimals": "INF",
+    "scale": "-2",
+    "dimensions": [
+      [
+        "us-gaap:DebtInstrumentAxis",
+        "orcl:Fixed-RateSeniorNotesDueAugust2035Member"
+      ]
+    ],
+    "tag": "us-gaap:DebtInstrumentInterestRateStatedPercentage",
+    "unit": "pure",
+    "form": "10-K",
+    "filed": "2026-06-22",
+    "accession": "0001193125-26-277521",
+    "period_end": "2026-05-31",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1341439/000119312526277521/orcl-20260531.htm",
+    "source_sha256": "61a353e222f961e516bb3e8eed024a5245cfadbf30e3cc16a4a520129f1bdf63",
+    "location": "10-K Note 6, pp. 83\u201384"
+  },
+  "orcl:Fixed-RateSeniorNotesDueSeptember2035Member": {
+    "value": 0.052,
+    "context_id": "C_573df544-be68-4729-878f-dc0c4d603869",
+    "decimals": "INF",
+    "scale": "-2",
+    "dimensions": [
+      [
+        "us-gaap:DebtInstrumentAxis",
+        "orcl:Fixed-RateSeniorNotesDueSeptember2035Member"
+      ]
+    ],
+    "tag": "us-gaap:DebtInstrumentInterestRateStatedPercentage",
+    "unit": "pure",
+    "form": "10-K",
+    "filed": "2026-06-22",
+    "accession": "0001193125-26-277521",
+    "period_end": "2026-05-31",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1341439/000119312526277521/orcl-20260531.htm",
+    "source_sha256": "61a353e222f961e516bb3e8eed024a5245cfadbf30e3cc16a4a520129f1bdf63",
+    "location": "10-K Note 6, pp. 83\u201384"
+  },
+  "orcl:FixedRateSeniorNotesDueFebruary2036Member": {
+    "value": 0.057,
+    "context_id": "C_eb11f4ee-c98c-405c-9c32-8f9b81fee1fa",
+    "decimals": "INF",
+    "scale": "-2",
+    "dimensions": [
+      [
+        "us-gaap:DebtInstrumentAxis",
+        "orcl:FixedRateSeniorNotesDueFebruary2036Member"
+      ]
+    ],
+    "tag": "us-gaap:DebtInstrumentInterestRateStatedPercentage",
+    "unit": "pure",
+    "form": "10-K",
+    "filed": "2026-06-22",
+    "accession": "0001193125-26-277521",
+    "period_end": "2026-05-31",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1341439/000119312526277521/orcl-20260531.htm",
+    "source_sha256": "61a353e222f961e516bb3e8eed024a5245cfadbf30e3cc16a4a520129f1bdf63",
+    "location": "10-K Note 6, pp. 83\u201384"
+  },
+  "orcl:FixedRateSeniorNotesDueJuly2036Member": {
+    "value": 0.0385,
+    "context_id": "C_72fff26c-c6a0-4942-9b20-5d70cc2c444c",
+    "decimals": "INF",
+    "scale": "-2",
+    "dimensions": [
+      [
+        "us-gaap:DebtInstrumentAxis",
+        "orcl:FixedRateSeniorNotesDueJuly2036Member"
+      ]
+    ],
+    "tag": "us-gaap:DebtInstrumentInterestRateStatedPercentage",
+    "unit": "pure",
+    "form": "10-K",
+    "filed": "2026-06-22",
+    "accession": "0001193125-26-277521",
+    "period_end": "2026-05-31",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1341439/000119312526277521/orcl-20260531.htm",
+    "source_sha256": "61a353e222f961e516bb3e8eed024a5245cfadbf30e3cc16a4a520129f1bdf63",
+    "location": "10-K Note 6, pp. 83\u201384"
+  },
+  "orcl:FixedRateSeniorNotesDueNovember2037Member": {
+    "value": 0.038,
+    "context_id": "C_7f258c62-3faa-4ff0-8ea7-70a73c3c6b74",
+    "decimals": "INF",
+    "scale": "-2",
+    "dimensions": [
+      [
+        "us-gaap:DebtInstrumentAxis",
+        "orcl:FixedRateSeniorNotesDueNovember2037Member"
+      ]
+    ],
+    "tag": "us-gaap:DebtInstrumentInterestRateStatedPercentage",
+    "unit": "pure",
+    "form": "10-K",
+    "filed": "2026-06-22",
+    "accession": "0001193125-26-277521",
+    "period_end": "2026-05-31",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1341439/000119312526277521/orcl-20260531.htm",
+    "source_sha256": "61a353e222f961e516bb3e8eed024a5245cfadbf30e3cc16a4a520129f1bdf63",
+    "location": "10-K Note 6, pp. 83\u201384"
+  },
+  "orcl:FixedRateSeniorNotesDueApril2038Member": {
+    "value": 0.065,
+    "context_id": "C_3f89c9fc-6e68-4cc6-83e1-9c86b63ce9de",
+    "decimals": "INF",
+    "scale": "-2",
+    "dimensions": [
+      [
+        "us-gaap:DebtInstrumentAxis",
+        "orcl:FixedRateSeniorNotesDueApril2038Member"
+      ]
+    ],
+    "tag": "us-gaap:DebtInstrumentInterestRateStatedPercentage",
+    "unit": "pure",
+    "form": "10-K",
+    "filed": "2026-06-22",
+    "accession": "0001193125-26-277521",
+    "period_end": "2026-05-31",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1341439/000119312526277521/orcl-20260531.htm",
+    "source_sha256": "61a353e222f961e516bb3e8eed024a5245cfadbf30e3cc16a4a520129f1bdf63",
+    "location": "10-K Note 6, pp. 83\u201384"
+  },
+  "orcl:FixedRateSeniorNotesDueJuly2039Member": {
+    "value": 0.06125,
+    "context_id": "C_ac987fd5-0ebc-4b0b-acd6-cb559c89ce69",
+    "decimals": "INF",
+    "scale": "-2",
+    "dimensions": [
+      [
+        "us-gaap:DebtInstrumentAxis",
+        "orcl:FixedRateSeniorNotesDueJuly2039Member"
+      ]
+    ],
+    "tag": "us-gaap:DebtInstrumentInterestRateStatedPercentage",
+    "unit": "pure",
+    "form": "10-K",
+    "filed": "2026-06-22",
+    "accession": "0001193125-26-277521",
+    "period_end": "2026-05-31",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1341439/000119312526277521/orcl-20260531.htm",
+    "source_sha256": "61a353e222f961e516bb3e8eed024a5245cfadbf30e3cc16a4a520129f1bdf63",
+    "location": "10-K Note 6, pp. 83\u201384"
+  },
+  "orcl:FixedRateSeniorNotesDueApril2040Member": {
+    "value": 0.036,
+    "context_id": "C_edacb177-150a-440a-8eab-3b1f65db82ab",
+    "decimals": "INF",
+    "scale": "-2",
+    "dimensions": [
+      [
+        "us-gaap:DebtInstrumentAxis",
+        "orcl:FixedRateSeniorNotesDueApril2040Member"
+      ]
+    ],
+    "tag": "us-gaap:DebtInstrumentInterestRateStatedPercentage",
+    "unit": "pure",
+    "form": "10-K",
+    "filed": "2026-06-22",
+    "accession": "0001193125-26-277521",
+    "period_end": "2026-05-31",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1341439/000119312526277521/orcl-20260531.htm",
+    "source_sha256": "61a353e222f961e516bb3e8eed024a5245cfadbf30e3cc16a4a520129f1bdf63",
+    "location": "10-K Note 6, pp. 83\u201384"
+  },
+  "orcl:FixedRateSeniorNotesDueJuly2040Member": {
+    "value": 0.05375,
+    "context_id": "C_ea9fb0e1-e7f4-43bd-9646-a319ee8e1fad",
+    "decimals": "INF",
+    "scale": "-2",
+    "dimensions": [
+      [
+        "us-gaap:DebtInstrumentAxis",
+        "orcl:FixedRateSeniorNotesDueJuly2040Member"
+      ]
+    ],
+    "tag": "us-gaap:DebtInstrumentInterestRateStatedPercentage",
+    "unit": "pure",
+    "form": "10-K",
+    "filed": "2026-06-22",
+    "accession": "0001193125-26-277521",
+    "period_end": "2026-05-31",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1341439/000119312526277521/orcl-20260531.htm",
+    "source_sha256": "61a353e222f961e516bb3e8eed024a5245cfadbf30e3cc16a4a520129f1bdf63",
+    "location": "10-K Note 6, pp. 83\u201384"
+  },
+  "orcl:FixedRateSeniorNotesDueMarch2041Member": {
+    "value": 0.0365,
+    "context_id": "C_0279d3a4-1e75-4ad5-847d-0aae45a2dc5a",
+    "decimals": "INF",
+    "scale": "-2",
+    "dimensions": [
+      [
+        "us-gaap:DebtInstrumentAxis",
+        "orcl:FixedRateSeniorNotesDueMarch2041Member"
+      ]
+    ],
+    "tag": "us-gaap:DebtInstrumentInterestRateStatedPercentage",
+    "unit": "pure",
+    "form": "10-K",
+    "filed": "2026-06-22",
+    "accession": "0001193125-26-277521",
+    "period_end": "2026-05-31",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1341439/000119312526277521/orcl-20260531.htm",
+    "source_sha256": "61a353e222f961e516bb3e8eed024a5245cfadbf30e3cc16a4a520129f1bdf63",
+    "location": "10-K Note 6, pp. 83\u201384"
+  },
+  "orcl:FixedRateSeniorNotesDueJuly2044Member": {
+    "value": 0.045,
+    "context_id": "C_fbf167a2-b1f8-4f0a-9421-2691f6ee52e0",
+    "decimals": "INF",
+    "scale": "-2",
+    "dimensions": [
+      [
+        "us-gaap:DebtInstrumentAxis",
+        "orcl:FixedRateSeniorNotesDueJuly2044Member"
+      ]
+    ],
+    "tag": "us-gaap:DebtInstrumentInterestRateStatedPercentage",
+    "unit": "pure",
+    "form": "10-K",
+    "filed": "2026-06-22",
+    "accession": "0001193125-26-277521",
+    "period_end": "2026-05-31",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1341439/000119312526277521/orcl-20260531.htm",
+    "source_sha256": "61a353e222f961e516bb3e8eed024a5245cfadbf30e3cc16a4a520129f1bdf63",
+    "location": "10-K Note 6, pp. 83\u201384"
+  },
+  "orcl:FixedRateSeniorNotesDueMay2045Member": {
+    "value": 0.04125,
+    "context_id": "C_659e0314-4b26-4b16-98b4-e72d8c61f734",
+    "decimals": "INF",
+    "scale": "-2",
+    "dimensions": [
+      [
+        "us-gaap:DebtInstrumentAxis",
+        "orcl:FixedRateSeniorNotesDueMay2045Member"
+      ]
+    ],
+    "tag": "us-gaap:DebtInstrumentInterestRateStatedPercentage",
+    "unit": "pure",
+    "form": "10-K",
+    "filed": "2026-06-22",
+    "accession": "0001193125-26-277521",
+    "period_end": "2026-05-31",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1341439/000119312526277521/orcl-20260531.htm",
+    "source_sha256": "61a353e222f961e516bb3e8eed024a5245cfadbf30e3cc16a4a520129f1bdf63",
+    "location": "10-K Note 6, pp. 83\u201384"
+  },
+  "orcl:FixedRateSeniorNotesDueSeptember2045Member": {
+    "value": 0.05875,
+    "context_id": "C_988fd38e-d5f3-4fa1-b1de-787d7b61a453",
+    "decimals": "INF",
+    "scale": "-2",
+    "dimensions": [
+      [
+        "us-gaap:DebtInstrumentAxis",
+        "orcl:FixedRateSeniorNotesDueSeptember2045Member"
+      ]
+    ],
+    "tag": "us-gaap:DebtInstrumentInterestRateStatedPercentage",
+    "unit": "pure",
+    "form": "10-K",
+    "filed": "2026-06-22",
+    "accession": "0001193125-26-277521",
+    "period_end": "2026-05-31",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1341439/000119312526277521/orcl-20260531.htm",
+    "source_sha256": "61a353e222f961e516bb3e8eed024a5245cfadbf30e3cc16a4a520129f1bdf63",
+    "location": "10-K Note 6, pp. 83\u201384"
+  },
+  "orcl:FixedRateSeniorNotesDueFebruary2046Member": {
+    "value": 0.0655,
+    "context_id": "C_eaaaba69-f386-49f6-9dbc-4f5720b4ffcc",
+    "decimals": "INF",
+    "scale": "-2",
+    "dimensions": [
+      [
+        "us-gaap:DebtInstrumentAxis",
+        "orcl:FixedRateSeniorNotesDueFebruary2046Member"
+      ]
+    ],
+    "tag": "us-gaap:DebtInstrumentInterestRateStatedPercentage",
+    "unit": "pure",
+    "form": "10-K",
+    "filed": "2026-06-22",
+    "accession": "0001193125-26-277521",
+    "period_end": "2026-05-31",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1341439/000119312526277521/orcl-20260531.htm",
+    "source_sha256": "61a353e222f961e516bb3e8eed024a5245cfadbf30e3cc16a4a520129f1bdf63",
+    "location": "10-K Note 6, pp. 83\u201384"
+  },
+  "orcl:FixedRateSeniorNotesDueJuly2046Member": {
+    "value": 0.04,
+    "context_id": "C_01a106fb-d1a5-45eb-aea5-1d2c1f806db3",
+    "decimals": "INF",
+    "scale": "-2",
+    "dimensions": [
+      [
+        "us-gaap:DebtInstrumentAxis",
+        "orcl:FixedRateSeniorNotesDueJuly2046Member"
+      ]
+    ],
+    "tag": "us-gaap:DebtInstrumentInterestRateStatedPercentage",
+    "unit": "pure",
+    "form": "10-K",
+    "filed": "2026-06-22",
+    "accession": "0001193125-26-277521",
+    "period_end": "2026-05-31",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1341439/000119312526277521/orcl-20260531.htm",
+    "source_sha256": "61a353e222f961e516bb3e8eed024a5245cfadbf30e3cc16a4a520129f1bdf63",
+    "location": "10-K Note 6, pp. 83\u201384"
+  },
+  "orcl:FixedRateSeniorNotesDueNovember2047Member": {
+    "value": 0.04,
+    "context_id": "C_c028290f-556a-41ee-891d-a0580570969c",
+    "decimals": "INF",
+    "scale": "-2",
+    "dimensions": [
+      [
+        "us-gaap:DebtInstrumentAxis",
+        "orcl:FixedRateSeniorNotesDueNovember2047Member"
+      ]
+    ],
+    "tag": "us-gaap:DebtInstrumentInterestRateStatedPercentage",
+    "unit": "pure",
+    "form": "10-K",
+    "filed": "2026-06-22",
+    "accession": "0001193125-26-277521",
+    "period_end": "2026-05-31",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1341439/000119312526277521/orcl-20260531.htm",
+    "source_sha256": "61a353e222f961e516bb3e8eed024a5245cfadbf30e3cc16a4a520129f1bdf63",
+    "location": "10-K Note 6, pp. 83\u201384"
+  },
+  "orcl:FixedRateSeniorNotesDueApril2050Member": {
+    "value": 0.036,
+    "context_id": "C_93d974de-69a0-4d66-8685-9c10b38c70e4",
+    "decimals": "INF",
+    "scale": "-2",
+    "dimensions": [
+      [
+        "us-gaap:DebtInstrumentAxis",
+        "orcl:FixedRateSeniorNotesDueApril2050Member"
+      ]
+    ],
+    "tag": "us-gaap:DebtInstrumentInterestRateStatedPercentage",
+    "unit": "pure",
+    "form": "10-K",
+    "filed": "2026-06-22",
+    "accession": "0001193125-26-277521",
+    "period_end": "2026-05-31",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1341439/000119312526277521/orcl-20260531.htm",
+    "source_sha256": "61a353e222f961e516bb3e8eed024a5245cfadbf30e3cc16a4a520129f1bdf63",
+    "location": "10-K Note 6, pp. 83\u201384"
+  },
+  "orcl:FixedRateSeniorNotesDueMarch2051Member": {
+    "value": 0.0395,
+    "context_id": "C_78c45de9-3a45-4a24-9a9d-682f75245066",
+    "decimals": "INF",
+    "scale": "-2",
+    "dimensions": [
+      [
+        "us-gaap:DebtInstrumentAxis",
+        "orcl:FixedRateSeniorNotesDueMarch2051Member"
+      ]
+    ],
+    "tag": "us-gaap:DebtInstrumentInterestRateStatedPercentage",
+    "unit": "pure",
+    "form": "10-K",
+    "filed": "2026-06-22",
+    "accession": "0001193125-26-277521",
+    "period_end": "2026-05-31",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1341439/000119312526277521/orcl-20260531.htm",
+    "source_sha256": "61a353e222f961e516bb3e8eed024a5245cfadbf30e3cc16a4a520129f1bdf63",
+    "location": "10-K Note 6, pp. 83\u201384"
+  },
+  "orcl:FixedRateSeniorNotesDueNovember2052Member": {
+    "value": 0.069,
+    "context_id": "C_1c2c1ccf-88f9-44b3-bbba-88d5b66222e1",
+    "decimals": "INF",
+    "scale": "-2",
+    "dimensions": [
+      [
+        "us-gaap:DebtInstrumentAxis",
+        "orcl:FixedRateSeniorNotesDueNovember2052Member"
+      ]
+    ],
+    "tag": "us-gaap:DebtInstrumentInterestRateStatedPercentage",
+    "unit": "pure",
+    "form": "10-K",
+    "filed": "2026-06-22",
+    "accession": "0001193125-26-277521",
+    "period_end": "2026-05-31",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1341439/000119312526277521/orcl-20260531.htm",
+    "source_sha256": "61a353e222f961e516bb3e8eed024a5245cfadbf30e3cc16a4a520129f1bdf63",
+    "location": "10-K Note 6, pp. 83\u201384"
+  },
+  "orcl:FixedRateSeniorNotesDueFebruary2053Member": {
+    "value": 0.0555,
+    "context_id": "C_275ee10c-5579-4b7f-9db6-d0c32731214a",
+    "decimals": "INF",
+    "scale": "-2",
+    "dimensions": [
+      [
+        "us-gaap:DebtInstrumentAxis",
+        "orcl:FixedRateSeniorNotesDueFebruary2053Member"
+      ]
+    ],
+    "tag": "us-gaap:DebtInstrumentInterestRateStatedPercentage",
+    "unit": "pure",
+    "form": "10-K",
+    "filed": "2026-06-22",
+    "accession": "0001193125-26-277521",
+    "period_end": "2026-05-31",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1341439/000119312526277521/orcl-20260531.htm",
+    "source_sha256": "61a353e222f961e516bb3e8eed024a5245cfadbf30e3cc16a4a520129f1bdf63",
+    "location": "10-K Note 6, pp. 83\u201384"
+  },
+  "orcl:Fixed-RateSeniorNotesDueSeptember2054Member": {
+    "value": 0.05375,
+    "context_id": "C_d6db44a5-2cc2-45f8-b9bb-750ce5701802",
+    "decimals": "INF",
+    "scale": "-2",
+    "dimensions": [
+      [
+        "us-gaap:DebtInstrumentAxis",
+        "orcl:Fixed-RateSeniorNotesDueSeptember2054Member"
+      ]
+    ],
+    "tag": "us-gaap:DebtInstrumentInterestRateStatedPercentage",
+    "unit": "pure",
+    "form": "10-K",
+    "filed": "2026-06-22",
+    "accession": "0001193125-26-277521",
+    "period_end": "2026-05-31",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1341439/000119312526277521/orcl-20260531.htm",
+    "source_sha256": "61a353e222f961e516bb3e8eed024a5245cfadbf30e3cc16a4a520129f1bdf63",
+    "location": "10-K Note 6, pp. 83\u201384"
+  },
+  "orcl:FixedRateSeniorNotesDueMay2055Member": {
+    "value": 0.04375,
+    "context_id": "C_10f379d0-eecf-4d69-9526-2a2acfd8110f",
+    "decimals": "INF",
+    "scale": "-2",
+    "dimensions": [
+      [
+        "us-gaap:DebtInstrumentAxis",
+        "orcl:FixedRateSeniorNotesDueMay2055Member"
+      ]
+    ],
+    "tag": "us-gaap:DebtInstrumentInterestRateStatedPercentage",
+    "unit": "pure",
+    "form": "10-K",
+    "filed": "2026-06-22",
+    "accession": "0001193125-26-277521",
+    "period_end": "2026-05-31",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1341439/000119312526277521/orcl-20260531.htm",
+    "source_sha256": "61a353e222f961e516bb3e8eed024a5245cfadbf30e3cc16a4a520129f1bdf63",
+    "location": "10-K Note 6, pp. 83\u201384"
+  },
+  "orcl:Fixed-RateSeniorNotesDueAugust2055Member": {
+    "value": 0.06,
+    "context_id": "C_6c16cb24-86ff-434f-9d08-118161063c4e",
+    "decimals": "INF",
+    "scale": "-2",
+    "dimensions": [
+      [
+        "us-gaap:DebtInstrumentAxis",
+        "orcl:Fixed-RateSeniorNotesDueAugust2055Member"
+      ]
+    ],
+    "tag": "us-gaap:DebtInstrumentInterestRateStatedPercentage",
+    "unit": "pure",
+    "form": "10-K",
+    "filed": "2026-06-22",
+    "accession": "0001193125-26-277521",
+    "period_end": "2026-05-31",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1341439/000119312526277521/orcl-20260531.htm",
+    "source_sha256": "61a353e222f961e516bb3e8eed024a5245cfadbf30e3cc16a4a520129f1bdf63",
+    "location": "10-K Note 6, pp. 83\u201384"
+  },
+  "orcl:Fixed-RateSeniorNotesDueSeptember2055Member": {
+    "value": 0.0595,
+    "context_id": "C_2dd1f035-9a29-4212-8137-0ffb70bc95f9",
+    "decimals": "INF",
+    "scale": "-2",
+    "dimensions": [
+      [
+        "us-gaap:DebtInstrumentAxis",
+        "orcl:Fixed-RateSeniorNotesDueSeptember2055Member"
+      ]
+    ],
+    "tag": "us-gaap:DebtInstrumentInterestRateStatedPercentage",
+    "unit": "pure",
+    "form": "10-K",
+    "filed": "2026-06-22",
+    "accession": "0001193125-26-277521",
+    "period_end": "2026-05-31",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1341439/000119312526277521/orcl-20260531.htm",
+    "source_sha256": "61a353e222f961e516bb3e8eed024a5245cfadbf30e3cc16a4a520129f1bdf63",
+    "location": "10-K Note 6, pp. 83\u201384"
+  },
+  "orcl:Fixed-RateSeniorNotesDueFebruary2056Member": {
+    "value": 0.067,
+    "context_id": "C_470c4dd1-b044-4c06-b569-b9f227d4bcc6",
+    "decimals": "INF",
+    "scale": "-2",
+    "dimensions": [
+      [
+        "us-gaap:DebtInstrumentAxis",
+        "orcl:Fixed-RateSeniorNotesDueFebruary2056Member"
+      ]
+    ],
+    "tag": "us-gaap:DebtInstrumentInterestRateStatedPercentage",
+    "unit": "pure",
+    "form": "10-K",
+    "filed": "2026-06-22",
+    "accession": "0001193125-26-277521",
+    "period_end": "2026-05-31",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1341439/000119312526277521/orcl-20260531.htm",
+    "source_sha256": "61a353e222f961e516bb3e8eed024a5245cfadbf30e3cc16a4a520129f1bdf63",
+    "location": "10-K Note 6, pp. 83\u201384"
+  },
+  "orcl:FixedRateSeniorNotesDueApril2060Member": {
+    "value": 0.0385,
+    "context_id": "C_72ade28f-8b47-4d01-b51d-ad50b6ab1306",
+    "decimals": "INF",
+    "scale": "-2",
+    "dimensions": [
+      [
+        "us-gaap:DebtInstrumentAxis",
+        "orcl:FixedRateSeniorNotesDueApril2060Member"
+      ]
+    ],
+    "tag": "us-gaap:DebtInstrumentInterestRateStatedPercentage",
+    "unit": "pure",
+    "form": "10-K",
+    "filed": "2026-06-22",
+    "accession": "0001193125-26-277521",
+    "period_end": "2026-05-31",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1341439/000119312526277521/orcl-20260531.htm",
+    "source_sha256": "61a353e222f961e516bb3e8eed024a5245cfadbf30e3cc16a4a520129f1bdf63",
+    "location": "10-K Note 6, pp. 83\u201384"
+  },
+  "orcl:FixedRateSeniorNotesDueMarch2061Member": {
+    "value": 0.041,
+    "context_id": "C_b75cf642-988f-4748-9e3d-32020e3a1e6e",
+    "decimals": "INF",
+    "scale": "-2",
+    "dimensions": [
+      [
+        "us-gaap:DebtInstrumentAxis",
+        "orcl:FixedRateSeniorNotesDueMarch2061Member"
+      ]
+    ],
+    "tag": "us-gaap:DebtInstrumentInterestRateStatedPercentage",
+    "unit": "pure",
+    "form": "10-K",
+    "filed": "2026-06-22",
+    "accession": "0001193125-26-277521",
+    "period_end": "2026-05-31",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1341439/000119312526277521/orcl-20260531.htm",
+    "source_sha256": "61a353e222f961e516bb3e8eed024a5245cfadbf30e3cc16a4a520129f1bdf63",
+    "location": "10-K Note 6, pp. 83\u201384"
+  },
+  "orcl:Fixed-RateSeniorNotesDueSeptember2064Member": {
+    "value": 0.055,
+    "context_id": "C_0d59a7d6-884c-46a0-8e28-22708f737f7d",
+    "decimals": "INF",
+    "scale": "-2",
+    "dimensions": [
+      [
+        "us-gaap:DebtInstrumentAxis",
+        "orcl:Fixed-RateSeniorNotesDueSeptember2064Member"
+      ]
+    ],
+    "tag": "us-gaap:DebtInstrumentInterestRateStatedPercentage",
+    "unit": "pure",
+    "form": "10-K",
+    "filed": "2026-06-22",
+    "accession": "0001193125-26-277521",
+    "period_end": "2026-05-31",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1341439/000119312526277521/orcl-20260531.htm",
+    "source_sha256": "61a353e222f961e516bb3e8eed024a5245cfadbf30e3cc16a4a520129f1bdf63",
+    "location": "10-K Note 6, pp. 83\u201384"
+  },
+  "orcl:Fixed-RateSeniorNotesDueAugust2065Member": {
+    "value": 0.06125,
+    "context_id": "C_e4423b6e-8f9e-4ed3-b891-83bcb06a00e7",
+    "decimals": "INF",
+    "scale": "-2",
+    "dimensions": [
+      [
+        "us-gaap:DebtInstrumentAxis",
+        "orcl:Fixed-RateSeniorNotesDueAugust2065Member"
+      ]
+    ],
+    "tag": "us-gaap:DebtInstrumentInterestRateStatedPercentage",
+    "unit": "pure",
+    "form": "10-K",
+    "filed": "2026-06-22",
+    "accession": "0001193125-26-277521",
+    "period_end": "2026-05-31",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1341439/000119312526277521/orcl-20260531.htm",
+    "source_sha256": "61a353e222f961e516bb3e8eed024a5245cfadbf30e3cc16a4a520129f1bdf63",
+    "location": "10-K Note 6, pp. 83\u201384"
+  },
+  "orcl:Fixed-RateSeniorNotesDueSeptember2065Member": {
+    "value": 0.061,
+    "context_id": "C_b1d66ac5-86bb-48a1-9fd7-0f91b2f20166",
+    "decimals": "INF",
+    "scale": "-2",
+    "dimensions": [
+      [
+        "us-gaap:DebtInstrumentAxis",
+        "orcl:Fixed-RateSeniorNotesDueSeptember2065Member"
+      ]
+    ],
+    "tag": "us-gaap:DebtInstrumentInterestRateStatedPercentage",
+    "unit": "pure",
+    "form": "10-K",
+    "filed": "2026-06-22",
+    "accession": "0001193125-26-277521",
+    "period_end": "2026-05-31",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1341439/000119312526277521/orcl-20260531.htm",
+    "source_sha256": "61a353e222f961e516bb3e8eed024a5245cfadbf30e3cc16a4a520129f1bdf63",
+    "location": "10-K Note 6, pp. 83\u201384"
+  },
+  "orcl:Fixed-RateSeniorNotesDueFebruary2066Member": {
+    "value": 0.0685,
+    "context_id": "C_9d3c0b91-ca57-49e8-bcd6-845c7dd4a592",
+    "decimals": "INF",
+    "scale": "-2",
+    "dimensions": [
+      [
+        "us-gaap:DebtInstrumentAxis",
+        "orcl:Fixed-RateSeniorNotesDueFebruary2066Member"
+      ]
+    ],
+    "tag": "us-gaap:DebtInstrumentInterestRateStatedPercentage",
+    "unit": "pure",
+    "form": "10-K",
+    "filed": "2026-06-22",
+    "accession": "0001193125-26-277521",
+    "period_end": "2026-05-31",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1341439/000119312526277521/orcl-20260531.htm",
+    "source_sha256": "61a353e222f961e516bb3e8eed024a5245cfadbf30e3cc16a4a520129f1bdf63",
+    "location": "10-K Note 6, pp. 83\u201384"
+  }
+}

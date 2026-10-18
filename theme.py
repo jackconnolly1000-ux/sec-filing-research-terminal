@@ -63,3 +63,10 @@ FONT_STACK = ('-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
 TREND_CHIP = {"NEW": ("info", "No close match in the prior 10-K"), "CHANGED": ("neutral", "Changed since the prior 10-K"),
               "REMOVED": ("neutral", "Removed since the prior 10-K"), "QUARTERLY_UPDATE": ("neutral", "Updated in a 10-Q"),
               "NOT_COMPARED": ("neutral", "No annual comparison")}
+
+# Historical FCF is a calculated result, distinct from the inflow and spending series.
+FLOW_RESULT = "#d4a72c"
+
+def review_palette():
+    return {"cash": SERIES_CASH, "borrowing": SERIES_BORROWING,
+            "ocf": FLOW_IN, "capex": FLOW_OUT, "fcf": FLOW_RESULT}

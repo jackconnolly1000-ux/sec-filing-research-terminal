@@ -109,19 +109,19 @@ class OracleCharts(unittest.TestCase):
 
     def test_saved_oracle_ladder_is_scaled_like_the_app(self):
         w=load_workbook(ROOT/'samples/oracle_liquidity.xlsx');chart=w['Payment dates']._charts[0]
-        self.assertEqual((chart.y_axis.scaling.min,chart.y_axis.scaling.max,chart.y_axis.majorUnit),(0,12e9,2e9))
-        series=chart.series[0]
-        self.assertTrue(series.dLbls.showVal)
-        self.assertEqual([p.idx for p in series.dPt],[5])                    # only the cut Thereafter bar is hatched
-        self.assertEqual(series.dPt[0].spPr.pattFill.prst,'wdUpDiag')
-        self.assertEqual(series.cat.strRef.strCache.pt[5].v,'Thereafter')
+        import oracle_principal_view as view, oracle_principal as principal
+        years=view.ladder_years(principal.load())
+        self.assertEqual(chart.type,'col')
+        self.assertEqual(len(chart.series[0].val.numRef.numCache.pt),len(years))
+        self.assertEqual([float(p.v) for p in chart.series[0].val.numRef.numCache.pt],[y['principal'] for y in years])
+        self.assertLess(max(y['principal'] for y in years),12e9)
         w.close()
 
     def test_saved_oracle_ladder_links_to_the_existing_formula_table(self):
         values=load_workbook(ROOT/'samples/oracle_liquidity.xlsx',data_only=True)
         chart=values['Payment dates']._charts[0]
-        self.assertEqual(chart.series[0].val.numRef.f,"'Payment dates'!$C$49:$C$54")
+        self.assertEqual(chart.series[0].val.numRef.f,"'Payment dates'!$I$62:$I$101")
         cached=[float(p.v) for p in chart.series[0].val.numRef.numCache.pt]
-        np.testing.assert_allclose(cached,[values['Payment dates'].cell(r,3).value for r in range(49,55)])
+        np.testing.assert_allclose(cached,[values['Payment dates'].cell(r,9).value for r in range(62,102)])
         self.assertEqual(len(values['Core charts']._charts),2)
         values.close()

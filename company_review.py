@@ -269,6 +269,9 @@ def draw_chart(st, name, snapshot):
         charts = zip(("Cash and baseline borrowing: five fiscal year ends and the latest quarter",
                       "Annual operating cash flow, capital spending and FCF"),
                      annual_history_view.figures(model, latest), annual_history_view.chart_captions(model, latest))
+    elif name == "liabilities":
+        import borrowing_leases
+        charts = [("Current and noncurrent total liabilities", *borrowing_leases.liability_figure(snapshot))]
     elif name == "oracle_ladder":
         import oracle_principal, oracle_principal_view
         charts = [(None, *oracle_principal_view.ladder_figure(oracle_principal.load()))]
@@ -286,6 +289,21 @@ def draw_chart(st, name, snapshot):
         st.plotly_chart(fig, width="stretch", theme=None, config=config)
         if caption:
             st.caption(caption.replace("$", "\\$"))   # two "$" would otherwise render as LaTeX math
+
+
+    if name == "oracle_ladder":
+        with st.expander("Debt detail — alternative views"):
+            import debt_detail
+            choice=st.selectbox("Principal view",["Maturity concentration","Fixed-rate coupon distribution","Instrument composition"],key="review_debt_detail_ORCL")
+            model=debt_detail.build()
+            st.plotly_chart(debt_detail.figure(model,choice),width="stretch",theme=None,config=config,key="review_debt_detail_chart")
+            st.caption(model["note"].replace("$","\\$"))
+            if choice=="Fixed-rate coupon distribution":st.caption("Height is principal; color is principal-weighted fixed coupon. Floating SOFR spreads and term-loan amortization rates are excluded.")
+    if name == "annual":
+        with st.expander("Historical cash generation relative to borrowing"):
+            fig,caption=annual_history_view.funding_history(model)
+            st.plotly_chart(fig,width="stretch",theme=None,config=config,key="review_flow_debt_"+snapshot["ticker"])
+            st.caption(caption)
 
 
 def ttm_equation(flow, money):
@@ -337,6 +355,7 @@ def render(snapshot):
     try:
         borrowing_model = borrowing_leases.build(snapshot)
         output += borrowing_leases.render_borrowing(borrowing_model, money)
+        output += chart_slot("liabilities", "lr-section")
     except (OSError, ValueError, KeyError, TypeError):
         borrowing_model = None
         output += '<h3>Borrowing and lease presentation unavailable</h3><p>The checked evidence is missing or does not match this review.</p>'
@@ -467,220 +486,10 @@ def evidence_html(snapshot: dict) -> str:
     return output + '</details>'
 
 
-def add_oracle_sheets(wb, snapshot):
-    """Keep principal, carrying value and financing events on their own reporting bases."""
-    import oracle_financing as of
-    from openpyxl.chart import BarChart, Reference
-    from openpyxl.styles import Font
-    from datetime import datetime
-    review = of.for_snapshot(snapshot)
-    if review is None:
-        return
-    schedule = wb.create_sheet("Oracle maturities")
-    schedule.append(["Principal schedule", "Due from", "Due through", "USD (displayed in millions)",
-                     "Reporting basis", "Notes"])
-    if review["status"] != "Checked":
-        schedule.append(["Unavailable", None, None, None, "", review["detail"]])
-        return
-    raw = wb.create_sheet("Oracle debt inputs")
-    raw.append(["Input", "USD (displayed in millions)", "Reporting date", "Due from", "Due through", "Form", "Filed",
-                "Accession", "Tag", "Context ID", "Scale", "Decimals", "Source", "Filing location", "Notes"])
-    stamp = lambda text: datetime.strptime(text, "%Y-%m-%d") if text else None
-    inputs = [*review["buckets"], *review["controls"].values()]
-    labels = [f["label"] for f in review["buckets"]] + ["Reported principal total", "Discounts and issuance costs", "Reported carrying debt"]
-    for fact, label in zip(inputs, labels):
-        raw.append([label, fact["value"], stamp(review["as_of"]), stamp(fact.get("due_start")),
-                    stamp(fact.get("due_end")), review["form"], stamp(review["filed"]), review["accession"],
-                    fact["tag"], fact["context_id"], fact["scale"], fact["decimals"], review["source_url"],
-                    review["location"], "Historical principal schedule; not rolled forward to August 31."])
-        raw.cell(raw.max_row, 2).font = Font(name="Arial", size=10, color="0000FF")
-    for i, fact in enumerate(review["buckets"], 2):
-        schedule.append([fact["label"], stamp(fact["due_start"]), stamp(fact["due_end"]),
-                         f"='Oracle debt inputs'!B{i}", "As of May 31, 2026",
-                         "Fiscal 2032 onward, combined" if i == 7 else
-                         "Full fiscal year; includes elapsed months at the August balance sheet" if i == 2 else ""])
-        schedule.cell(i, 4).font = Font(name="Arial", size=10, color="008000")
-    for label, formula, note in (
-        ("Calculated principal total", "=SUM(D2:D7)", "Excludes interest and leases"),
-        ("Reported principal total", "='Oracle debt inputs'!B8", ""),
-        ("Principal reconciliation difference", "=D8-D9", "Zero means the six buckets equal the reported total"),
-        ("Less: discounts and issuance costs", "='Oracle debt inputs'!B9", ""),
-        ("Calculated carrying debt", "=D8-D11", "Same May 31 date and filing"),
-        ("Reported carrying debt", "='Oracle debt inputs'!B10", ""),
-        ("Carrying reconciliation difference", "=D12-D13", "Zero means principal less costs equals carrying debt"),
-        ("Principal through fiscal 2031", "=SUM(D2:D6)", ""),
-        ("Share through fiscal 2031", "=D15/D8" if review["total"] > 0 else None, "Fraction displayed as %"),
-    ):
-        schedule.append([label, None, None, formula, "As of May 31, 2026", note])
-        if formula and "Oracle debt inputs" in formula:
-            schedule.cell(schedule.max_row, 4).font = Font(name="Arial", size=10, color="008000")
-    schedule["D16"].number_format = '0.0%;(0.0%);"-"'
-    schedule.append(["August schedule", None, None, None, "Unavailable", review["current_schedule_detail"]])
-    schedule.append(["Chart scope", None, None, None, "Annual buckets only", "Thereafter is combined in row 7 and is not plotted as one year."])
-    chart = BarChart()
-    chart.type = "bar"
-    chart.title = "Principal due by fiscal year at May 31, 2026"
-    chart.add_data(Reference(schedule, min_col=4, min_row=2, max_row=6), titles_from_data=False)
-    chart.set_categories(Reference(schedule, min_col=1, min_row=2, max_row=6))
-    chart.legend = None
-    # openpyxl calls the numeric axis y_axis even for a horizontal bar chart.
-    chart.y_axis.title = "USD billions"
-    chart.y_axis.scaling.min = 0
-    chart.y_axis.numFmt = "0.0,,,"
-    chart.x_axis.scaling.orientation = "maxMin"
-    chart.series[0].graphicalProperties.solidFill = "737985"
-    chart.series[0].graphicalProperties.line.solidFill = "737985"
-    chart.height, chart.width = 9, 19
-    schedule.add_chart(chart, "H2")
-    timeline = wb.create_sheet("Oracle financing")
-    timeline.append(["Event date", "Period start", "Period end", "Finding", "USD (displayed in millions)", "Amount basis",
-                     "Form", "Filed", "Accession", "Tag", "Context ID", "Source", "Exhibit", "Notes"])
-    for fact in review["quarter_flows"]:
-        raw.append([fact["label"], fact["value"], stamp(fact["period_end"]), stamp(fact["period_start"]),
-                    stamp(fact["period_end"]), fact["form"], stamp(fact["filed"]), fact["accession"],
-                    fact["tag"], fact.get("context_id"), fact.get("scale"), fact.get("decimals"),
-                    fact["source_url"], fact["location"], fact.get("detail", "")])
-        raw.cell(raw.max_row, 2).font = Font(name="Arial", size=10, color="0000FF")
-        value = f"='Oracle debt inputs'!B{raw.max_row}" if fact["value"] is not None else None
-        timeline.append([None, stamp(fact["period_start"]), stamp(fact["period_end"]), fact["label"], value,
-                         "Quarter cash flow, already in August balance sheet", fact["form"], stamp(fact["filed"]),
-                         fact["accession"], fact["tag"], fact.get("context_id"), fact["source_url"], "",
-                         "Debt repayments are not assigned to May maturity buckets; commercial-paper presentation differs in MD&A."
-                         if fact["label"] == "Debt repayments" else "Equity, not debt; net of issuance costs."])
-        timeline.cell(timeline.max_row, 5).font = Font(name="Arial", size=10, color="008000")
-    for accession, event in of.FILINGS.items():
-        timeline.append([stamp(event["event_date"]), None, None, event["kind"], None,
-                         "Document review; no additional amount summed", event["form"], stamp(event["filed"]),
-                         accession, None, None, event["source_url"], event["related"][0][1], event["finding"]])
-    for term in of.TERMS:
-        timeline.append([None, None, stamp(term["as_of"]), term["label"], term["capacity"],
-                         "Historical facility capacity, not cash or debt" if term["capacity"] is not None else "Contract definition",
-                         "10-K", stamp(review["filed"]), review["accession"], None, None, term["source_url"], None,
-                         term["detail"] + " " + ("Matures " + term["maturity"] if term["maturity"] else term["location"])])
-        if term["capacity"] is not None:
-            timeline.cell(timeline.max_row, 5).font = Font(name="Arial", size=10, color="0000FF")
-    for sheet, columns in ((schedule, (2, 3)), (raw, (3, 4, 5, 7)), (timeline, (1, 2, 3, 8))):
-        for col in columns:
-            for row in range(2, sheet.max_row + 1):
-                sheet.cell(row, col).number_format = "mmm d, yyyy"
-    usd = '#,##0,,;(#,##0,,);"-"'
-    for sheet, col in ((schedule, 4), (raw, 2), (timeline, 5)):
-        for row in range(2, sheet.max_row + 1):
-            if (sheet, row) != (schedule, 16):
-                sheet.cell(row, col).number_format = usd
-    for cell in (schedule["D10"], schedule["D14"]):
-        cell.number_format = '#,##0.00,,;(#,##0.00,,);"-"'
-    for sheet in (schedule, raw, timeline):
-        sheet.auto_filter.ref = f"A1:{sheet.cell(1, sheet.max_column).column_letter}{sheet.max_row}"
-
-
 def workbook(snapshots: list[dict]) -> bytes:
-    """A row per reported input, with Excel formulas referencing those rows for derived results."""
-    from io import BytesIO
-    from liquidity_pilot import PILOTS, leaf_inputs
-    from openpyxl import Workbook
-    from openpyxl.styles import Alignment, Font
-    wb = Workbook()
-    ws = wb.active
-    ws.title = "Debt and liquidity"
-    ws.append(["Ticker", "Metric", "Value", "Unit", "Period end", "Formula", "Status", "Notes"])
-    raw = wb.create_sheet("Liquidity inputs")
-    raw.append(["Ticker", "Metric", "Reported input", "Value (USD)", "Period end", "Form", "Filed",
-                "Accession", "Tag", "Selection rule", "Source document", "Notes",
-                "Context ID", "Scale", "Decimals", "Period start", "TTM role", "Coefficient"])
-    usd_format = '#,##0,,;(#,##0,,);"-"'
-    for snapshot in snapshots:
-        metric_rows = {}
-        for key, metric in snapshot["metrics"].items():
-            metric_rows[key] = ws.max_row + 1
-            refs = []
-            # Net debt references the two already exported metrics; no duplicate input rows.
-            derived_refs = {"net_debt": ("gross_debt", "cash", "-"),
-                            "free_cash_flow": ("operating_cash_flow", "capital_spending", "-"),
-                            "ocf_to_debt": ("operating_cash_flow", "gross_debt", "/"),
-                            "fcf_to_debt": ("free_cash_flow", "gross_debt", "/")}
-            if key not in derived_refs:
-                for fact in leaf_inputs(metric):
-                    raw.append([snapshot["ticker"], metric["label"], fact["label"], fact["value"],
-                                fact["period_end"], fact.get("form"), fact.get("filed"), fact.get("accession"),
-                                fact.get("tag"), fact.get("selection_rule"), fact.get("source_url") or snapshot["source_url"],
-                                "; ".join(fact.get("notes", [])) or fact.get("detail", ""),
-                                fact.get("context_id"), fact.get("scale"), fact.get("decimals"),
-                                fact.get("period_start"), fact.get("role"), fact.get("coefficient")])
-                    raw.cell(raw.max_row, 4).number_format = usd_format
-                    raw.cell(raw.max_row, 4).font = Font(name="Arial", size=10, color="0000FF")
-                    refs.append((fact.get("coefficient", 1), f"'Liquidity inputs'!D{raw.max_row}"))
-            value = None
-            if metric["value"] is not None:
-                if key in derived_refs:
-                    a, b, op = derived_refs[key]
-                    value = f"=C{metric_rows[a]}{op}C{metric_rows[b]}"
-                elif key == "current_ratio":
-                    value = "=" + "/".join(ref for _, ref in refs)
-                else:
-                    value = "=" + refs[0][1] + "".join(("-" if sign < 0 else "+") + ref for sign, ref in refs[1:])
-            notes = [*metric.get("notes", []), *metric.get("caveats", [])]
-            if metric.get("not_added"):
-                notes.append("Excluded: " + metric["not_added"])
-            ws.append([snapshot["ticker"], metric["label"], value,
-                       "USD (displayed in millions)" if metric["unit"] == "USD" else
-                       "fraction (displayed as %)" if metric["unit"] == "fraction" else "ratio",
-                       metric["period_end"], metric.get("formula") or metric.get("tag"),
-                       ("Reported" if key == "cash" else "Calculated") if metric["value"] is not None else "Unavailable",
-                       "; ".join(notes) or metric.get("detail", "")])
-            ws.cell(ws.max_row, 3).number_format = (usd_format if metric["unit"] == "USD" else
-                                                   '0.0%;(0.0%);"-"' if metric["unit"] == "fraction" else '0.00"x"')
-            if key == "cash":
-                ws.cell(ws.max_row, 3).font = Font(name="Arial", size=10, color="008000")
-    about = wb.create_sheet("About")
-    about.append(["Item", "Description"])
-    about.append(["Snapshot", "Saved pilot evidence checked October 14, 2026. Not live data or investment advice."])
-    about.append(["Units", "Dollar inputs are stored in USD and displayed in millions. Ratios are multiples."])
-    about.append(["Calculation", "Excel recalculates formulas when opened. Each formula traces to reported inputs."])
-    about.append(["Colors", "Blue numbers are reported inputs. Green formulas link a reported value from another sheet. Black formulas calculate results."])
-    about.append(["Scope", "Baseline borrowing excludes leases. FCF subtracts the reported capital-spending line from OCF; acquisitions are excluded. Historical flow/debt ratios are not repayment forecasts. This is not a complete obligations analysis."])
-    obligations = wb.create_sheet("Other obligations")
-    obligations.append(["Ticker", "Disclosure", "Amount as disclosed", "Reporting date", "Classification", "Filing location", "Accession", "Source", "Notes"])
-    for snapshot in snapshots:
-        for item in NOTES[snapshot["ticker"]]:
-            obligations.append([snapshot["ticker"], item["name"], item["amount"], item["date"], item["kind"],
-                                item["location"], PILOTS[snapshot["ticker"]]["accession"], snapshot["source_url"], item["detail"]])
-        add_oracle_sheets(wb, snapshot)
-    if "Oracle maturities" in wb.sheetnames:
-        about.append(["Oracle maturity review", "Historical principal schedule at May 31, 2026. Annual buckets exclude interest and leases. August 31 note and term-loan principal is dated in the individual Oracle workbook (Payment dates); commercial paper and current revolver availability are Unavailable. Inputs and subsequent document checks are in Oracle debt inputs and Oracle financing; no events are rolled into the balance sheet."])
-    for sheet in wb:
-        sheet.sheet_view.showGridLines = False
-        sheet.freeze_panes = "A2"
-        for row in sheet:
-            for cell in row:
-                color = cell.font.color.rgb if cell.font.color and cell.font.color.type == "rgb" else "000000"
-                cell.font = Font(name="Arial", size=10, color=color, bold=cell.row == 1)
-                cell.alignment = Alignment(vertical="top", wrap_text=True)
-        for col in sheet.columns:
-            sheet.column_dimensions[col[0].column_letter].width = 23
-    ws.column_dimensions["H"].width = 65
-    raw.column_dimensions["K"].width = 55
-    raw.column_dimensions["L"].width = 55
-    about.column_dimensions["B"].width = 90
-    if "Oracle maturities" in wb.sheetnames:
-        for name in ("Oracle maturities", "Oracle debt inputs", "Oracle financing"):
-            sheet = wb[name]
-            sheet.column_dimensions["A"].width = 38 if name != "Oracle financing" else 19
-            sheet.row_dimensions[1].height = 32
-            for row in range(2, sheet.max_row + 1):
-                sheet.row_dimensions[row].height = (34 if row < 17 else 65) if name == "Oracle maturities" else 88
-        for row in range(2, wb["Oracle maturities"].max_row + 1):
-            wb["Oracle maturities"].cell(row, 5).alignment = Alignment(vertical="top", wrap_text=True, indent=1)
-        wb["Oracle maturities"].column_dimensions["F"].width = 55
-        wb["Oracle debt inputs"].column_dimensions["M"].width = 55
-        wb["Oracle debt inputs"].column_dimensions["O"].width = 60
-        wb["Oracle financing"].column_dimensions["D"].width = 55
-        wb["Oracle financing"].column_dimensions["L"].width = 55
-        wb["Oracle financing"].column_dimensions["M"].width = 55
-        wb["Oracle financing"].column_dimensions["N"].width = 80
-    out = BytesIO()
-    wb.save(out)
-    return out.getvalue()
+    """Compatibility API using the common authored-template exporter."""
+    from summary_export import workbook as export
+    return export(snapshots)
 
 
 
@@ -699,23 +508,8 @@ def saved_workbook(snapshots, folder=None, ticker=None):
         if snapshots != saved["snapshots"]:
             return None
         if ticker == "LLY":
-            import annual_history_view
-            if manifest.get("annual_history_sha256") != annual_history_view.fingerprint():
-                return None
-            import export_guide
-            if manifest.get("guide_sha256") != export_guide.fingerprint():
-                return None
-            import core_charts
-            if manifest.get("charts_sha256") != core_charts.fingerprint():
-                return None
-            import company_history
-            if manifest.get("history_sha256") != company_history.fingerprint():
-                return None
-            import ratio_review
-            if manifest.get("ratios_sha256") != ratio_review.fingerprint():
-                return None
-            import borrowing_leases
-            if manifest.get("borrowing_leases_sha256") != borrowing_leases.fingerprint():
+            from workbook_manifest import common_matches
+            if not common_matches(manifest):
                 return None
             import funding_conclusions as funding
             if manifest.get("funding_sha256") != funding.fingerprint() or funding.load(ticker, folder) is None:
@@ -747,7 +541,7 @@ def render_download(st, snapshot, snapshots) -> None:
         content = saved_workbook(snapshots, ticker="LLY")
         if content:
             st.download_button("Download LLY review and evidence", content,
-                file_name="Lilly_Liquidity_2026-06-30.xlsx", mime=XLSX)
+                file_name="Lilly_Liquidity_2026-06-30.xlsx", mime=XLSX, key="review_download_LLY", on_click="ignore")
         else:
             st.caption("Lilly review workbook Unavailable: its saved sources must match the workbook.")
     if ticker == "VST":
@@ -756,7 +550,7 @@ def render_download(st, snapshot, snapshots) -> None:
         content = vl.workbook_bytes(review) if review else None
         if content:
             st.download_button("Download VST review and evidence", content,
-                file_name="Vistra_Liquidity_2026-06-30.xlsx", mime=XLSX)
+                file_name="Vistra_Liquidity_2026-06-30.xlsx", mime=XLSX, key="review_download_VST", on_click="ignore")
         else:
             st.caption("Vistra repayment workbook Unavailable: its saved review must match the workbook.")
     if ticker == "ORCL":
@@ -765,7 +559,7 @@ def render_download(st, snapshot, snapshots) -> None:
         content = ol.workbook_bytes(review) if review else None
         if content:
             st.download_button("Download ORCL review and evidence", content,
-                file_name="Oracle_Liquidity_2026-08-31.xlsx", mime=XLSX)
+                file_name="Oracle_Liquidity_2026-08-31.xlsx", mime=XLSX, key="review_download_ORCL", on_click="ignore")
         else:
             st.caption("Oracle cash-analysis workbook Unavailable: its saved source review must match the workbook.")
 
@@ -839,6 +633,6 @@ def render_app() -> None:
         content = saved_workbook(saved["snapshots"])
         if content:
             st.download_button("Download three-company metric summary (optional)", content,
-                file_name="Liquidity_Pilot_2026-10-14.xlsx", mime=XLSX)
+                file_name="Liquidity_Pilot_2026-10-14.xlsx", mime=XLSX, key="review_download_summary", on_click="ignore")
         else:
             st.caption("Combined workbook Unavailable: its saved sources must match the workbook.")

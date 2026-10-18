@@ -5,9 +5,9 @@ from pathlib import Path
 
 SAMPLE = Path(__file__).parent / "samples/borrowing_leases.json"
 LABELS = {
-    "us-gaap:DebtCurrent": "Current borrowing",
+    "us-gaap:DebtCurrent": "Current borrowing — short-term debt and current maturities",
     "us-gaap:LongTermDebtNoncurrent": "Noncurrent borrowing",
-    "us-gaap:NotesPayableCurrent": "Current borrowing",
+    "us-gaap:NotesPayableCurrent": "Current notes and other borrowing — instrument split unavailable",
     "us-gaap:LongTermNotesAndLoans": "Noncurrent borrowing",
     "us-gaap:LongTermDebtAndCapitalLeaseObligationsCurrent": "Long-term debt, current portion",
     "us-gaap:LongTermDebtAndCapitalLeaseObligations": "Long-term debt, noncurrent",
@@ -24,7 +24,10 @@ BORROWING_NOTES = {
 
 
 def fingerprint():
-    return hashlib.sha256(Path(__file__).read_bytes() + SAMPLE.read_bytes()).hexdigest()
+    return hashlib.sha256(Path(__file__).read_bytes() + SAMPLE.read_bytes() +
+                          (SAMPLE.parent / "funding_detail.json").read_bytes() +
+                          Path(__file__).with_name("funding_detail.py").read_bytes() +
+                          Path(__file__).with_name("fact_registry.py").read_bytes()).hexdigest()
 
 
 def build(snapshot, evidence=None):
@@ -83,7 +86,9 @@ def build(snapshot, evidence=None):
                       "detail": "No checked amount for leases not yet commenced is established in the saved pilot evidence. Unavailable does not mean zero.",
                       "source_url": snapshot["source_url"], "location": "Saved pilot evidence; 10-Q review",
                       "form": "10-Q", "filed": anchor["filed"], "accession": anchor["accession"]}
-    return {"ticker": ticker, "company": snapshot["company_name"], "period_end": anchor["period_end"],
+    from funding_detail import build as funding_build
+    import theme
+    return {"palette": theme.review_palette(), "funding_detail": funding_build(snapshot), "ticker": ticker, "company": snapshot["company_name"], "period_end": anchor["period_end"],
             "borrowing": borrowing, "baseline": debt["value"], "borrowing_note": BORROWING_NOTES[ticker],
             "leases": leases, "commitment": commitment,
             "latest_leases_available": all(f["value"] is not None and f["period_end"] == anchor["period_end"] for f in leases)}
@@ -100,6 +105,17 @@ def render_borrowing(model, money):
         output += f'<div class="lr-row"><span>{esc(fact["label"])}</span><strong>{esc(value)}</strong></div>'
     output += f'<div class="lr-row"><span>Baseline gross debt · sum above</span><strong>{esc(money(model["baseline"], 3))}</strong></div>'
     output += f'<p class="lr-meta">{esc(model["borrowing_note"])} These components exclude leases and are separate from total current liabilities.</p>'
+    detail = model["funding_detail"]
+    output += '<h4>Short-term funding structure</h4>'
+    for row in detail["rows"]:
+        shown = "$0 · reported" if row["value"] == 0 else money(row["value"], 3)
+        output += f'<div class="lr-row"><span>{esc(row["label"])}</span><strong>{esc(shown)}</strong></div><p class="lr-meta">{esc(row["status"])} · {esc(row["basis"])}</p>'
+    output += '<p>' + esc(detail["explanation"]) + '</p>'
+    if detail["history"]:
+        output += '<details><summary>Five-year short-term financing balances</summary><p class="lr-meta">USD millions; each fiscal year end. These are components already included in annual borrowing.</p><table><tr><th>Year</th><th>Short-term borrowing</th><th>Receivables financing</th></tr>'
+        for observation in detail["history"]:
+            output += f'<tr><td>{observation["year"]}</td><td>{observation["short_term"]["value"] / 1e6:,.0f}</td><td>{observation["receivables"]["value"] / 1e6:,.0f}</td></tr>'
+        output += '</table></details>'
     return output
 
 
@@ -125,3 +141,21 @@ def render_leases(model, money):
                        f'target="_blank" rel="noopener noreferrer">{esc(fact["supporting_location"])}</a>')
         output += '</div></article>'
     return output + '</section>'
+
+
+def liability_figure(snapshot):
+    """Total liabilities, not a debt composition chart; Vistra noncurrent is explicitly derived."""
+    import plotly.graph_objects as go
+    import funding_detail
+    import theme as T
+    m=funding_detail.build(snapshot)
+    fig=go.Figure()
+    for f,color in zip(m['liabilities'],(T.SERIES_BORROWING,T.SERIES_CASH)):
+        fig.add_bar(name=f['label'],x=[m['period_end']],y=[f['value']/1e9],marker_color=color,
+                    customdata=[[f['status'],f.get('formula') or f['tag']]],
+                    hovertemplate='%{fullData.name}<br>%{y:.3f}B · %{customdata[0]}<br>%{customdata[1]}<extra></extra>')
+    fig.update_layout(barmode='stack',height=300,margin=dict(l=50,r=8,t=35,b=35),paper_bgcolor='rgba(0,0,0,0)',
+                      plot_bgcolor='rgba(0,0,0,0)',font=dict(color=T.TEXT,size=12),legend=dict(orientation='h',y=1.02),
+                      yaxis=dict(title='USD billions',rangemode='tozero',gridcolor=T.BORDER))
+    basis='Vistra noncurrent is derived as total less current.' if snapshot['ticker']=='VST' else 'Both components are reported.'
+    return fig,f"Total liabilities at {m['period_end']}. {basis} Borrowing and recognized leases are already included; do not add them again."

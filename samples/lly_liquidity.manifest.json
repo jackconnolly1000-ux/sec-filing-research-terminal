@@ -1,9 +1,9 @@
 {
   "funding_sha256": "258ac0680f47732e1d5b71f9c6d217feee7cc94c3e0964d170bd8b0aa9872cfc",
-  "borrowing_leases_sha256": "50421a30cb6de6bf88ff9a0e4bc4110fe3e130fbbc3ac9155ab5d7ec1d31312d",
+  "borrowing_leases_sha256": "6703a3d67b8e955771da36a7e01c02d910eeb0c925404060042ace797b49a0fb",
   "ratios_sha256": {
     "ratio_review.py": "efe06493218912afce97c5d49a5a3093f8cfbf530b1cbbd1cb784851350a5f9d",
-    "liquidity_pilot.py": "779bc075a935cf852bb3b28177ca965d2d59f6409b9144ba515b91ca6bf08660",
+    "liquidity_pilot.py": "457bae8f65fb8a3f56a6892321e1caebb734a0499cff21d6e642727abb224bfd",
     "cash_generation.py": "422a475b9dde90f508cc5c5be5cbed292362a333e140cd8ac7cb9bb0abb945c7",
     "samples/liquidity_pilots.json": "7277641a931df81119db973b3340eb3e31249453c4fa706efcd4c3f333241760",
     "samples/lly_interest.json": "9a82bb4336cf164825a2502de10a0cdc038b139ec505485ea914d6c1e038a614",
@@ -15,7 +15,7 @@
     "facts": "b5533f1422a1336af21f7ec8d58ef917952cff7f1baf51c6071efaf287468da1",
     "ratios": {
       "ratio_review.py": "efe06493218912afce97c5d49a5a3093f8cfbf530b1cbbd1cb784851350a5f9d",
-      "liquidity_pilot.py": "779bc075a935cf852bb3b28177ca965d2d59f6409b9144ba515b91ca6bf08660",
+      "liquidity_pilot.py": "457bae8f65fb8a3f56a6892321e1caebb734a0499cff21d6e642727abb224bfd",
       "cash_generation.py": "422a475b9dde90f508cc5c5be5cbed292362a333e140cd8ac7cb9bb0abb945c7",
       "samples/liquidity_pilots.json": "7277641a931df81119db973b3340eb3e31249453c4fa706efcd4c3f333241760",
       "samples/lly_interest.json": "9a82bb4336cf164825a2502de10a0cdc038b139ec505485ea914d6c1e038a614",
@@ -23,20 +23,30 @@
       "samples/vistra_interest.json": "6a18cf366130ac1aeaf1edccb748b96a1abc3361864651a13b99504d2defa2d4"
     },
     "annual": {
-      "annual_history_view.py": "8cfaf23de3507e879ba98b9a6b449a4d6e539e5ca232c0bdb8ae58f5b47aa6ac",
+      "palette": "8fea625c399d6ffe0af48eb9e2b618fb64b8ed1f132779c80601f5abe40568df",
+      "annual_history_view.py": "4553be49b53bca5752996ea48df89430e5135a66c05d3bb076960e5648e71144",
       "annual_history.py": "0f07612478feaa28529fbdcb37d9dd70b7ac695996aa61e7272081c29aacc320",
       "samples/annual_history_reconciliation.json": "db4b88c8f0c1e0e3704ed49d63c253bb5a1ea79b7b28d78b8efdd2ff9031354f",
       "samples/annual_source_inventory.json": "dc5862826a37a44f47b3b80463306f1345fa826838cb046213769c361c53539f"
     }
   },
+  "annual_data_start": 143,
+  "annual_data_last": 168,
+  "annual_history_sha256": {
+    "palette": "8fea625c399d6ffe0af48eb9e2b618fb64b8ed1f132779c80601f5abe40568df",
+    "annual_history_view.py": "4553be49b53bca5752996ea48df89430e5135a66c05d3bb076960e5648e71144",
+    "annual_history.py": "0f07612478feaa28529fbdcb37d9dd70b7ac695996aa61e7272081c29aacc320",
+    "samples/annual_history_reconciliation.json": "db4b88c8f0c1e0e3704ed49d63c253bb5a1ea79b7b28d78b8efdd2ff9031354f",
+    "samples/annual_source_inventory.json": "dc5862826a37a44f47b3b80463306f1345fa826838cb046213769c361c53539f"
+  },
   "charts_sha256": {
-    "code": "f473d8bd17b68224088ce1ee71b9317410c0bb5bf40d7036b46f6fc72693ea31",
+    "code": "81540d686c94eba6af69e121aab9f3a2cea4d716ade650bc38afab5047f60df2",
     "history": {
       "code": "8b21e6a7684991dda5560816586cca049377c33360222c20e0e54c9c98dca3a9",
       "facts": "b5533f1422a1336af21f7ec8d58ef917952cff7f1baf51c6071efaf287468da1",
       "ratios": {
         "ratio_review.py": "efe06493218912afce97c5d49a5a3093f8cfbf530b1cbbd1cb784851350a5f9d",
-        "liquidity_pilot.py": "779bc075a935cf852bb3b28177ca965d2d59f6409b9144ba515b91ca6bf08660",
+        "liquidity_pilot.py": "457bae8f65fb8a3f56a6892321e1caebb734a0499cff21d6e642727abb224bfd",
         "cash_generation.py": "422a475b9dde90f508cc5c5be5cbed292362a333e140cd8ac7cb9bb0abb945c7",
         "samples/liquidity_pilots.json": "7277641a931df81119db973b3340eb3e31249453c4fa706efcd4c3f333241760",
         "samples/lly_interest.json": "9a82bb4336cf164825a2502de10a0cdc038b139ec505485ea914d6c1e038a614",
@@ -44,7 +54,8 @@
         "samples/vistra_interest.json": "6a18cf366130ac1aeaf1edccb748b96a1abc3361864651a13b99504d2defa2d4"
       },
       "annual": {
-        "annual_history_view.py": "8cfaf23de3507e879ba98b9a6b449a4d6e539e5ca232c0bdb8ae58f5b47aa6ac",
+        "palette": "8fea625c399d6ffe0af48eb9e2b618fb64b8ed1f132779c80601f5abe40568df",
+        "annual_history_view.py": "4553be49b53bca5752996ea48df89430e5135a66c05d3bb076960e5648e71144",
         "annual_history.py": "0f07612478feaa28529fbdcb37d9dd70b7ac695996aa61e7272081c29aacc320",
         "samples/annual_history_reconciliation.json": "db4b88c8f0c1e0e3704ed49d63c253bb5a1ea79b7b28d78b8efdd2ff9031354f",
         "samples/annual_source_inventory.json": "dc5862826a37a44f47b3b80463306f1345fa826838cb046213769c361c53539f"
@@ -52,7 +63,7 @@
     }
   },
   "guide_sha256": {
-    "code": "d9d3612a411de6f2eb33fd81da65e46e21cd9bb9e6b6d6c8ae95e65bc0ce664d",
+    "code": "e0b54b8c67932e0941d9b2874e627e9396a2a24b8fd78a79d890e69073a74f05",
     "layout": "e592dc4d570e4dcf530e76ea03939d4c0e94ccd43dda09187b3c6ecc30afb399"
   },
   "sources": {
@@ -61,13 +72,5 @@
     "lly_financing.json": "d13be6bc052357ce2745b83131784d2c52c95ab1addcef36fa81c7965ed9425e",
     "lly_interest.json": "9a82bb4336cf164825a2502de10a0cdc038b139ec505485ea914d6c1e038a614"
   },
-  "workbook_sha256": "49a37ca20a1e9e75bd3a88aa7128493440d54f33cf381623356d34e46f82aa89",
-  "annual_history_sha256": {
-    "annual_history_view.py": "8cfaf23de3507e879ba98b9a6b449a4d6e539e5ca232c0bdb8ae58f5b47aa6ac",
-    "annual_history.py": "0f07612478feaa28529fbdcb37d9dd70b7ac695996aa61e7272081c29aacc320",
-    "samples/annual_history_reconciliation.json": "db4b88c8f0c1e0e3704ed49d63c253bb5a1ea79b7b28d78b8efdd2ff9031354f",
-    "samples/annual_source_inventory.json": "dc5862826a37a44f47b3b80463306f1345fa826838cb046213769c361c53539f"
-  },
-  "annual_data_start": 139,
-  "annual_data_last": 164
+  "workbook_sha256": "7edfe17c197c6425cda97f5ef6a9fa6e1de3dcb8dfba94705a3daf05e3f363e0"
 }

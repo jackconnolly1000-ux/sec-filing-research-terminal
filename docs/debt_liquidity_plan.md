@@ -31,7 +31,7 @@ The tool is for my own stock research and to show accounting, analysis, product 
 | Dated borrowing and lease presentation | `borrowing_leases.py`, `samples/borrowing_leases.json` | Release 1 step 3 merged as PR #43 (`0f7df28`): app and individual workbooks share the checked borrowing components and selected lease facts. June LLY/VST amounts stay Unavailable, December facts retain their dates, Oracle uncommenced leases stay a separate commitment. No complete extraction is claimed. |
 | Ratio reconciliation | `ratio_review.py`, `tests/offline/ratio_sheet.mjs` | Release 1 step 4 merged as PR #44: exact periods, units, versions, formulas and nested provenance reconciled. All three individual workbooks include the core ratio table and link their existing interest build. Checked financial values are unchanged. See `ratio_reconciliation.md`. |
 | Two-date history and core charts | `company_history.py`, `core_charts.py`, shared workbook builders | Checked annual and latest balances, overlapping FY/TTM flows, two formula-backed native charts per individual export. Older VST debt and its dependent ratios stay Unavailable. |
-| Individual Excel parity and release audit | `export_guide.py`, `tests/offline/audit_release1.py` | Contents guide, dates, source metadata, ratio/history/chart/conclusion parity, manifest gates and actual-download verification. Source URLs remain copyable text. See `excel_parity.md` and `release1_reconciliation.md`. |
+| Individual Excel parity and release audit | `export_guide.py`, `tests/offline/audit_release1.py` | Contents guide, dates, source metadata, ratio/history/chart/conclusion parity, manifest gates and actual-download verification. Source URLs are native clickable links. See `excel_parity.md` and `release1_reconciliation.md`. |
 | Complete lease extraction and obligations review | none | Not built; selected manually checked disclosures do not establish completeness. |
 
 ## First-release scope
@@ -172,3 +172,10 @@ Release 1 order (agreed Oct 16, 2026). One step per pull request; each keeps the
 ## Next release
 
 Release 2, a liquidity stress simulation (Oracle first, illustrative, never a funding conclusion), is planned in [`release2_plan.md`](release2_plan.md).
+
+
+## Audit implementation checkpoint — October 18, 2026
+
+The audit branch adds coordinated scenario runs, shared current-funding detail and liability classifications, a single source-based workbook build, annual maturity and debt-detail views, and common export utilities. The checked borrowing, cash, ratios and funding conclusions are unchanged. Current borrowing is disaggregated only where the saved filing supports it. Full liability classifications are separate from borrowing; leases are never added again.
+
+Historical OCF/year-end borrowing is an optional analytical view, not leverage, a covenant measure or repayment coverage. Debt movement and principal-plus-interest trajectories remain deferred. The immediate acceptance task is full regression/source reconciliation, workbook recalculation and visible app checks; deployment is a separate verification boundary. See `audit_execution_2026-10-18.md`.

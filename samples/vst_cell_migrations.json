@@ -1,0 +1,291 @@
+{
+  "ticker": "VST",
+  "migrations": [
+    {
+      "sheet": "Data",
+      "from": "B130",
+      "to": "B37",
+      "identity": [
+        "0001692819-26-000019",
+        "vistra:AccountsReceivableSecuritizationProgramAmountsBorrowed",
+        "c-8",
+        "2026-06-30T00:00:00.000Z",
+        "USD"
+      ],
+      "treatment": "Same-sheet formula alias; original address retained."
+    },
+    {
+      "sheet": "Data",
+      "from": "B139",
+      "to": "B127",
+      "identity": [
+        "0001692819-26-000019",
+        "us-gaap:LongTermDebtAndCapitalLeaseObligationsCurrent",
+        null,
+        "2026-06-30T00:00:00.000Z",
+        "USD"
+      ],
+      "treatment": "Same-sheet formula alias; original address retained."
+    },
+    {
+      "sheet": "Data",
+      "from": "B140",
+      "to": "B129",
+      "identity": [
+        "0001692819-26-000019",
+        "us-gaap:ShortTermBorrowings",
+        null,
+        "2026-06-30T00:00:00.000Z",
+        "USD"
+      ],
+      "treatment": "Same-sheet formula alias; original address retained."
+    },
+    {
+      "sheet": "Data",
+      "from": "B141",
+      "to": "B37",
+      "identity": [
+        "0001692819-26-000019",
+        "vistra:AccountsReceivableSecuritizationProgramAmountsBorrowed",
+        "c-8",
+        "2026-06-30T00:00:00.000Z",
+        "USD"
+      ],
+      "treatment": "Same-sheet formula alias; original address retained."
+    },
+    {
+      "sheet": "Data",
+      "from": "B159",
+      "to": "B127",
+      "identity": [
+        "0001692819-26-000019",
+        "us-gaap:LongTermDebtAndCapitalLeaseObligationsCurrent",
+        null,
+        "2026-06-30T00:00:00.000Z",
+        "USD"
+      ],
+      "treatment": "Same-sheet formula alias; original address retained."
+    },
+    {
+      "sheet": "Data",
+      "from": "B160",
+      "to": "B128",
+      "identity": [
+        "0001692819-26-000019",
+        "us-gaap:LongTermDebtAndCapitalLeaseObligations",
+        null,
+        "2026-06-30T00:00:00.000Z",
+        "USD"
+      ],
+      "treatment": "Same-sheet formula alias; original address retained."
+    },
+    {
+      "sheet": "Data",
+      "from": "B161",
+      "to": "B129",
+      "identity": [
+        "0001692819-26-000019",
+        "us-gaap:ShortTermBorrowings",
+        null,
+        "2026-06-30T00:00:00.000Z",
+        "USD"
+      ],
+      "treatment": "Same-sheet formula alias; original address retained."
+    },
+    {
+      "sheet": "Data",
+      "from": "B162",
+      "to": "B37",
+      "identity": [
+        "0001692819-26-000019",
+        "vistra:AccountsReceivableSecuritizationProgramAmountsBorrowed",
+        "c-8",
+        "2026-06-30T00:00:00.000Z",
+        "USD"
+      ],
+      "treatment": "Same-sheet formula alias; original address retained."
+    },
+    {
+      "sheet": "Data",
+      "from": "B179",
+      "to": "B150",
+      "identity": [
+        "0001692819-26-000006",
+        "us-gaap:ShortTermBorrowings",
+        "c-7",
+        "2025-12-31T00:00:00.000Z",
+        "USD"
+      ],
+      "treatment": "Same-sheet formula alias; original address retained."
+    },
+    {
+      "sheet": "Data",
+      "from": "B180",
+      "to": "B151",
+      "identity": [
+        "0001692819-26-000006",
+        "vistra:AccountsReceivableSecuritizationProgramAmountsBorrowed",
+        "c-7",
+        "2025-12-31T00:00:00.000Z",
+        "USD"
+      ],
+      "treatment": "Same-sheet formula alias; original address retained."
+    },
+    {
+      "sheet": "Data",
+      "from": "B193",
+      "to": "B142",
+      "identity": [
+        "0001692819-23-000005",
+        "us-gaap:ShortTermBorrowings",
+        "ia3b2a182ae154576b40b5b2e4dee003d_I20211231",
+        "2021-12-31T00:00:00.000Z",
+        "USD"
+      ],
+      "treatment": "Same-sheet formula alias; original address retained."
+    },
+    {
+      "sheet": "Data",
+      "from": "B194",
+      "to": "B143",
+      "identity": [
+        "0001692819-23-000005",
+        "vistra:AccountsReceivableSecuritizationProgramAmountsBorrowed",
+        "ia3b2a182ae154576b40b5b2e4dee003d_I20211231",
+        "2021-12-31T00:00:00.000Z",
+        "USD"
+      ],
+      "treatment": "Same-sheet formula alias; original address retained."
+    },
+    {
+      "sheet": "Data",
+      "from": "B197",
+      "to": "B144",
+      "identity": [
+        "0001692819-23-000005",
+        "us-gaap:ShortTermBorrowings",
+        "if410d9b826a0474c87033fbeeeeee9da_I20221231",
+        "2022-12-31T00:00:00.000Z",
+        "USD"
+      ],
+      "treatment": "Same-sheet formula alias; original address retained."
+    },
+    {
+      "sheet": "Data",
+      "from": "B198",
+      "to": "B145",
+      "identity": [
+        "0001692819-23-000005",
+        "vistra:AccountsReceivableSecuritizationProgramAmountsBorrowed",
+        "if410d9b826a0474c87033fbeeeeee9da_I20221231",
+        "2022-12-31T00:00:00.000Z",
+        "USD"
+      ],
+      "treatment": "Same-sheet formula alias; original address retained."
+    },
+    {
+      "sheet": "Data",
+      "from": "B201",
+      "to": "B146",
+      "identity": [
+        "0001692819-24-000012",
+        "us-gaap:ShortTermBorrowings",
+        "c-9",
+        "2023-12-31T00:00:00.000Z",
+        "USD"
+      ],
+      "treatment": "Same-sheet formula alias; original address retained."
+    },
+    {
+      "sheet": "Data",
+      "from": "B202",
+      "to": "B147",
+      "identity": [
+        "0001692819-24-000012",
+        "vistra:AccountsReceivableSecuritizationProgramAmountsBorrowed",
+        "c-9",
+        "2023-12-31T00:00:00.000Z",
+        "USD"
+      ],
+      "treatment": "Same-sheet formula alias; original address retained."
+    },
+    {
+      "sheet": "Data",
+      "from": "B205",
+      "to": "B148",
+      "identity": [
+        "0001692819-26-000006",
+        "us-gaap:ShortTermBorrowings",
+        "c-8",
+        "2024-12-31T00:00:00.000Z",
+        "USD"
+      ],
+      "treatment": "Same-sheet formula alias; original address retained."
+    },
+    {
+      "sheet": "Data",
+      "from": "B206",
+      "to": "B149",
+      "identity": [
+        "0001692819-26-000006",
+        "vistra:AccountsReceivableSecuritizationProgramAmountsBorrowed",
+        "c-8",
+        "2024-12-31T00:00:00.000Z",
+        "USD"
+      ],
+      "treatment": "Same-sheet formula alias; original address retained."
+    },
+    {
+      "sheet": "Data",
+      "from": "B207",
+      "to": "B177",
+      "identity": [
+        "0001692819-26-000006",
+        "us-gaap:LongTermDebtAndCapitalLeaseObligationsCurrent",
+        "c-7",
+        "2025-12-31T00:00:00.000Z",
+        "USD"
+      ],
+      "treatment": "Same-sheet formula alias; original address retained."
+    },
+    {
+      "sheet": "Data",
+      "from": "B208",
+      "to": "B178",
+      "identity": [
+        "0001692819-26-000006",
+        "us-gaap:LongTermDebtAndCapitalLeaseObligations",
+        "c-7",
+        "2025-12-31T00:00:00.000Z",
+        "USD"
+      ],
+      "treatment": "Same-sheet formula alias; original address retained."
+    },
+    {
+      "sheet": "Data",
+      "from": "B209",
+      "to": "B150",
+      "identity": [
+        "0001692819-26-000006",
+        "us-gaap:ShortTermBorrowings",
+        "c-7",
+        "2025-12-31T00:00:00.000Z",
+        "USD"
+      ],
+      "treatment": "Same-sheet formula alias; original address retained."
+    },
+    {
+      "sheet": "Data",
+      "from": "B210",
+      "to": "B151",
+      "identity": [
+        "0001692819-26-000006",
+        "vistra:AccountsReceivableSecuritizationProgramAmountsBorrowed",
+        "c-7",
+        "2025-12-31T00:00:00.000Z",
+        "USD"
+      ],
+      "treatment": "Same-sheet formula alias; original address retained."
+    }
+  ]
+}

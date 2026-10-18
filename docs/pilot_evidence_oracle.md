@@ -195,3 +195,12 @@ source locations and the formula-based Excel download are documented in
 ## Release 1 borrowing and lease presentation (October 16, 2026)
 
 The app and individual workbook now separate the checked borrowing components, recognized lease liabilities and leases not yet commenced. All amounts keep their own dates; missing latest-date lease amounts remain Unavailable. No borrowing, net-debt or coverage value changes. See [the reconciliation and remaining gaps](borrowing_lease_presentation.md).
+
+
+## Current funding detail checked October 18, 2026
+
+Current borrowing is a combined carrying amount. Oracle reported $7.625B at August 31, 2026 without an instrument split. The checked calendar identifies $7.317B of note and term-loan principal due over the next twelve months, excluding commercial paper. These bases differ: subtraction cannot establish CP. May CP of $1.468B and an undrawn $10B revolver are historical; August CP and drawable revolver capacity remain Unavailable.
+
+The source checkpoint is `samples/funding_detail.json`, rebuilt by `tests/offline/build_funding_detail.py`. It records exact contexts, permitted dimensions, source hashes and a fact registry. Current/noncurrent **total liabilities** are a separate classification from borrowing; recognized leases already sit within liabilities and are never added a second time.
+
+Noncurrent liabilities are $188,549M, in context `C_6aa4717d-0551-43f7-9cf4-c8a0049a656e`. August current operating leases of $4,027M and finance leases of $749M remain separate from borrowing.

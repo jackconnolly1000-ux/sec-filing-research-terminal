@@ -407,7 +407,8 @@ def by_decade(review: dict) -> list | None:
 
 
 def fingerprint() -> str:
-    return hashlib.sha256(SAMPLE.read_bytes()).hexdigest()
+    return hashlib.sha256(SAMPLE.read_bytes() + SAMPLE.with_name("oracle_coupon_sources.json").read_bytes() + Path(__file__).with_name("debt_detail.py").read_bytes() +
+                          Path(__file__).with_name("oracle_principal_view.py").read_bytes()).hexdigest()
 
 
 def load(folder: Path | None = None) -> dict | None:
