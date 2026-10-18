@@ -104,3 +104,29 @@ chart parts and caches are retained in the final workbook unless explicitly chan
 Desktop Excel recalculation itself is not available in this environment; new formulas
 are recalculated and mutation-tested in Artifact Tool and independently checked in the
 saved files. The optional combined summary and separate scenario workbook stay unchanged.
+
+## Five-year charts (October 17, 2026)
+
+Each review and individual workbook adds two charts under the five-year table, from the same checked rows
+(`annual_history_view.build`):
+
+1. **Fiscal-year-end cash and baseline borrowing**: balances at each fiscal year end, one scale for both.
+2. **Annual OCF, capital spending and FCF**: capital spending is drawn below zero as a use of cash, as in the
+   latest-TTM chart; FCF is the result, not another flow.
+
+Annual periods stay separate from the TTM: the charts show completed fiscal years only, with their own dates. The
+Lilly reclassification and Vistra comparative-source notes still follow the table and charts. Negative values keep
+their sign (Vistra FY2021 OCF −$206M; FCF negative in FY2021–22). A missing value draws no bar and reads
+Unavailable; in Excel the series cells return `NA()`, which plots as a gap, never zero.
+
+Excel: `tests/offline/add_annual_history_charts.py` adds native clustered-column charts to the Annual history sheet
+(rows 24–40 and 42–58), bound to the table rows and to one helper row (61: `=IF(ISNUMBER(B9),-B9,NA())`, capital
+spending as a use). Chart caches are seeded from the table's cached values. Only that sheet, its new relationships,
+one drawing, two charts and `[Content_Types].xml` change; every other part is byte-identical. Manifests rebind the
+workbook SHA-256 and the annual-history, history and core-chart fingerprints (`--rebind` after a later code edit).
+The `--charts` branch in `integrate_annual_history.mjs` was not used: it needs Node and the Artifact Tool runtime,
+and its plain `=B7` chart links would plot a missing value as zero.
+
+Checked in desktop Excel (PowerShell COM): full recalculation with 0 error cells; every formula's cached value
+equals Excel's recalculation (LLY 200, Oracle 309, Vistra 242); all pre-existing formulas and native charts unchanged;
+both charts exported and inspected.

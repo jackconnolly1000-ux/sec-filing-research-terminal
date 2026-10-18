@@ -32,7 +32,7 @@ From the first-time-reader obstacles in [`presentation_acceptance.md`](presentat
 | # | Item | Status |
 |---|---|---|
 | 12 | Five fiscal years of annual cash, gross debt, OCF, capex and FCF per company from SEC companyfacts (fixtures in `tests/fixtures`), each reconciled to the filing figures. A year that doesn't reconcile is Unavailable with its reason. Planned and agreed before it's built. | Implemented: 15 annual filings, 75 measures, app and individual workbook annual tables; see annual_history_reconciliation.md. Printed locations and Vistra annual borrowing updated. |
-| 13 | Trend charts from item 12 in the app and the workbooks, with gaps for Unavailable years. | Depends on item 12; not started |
+| 13 | Trend charts from item 12 in the app and the workbooks, with gaps for Unavailable years. | Merged, PR #83: two five-year charts per company (fiscal-year-end cash and borrowing; annual OCF, capital spending and FCF) |
 | 14 | Oracle sources-and-uses chart from checked figures only (starting cash, OCF, capex, dividends, dated principal), labelled historical, not a forecast. | Existing quarterly bridge covers the checked quarter. Inspect before adding a distinct view; not started. |
 
 ## D. Stress scenario additions

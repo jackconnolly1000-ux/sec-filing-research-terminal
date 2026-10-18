@@ -23,7 +23,7 @@
       "samples/vistra_interest.json": "6a18cf366130ac1aeaf1edccb748b96a1abc3361864651a13b99504d2defa2d4"
     },
     "annual": {
-      "annual_history_view.py": "69d48d27c8a103789051e6bd98dcb87fced116de59a15448f6d32e0e531329bc",
+      "annual_history_view.py": "a39ac5a2647696bf4a71f15a35a04de769c0f6d60ab765608d62920ba1e0098a",
       "annual_history.py": "0f07612478feaa28529fbdcb37d9dd70b7ac695996aa61e7272081c29aacc320",
       "samples/annual_history_reconciliation.json": "db4b88c8f0c1e0e3704ed49d63c253bb5a1ea79b7b28d78b8efdd2ff9031354f",
       "samples/annual_source_inventory.json": "dc5862826a37a44f47b3b80463306f1345fa826838cb046213769c361c53539f"
@@ -44,7 +44,7 @@
         "samples/vistra_interest.json": "6a18cf366130ac1aeaf1edccb748b96a1abc3361864651a13b99504d2defa2d4"
       },
       "annual": {
-        "annual_history_view.py": "69d48d27c8a103789051e6bd98dcb87fced116de59a15448f6d32e0e531329bc",
+        "annual_history_view.py": "a39ac5a2647696bf4a71f15a35a04de769c0f6d60ab765608d62920ba1e0098a",
         "annual_history.py": "0f07612478feaa28529fbdcb37d9dd70b7ac695996aa61e7272081c29aacc320",
         "samples/annual_history_reconciliation.json": "db4b88c8f0c1e0e3704ed49d63c253bb5a1ea79b7b28d78b8efdd2ff9031354f",
         "samples/annual_source_inventory.json": "dc5862826a37a44f47b3b80463306f1345fa826838cb046213769c361c53539f"
@@ -59,10 +59,10 @@
   "financing_sha256": "d913c737cfa41886784dd008c92f5c30d5cbb59969f238ed2d6eae8d7ef113ad",
   "revolver_sha256": "764353f4555debbf5af99cd28f0af24550a9f10aee9937703ff59bdbe9541db7",
   "interest_sha256": "0aa090b90a9f7207b693697be60f215bb6c4e5177fa3423a3d5e6e56d3ac6cec",
-  "workbook_sha256": "fbe53df125547269605aa3f37012d26e667a9194cf24c13b79c877502c80e4ad",
+  "workbook_sha256": "1ce332a5ede4cdcad2a38ab500b7f2626f0f48dab03441761f69334051fab3d8",
   "principal_sha256": "c57fcb28a01c22e88854250d8244a376ff539d0af81e233fed0fa67251ae4c45",
   "annual_history_sha256": {
-    "annual_history_view.py": "69d48d27c8a103789051e6bd98dcb87fced116de59a15448f6d32e0e531329bc",
+    "annual_history_view.py": "a39ac5a2647696bf4a71f15a35a04de769c0f6d60ab765608d62920ba1e0098a",
     "annual_history.py": "0f07612478feaa28529fbdcb37d9dd70b7ac695996aa61e7272081c29aacc320",
     "samples/annual_history_reconciliation.json": "db4b88c8f0c1e0e3704ed49d63c253bb5a1ea79b7b28d78b8efdd2ff9031354f",
     "samples/annual_source_inventory.json": "dc5862826a37a44f47b3b80463306f1345fa826838cb046213769c361c53539f"

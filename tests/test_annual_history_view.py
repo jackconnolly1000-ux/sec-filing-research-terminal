@@ -75,3 +75,69 @@ class AnnualPresentation(unittest.TestCase):
                 if ticker=='LLY':
                     self.assertNotIn('p. 56; cash flows p. 58',str([r for r in data.values]))
             finally:values.close();formulas.close()
+
+
+class AnnualCharts(unittest.TestCase):
+    """Two five-year charts per company, drawn from the same checked rows in the app and in Excel."""
+    STEMS = {'LLY': 'lly', 'ORCL': 'oracle', 'VST': 'vistra'}
+
+    def test_app_draws_both_charts_from_the_checked_rows(self):
+        import html as h
+        for ticker in self.STEMS:
+            m = a.build(ticker); shown = h.unescape(a.charts(m))
+            self.assertIn('Fiscal-year-end cash and baseline borrowing', shown)
+            self.assertIn('Annual operating cash flow, capital spending and FCF', shown)
+            for r in m['rows']:
+                for key in ('cash', 'gross_debt', 'operating_cash_flow', 'free_cash_flow'):
+                    self.assertIn(a._usd(r['metrics'][key]['value']), shown)
+                self.assertIn(a._usd(-r['metrics']['capital_spending']['value']), shown)   # a use, left of zero
+            self.assertEqual(shown.count('class="lr-bal-row"'), 10)
+            self.assertEqual(shown.count('class="lr-bar-row"'), 15)
+        self.assertIn('−$206M', h.unescape(a.charts(a.build('VST'))))           # FY2021 OCF stays negative
+        # Charts follow the table and precede the reclassification and source notes
+        full = h.unescape(a.render('LLY'))
+        self.assertLess(full.index('</table>'), full.index('Fiscal-year-end cash and baseline borrowing'))
+        self.assertLess(full.index('Annual operating cash flow'), full.index('classification, not new cash generation'))
+
+    def test_a_missing_value_is_a_gap_not_a_zero_bar(self):
+        m = deepcopy(a.build('VST'))
+        m['rows'][1]['metrics']['gross_debt']['value'] = None
+        m['rows'][2]['metrics']['free_cash_flow']['value'] = None
+        shown = a.charts(m)
+        self.assertEqual(shown.count('>Unavailable<'), 2)                     # visible values, one per gap
+        import re
+        track = re.search(r'title="Baseline borrowing, Dec 31, 2022: Unavailable">(.*?)</div>', shown).group(1)
+        self.assertEqual(track, '')                                              # an empty track: no bar at all
+        self.assertNotIn('$0', shown)
+
+    def test_excel_charts_bind_to_the_annual_table_and_cache_its_values(self):
+        import zipfile, re
+        for ticker, stem in self.STEMS.items():
+            path = ROOT / f'samples/{stem}_liquidity.xlsx'
+            ws = load_workbook(path)['Annual history']; vs = load_workbook(path, data_only=True)['Annual history']
+            self.assertEqual(len(ws._charts), 2)
+            for c in 'BCDEF':
+                self.assertEqual(ws[f'{c}61'].value, f'=IF(ISNUMBER({c}9),-{c}9,NA())')
+                self.assertEqual(vs[f'{c}61'].value, -vs[f'{c}9'].value)
+            m = a.build(ticker)
+            with zipfile.ZipFile(path) as z:
+                charts = [z.read(n).decode() for n in z.namelist() if n.startswith('xl/drawings/charts/') and "'Annual history'" in z.read(n).decode()]
+            self.assertEqual(len(charts), 2)
+            refs = sorted(set(re.findall(r"<c:f>'Annual history'!\$B\$(\d+):\$F\$\1</c:f>", ''.join(charts))))
+            self.assertEqual(refs, sorted(['5', '6', '7', '8', '10', '61']))      # FY labels, the table rows, the helper row
+            balances = next(x for x in charts if 'Fiscal-year-end cash' in x)
+            cash = [float(v) for v in re.findall(r'<c:pt idx="\d"><c:v>([-\d.e+]+)</c:v>', balances.split('$B$6:$F$6')[1].split('</c:numCache>')[0])]
+            self.assertEqual(cash, [r['metrics']['cash']['value'] for r in m['rows']])
+            for x in charts:
+                self.assertIn('<c:dispBlanksAs val="gap"/>', x)
+
+    def test_chart_writer_leaves_a_missing_point_out(self):
+        import importlib.util
+        spec = importlib.util.spec_from_file_location('charts', ROOT / 'tests/offline/add_annual_history_charts.py')
+        mod = importlib.util.module_from_spec(spec); spec.loader.exec_module(mod)
+        labels = ['FY2021', 'FY2022', 'FY2023', 'FY2024', 'FY2025']
+        values = {6: ('Cash', [1.0, None, 3.0, 4.0, 5.0]), 7: ('Borrowing', [1.0, 2.0, 3.0, 4.0, 5.0])}
+        xml = mod.chart_xml('balances', labels, values)
+        cash = xml.split('$B$6:$F$6')[1].split('</c:numCache>')[0]
+        self.assertNotIn('<c:pt idx="1">', cash)                                # no cached point: no column
+        self.assertIn('<c:ptCount val="5"/>', cash)

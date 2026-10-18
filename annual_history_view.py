@@ -61,6 +61,65 @@ def build(ticker):
             "as_of": captured["as_of"]}
 
 
+def _usd(value):
+    """$12.34B or $850M; a missing value is Unavailable, never zero."""
+    if value is None:
+        return "Unavailable"
+    sign = "−" if value < 0 else ""
+    return f"{sign}${abs(value) / 1e9:,.2f}B" if abs(value) >= 1e9 else f"{sign}${abs(value) / 1e6:,.0f}M"
+
+
+def charts(model):
+    """Two five-year charts from the same checked rows as the table: fiscal-year-end balances, then annual flows.
+
+    Each chart has one scale across all five years. Capital spending is drawn left of zero as a use of cash, as in
+    the latest-TTM chart above; FCF is the result, not another flow. A missing value has no bar and says Unavailable."""
+    from datetime import date
+    from ui import esc
+    rows = model["rows"]
+    day = lambda iso: (lambda d: f"{d:%b} {d.day}, {d:%Y}")(date.fromisoformat(iso))
+    value = lambda row, key: row["metrics"][key]["value"]
+    out = '<div class="lr-annual-charts">'
+    # 1. Balances: cash and borrowing panels on one shared scale
+    known = [value(r, k) for r in rows for k in ("cash", "gross_debt") if value(r, k) is not None]
+    top = max(known, default=1) or 1
+    out += ('<h4 class="lr-annual-title">Fiscal-year-end cash and baseline borrowing</h4><p class="lr-meta">Balances at each fiscal year end, '
+            f'{esc(day(rows[0]["source"]["period_end"]))} to {esc(day(rows[-1]["source"]["period_end"]))} · one scale for both panels</p>'
+            '<div class="lr-bal-grid">')
+    for key, name, kind in (("cash", "Cash and equivalents", "cash"), ("gross_debt", "Baseline borrowing", "borrowing")):
+        out += (f'<div class="lr-bal-panel" role="figure" aria-label="{esc(name)} at five fiscal year ends">'
+                f'<h4><span class="lr-swatch lr-{kind}" aria-hidden="true"></span>{esc(name)}</h4>')
+        for r in rows:
+            v = value(r, key)
+            bar = (f'<span class="lr-bal-bar lr-{kind}" style="width:{max(v / top * 100, 0.5):.4f}%"></span>'
+                   if v is not None else '')
+            out += (f'<div class="lr-bal-row"><span class="lr-bal-date">FY{r["fiscal_year"]}</span>'
+                    f'<div class="lr-bal-track" title="{esc(name)}, {esc(day(r["source"]["period_end"]))}: {esc(_usd(v))}">{bar}</div>'
+                    f'<strong class="lr-bal-value">{esc(_usd(v))}</strong></div>')
+        out += '</div>'
+    out += '</div>'
+    # 2. Flows: OCF, capital spending (a use) and FCF per fiscal year, one diverging scale
+    flows = [(r, [("Operating cash flow", value(r, "operating_cash_flow")),
+                  ("Capital spending", None if value(r, "capital_spending") is None else -value(r, "capital_spending")),
+                  ("Free cash flow", value(r, "free_cash_flow"))]) for r in rows]
+    top = max((abs(v) for _, items in flows for _, v in items if v is not None), default=1) or 1
+    out += ('<h4 class="lr-annual-title">Annual operating cash flow, capital spending and FCF</h4><p class="lr-meta">'
+            '<span class="ol-key out" aria-hidden="true"></span>Uses cash, left of zero · '
+            '<span class="ol-key in" aria-hidden="true"></span>adds cash or a positive result, right of zero · '
+            'one scale for all five years</p><div class="lr-chart">')
+    for r, items in flows:
+        out += f'<div class="lr-annual-year">FY{r["fiscal_year"]} <span class="lr-meta">{esc(day(r["source"]["period_start"]))} – {esc(day(r["source"]["period_end"]))}</span></div>'
+        for name, v in items:
+            width = abs(v) / top * 100 if v else 0
+            bar = f'<span class="lr-bar{" in" if v and v > 0 else ""}" style="width:{width:.4f}%"></span>' if v else ''
+            out += (f'<div class="lr-bar-row"><span>{esc(name)}</span><div class="lr-track" aria-hidden="true">'
+                    f'<div class="lr-half">{bar if v is not None and v < 0 else ""}</div>'
+                    f'<div class="lr-half">{bar if v is not None and v > 0 else ""}</div></div>'
+                    f'<span class="lr-bar-value">{esc(_usd(v))}</span></div>')
+    return out + ('</div><p class="lr-meta">FCF = OCF − capital spending; the FCF bar is the result, not another cash '
+                  'flow to add. These are completed fiscal years; the latest TTM is a separate, overlapping period.</p></div>')
+
+
 def render(ticker):
     from ui import esc
     model = build(ticker)
@@ -79,6 +138,7 @@ def render(ticker):
             out += f'<td title="{esc(metric.get("detail", ""))}">{esc(text)}</td>'
         out += '</tr>'
     out += '</tbody></table></div>'
+    out += charts(model)
     for note in model["notes"]:
         out += f'<p class="lr-meta">{esc(note)}</p>'
     out += '<details><summary>Annual filing sources and presentation choices</summary>'
