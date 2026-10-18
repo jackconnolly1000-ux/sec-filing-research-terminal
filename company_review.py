@@ -83,6 +83,11 @@ CSS = """<style>
 .lr-row {display:flex;justify-content:space-between;gap:16px;border-bottom:1px solid var(--border);padding:10px 0;font-size:.85rem;}
 .lr-row span {max-width:75%;}
 .lr-row strong {white-space:nowrap;font-weight:600;}
+.lr-equation {display:flex;align-items:flex-end;gap:22px;flex-wrap:wrap;margin:14px 0 6px;}
+.lr-equation strong {display:block;font-size:1.35rem;font-weight:650;color:var(--text-strong);}
+.lr-eq-op {font-size:1.35rem;color:var(--text-muted);padding-bottom:2px;}
+@media(max-width:560px) {.lr-equation {gap:10px;flex-wrap:nowrap;} .lr-equation strong,.lr-eq-op {font-size:1.08rem;} .lr-equation .lr-stat-label {font-size:.7rem;}}
+.st-key-annual_charts {max-width:1180px;margin:0 auto;width:100%;}
 .lr-ratios {display:grid;grid-template-columns:1fr 1fr;gap:18px;border-top:1px solid var(--border);padding-top:14px;margin-top:20px;}
 .lr-ratios strong {display:block;font-size:1.2rem;color:var(--text-strong);}
 .lr-obligations {border-top:1px solid var(--border);padding:22px 0 8px;}
@@ -259,6 +264,20 @@ def maturity_html(snapshot):
 SPLIT = '</section><!-- lr-download --><section class="lr-review">'
 
 
+def ttm_equation(flow, money):
+    """The latest TTM as one line: OCF − capital spending = FCF. Three figures, so long bars don't repeat the
+    five-year chart below; that chart covers completed fiscal years, this the overlapping latest TTM."""
+    (ocf_name, ocf), (_, capex), (fcf_name, fcf) = flow
+    cells = ((ocf_name, money(ocf)), ("Capital spending", "Unavailable" if capex is None else money(-capex)),
+             (fcf_name, money(fcf)))
+    out = '<div class="lr-equation" role="group" aria-label="TTM operating cash flow less capital spending equals free cash flow">'
+    for k, (label, shown) in enumerate(cells):
+        if k:
+            out += f'<span class="lr-eq-op" aria-hidden="true">{"−" if k == 1 else "="}</span>'
+        out += f'<div><span class="lr-stat-label">{esc(label)}</span><strong>{esc(shown)}</strong></div>'
+    return out + '</div>'
+
+
 def render(snapshot):
     """Deterministic, source-linked explanations; no ratings or implied repayment assumptions."""
     m = snapshot["metrics"]
@@ -314,7 +333,7 @@ def render(snapshot):
     output += '<section class="lr-section lr-block"><h3>What remained after capital spending?</h3>'
     output += f'<div class="lr-meta">TTM ended {esc(end)} · USD billions · 10-K and 10-Q cash-flow statements</div>'
     import core_charts
-    output += core_charts.render_flow(snapshot, money)
+    output += ttm_equation(core_charts.build(snapshot)["flow"], money)
     output += f'<p class="lr-meta">{esc(m["free_cash_flow"]["notes"][0])}</p>'
     output += '<div class="lr-ratios">'
     for key, label in (("ocf_to_debt", "TTM operating cash flow / debt"), ("fcf_to_debt", "TTM free cash flow / debt")):
@@ -346,7 +365,6 @@ def render(snapshot):
     output += group("Change over time")
     import company_history
     output += company_history.render(snapshot, money)
-    output += core_charts.render_balances(snapshot, money)
     import annual_history_view
     output += annual_history_view.render(snapshot["ticker"])
     output += '<section class="lr-limits"><h3>What remains unresolved?</h3>'
@@ -786,13 +804,15 @@ def render_app() -> None:
     if after:
         from charts import CHART_CONFIG
         model = annual_history_view.build(snapshot["ticker"])
-        captions = annual_history_view.chart_captions(model)
-        for title, fig, caption in zip(("Fiscal-year-end cash and baseline borrowing",
-                                        "Annual operating cash flow, capital spending and FCF"),
-                                       annual_history_view.figures(model), captions):
-            st.markdown(f'<p class="lr-annual-title">{title}</p>', unsafe_allow_html=True)
-            st.plotly_chart(fig, width="stretch", theme=None, config={**CHART_CONFIG, "displayModeBar": False})
-            st.caption(caption)
+        latest = annual_history_view.latest_balances(snapshot)
+        captions = annual_history_view.chart_captions(model, latest)
+        with st.container(key="annual_charts"):          # the review's 1180px column, not the full page width
+            for title, fig, caption in zip(("Cash and baseline borrowing: five fiscal year ends and the latest quarter",
+                                            "Annual operating cash flow, capital spending and FCF"),
+                                           annual_history_view.figures(model, latest), captions):
+                st.markdown(f'<p class="lr-annual-title">{title}</p>', unsafe_allow_html=True)
+                st.plotly_chart(fig, width="stretch", theme=None, config={**CHART_CONFIG, "displayModeBar": False})
+                st.caption(caption.replace("$", "\\$"))   # two "$" would otherwise render as LaTeX math
         st.markdown('<section class="lr-review">' + after, unsafe_allow_html=True)
     if simulation_view.available(snapshot):
         st.caption(f"An illustrative stress scenario for these obligations is under View → {simulation_view.VIEWS[1]}, "

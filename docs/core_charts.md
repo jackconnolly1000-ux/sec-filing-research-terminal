@@ -23,3 +23,17 @@ Validation: 403 tests passed; 22 focused ratio/pilot tests passed after correcti
 October 18 update: Vistra’s checked FY2025 annual borrowing now supports both cash and
 borrowing in the existing two-date chart. The prior cash-only limitation is resolved;
 leases remain excluded and facility composition remains qualified.
+
+## App presentation since October 17, 2026
+
+In the app, the two questions are answered more compactly; the individual workbooks' Core charts sheet is unchanged.
+
+- **What remained after capital spending?** The latest TTM is one line: operating cash flow − capital spending =
+  free cash flow (`company_review.ttm_equation`). The five-year column chart below covers completed fiscal years;
+  the TTM overlaps the last of them, so it stays separate rather than becoming a sixth column.
+- **How did borrowing and cash change?** The two-date panel is gone. The latest 10-Q balances now sit at the right of
+  the five-year balance chart, hatched and after a dotted divider, and the caption gives the change since the last
+  fiscal year end. Balances are point-in-time, so a quarter-end balance can sit beside fiscal-year-end balances;
+  flows cannot.
+- Both five-year charts sit in the review's 1180px column (`st.container(key="annual_charts")`).
+

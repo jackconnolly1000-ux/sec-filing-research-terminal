@@ -96,7 +96,7 @@ class FinancialOrder(unittest.TestCase):
                      'What makes up the borrowing?', 'Which leases sit outside borrowing?',
                      'What sits outside baseline borrowing?', self.GROUPS[1], 'What remained after capital spending?',
                      'Current assets of', self.GROUPS[2], self.GROUPS[3], interest, self.GROUPS[4],
-                     'What changed since the fiscal year end?', 'change?</h3>', 'What remains unresolved?']
+                     'What changed since the fiscal year end?', 'Five completed fiscal years', 'What remains unresolved?']
             found = self.positions(text, order)
             self.assertEqual(found, sorted(found), snapshot['ticker'])
 

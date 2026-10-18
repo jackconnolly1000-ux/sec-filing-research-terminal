@@ -23,7 +23,7 @@
       "samples/vistra_interest.json": "6a18cf366130ac1aeaf1edccb748b96a1abc3361864651a13b99504d2defa2d4"
     },
     "annual": {
-      "annual_history_view.py": "993fd2106784ba6293f1e52491ed48797567e9668e7903d59dc09475cdb26392",
+      "annual_history_view.py": "1923a6a369689169edb626839188f3ffaf581507dfae19bb7fd34ca3b2fdbdca",
       "annual_history.py": "0f07612478feaa28529fbdcb37d9dd70b7ac695996aa61e7272081c29aacc320",
       "samples/annual_history_reconciliation.json": "db4b88c8f0c1e0e3704ed49d63c253bb5a1ea79b7b28d78b8efdd2ff9031354f",
       "samples/annual_source_inventory.json": "dc5862826a37a44f47b3b80463306f1345fa826838cb046213769c361c53539f"
@@ -44,7 +44,7 @@
         "samples/vistra_interest.json": "6a18cf366130ac1aeaf1edccb748b96a1abc3361864651a13b99504d2defa2d4"
       },
       "annual": {
-        "annual_history_view.py": "993fd2106784ba6293f1e52491ed48797567e9668e7903d59dc09475cdb26392",
+        "annual_history_view.py": "1923a6a369689169edb626839188f3ffaf581507dfae19bb7fd34ca3b2fdbdca",
         "annual_history.py": "0f07612478feaa28529fbdcb37d9dd70b7ac695996aa61e7272081c29aacc320",
         "samples/annual_history_reconciliation.json": "db4b88c8f0c1e0e3704ed49d63c253bb5a1ea79b7b28d78b8efdd2ff9031354f",
         "samples/annual_source_inventory.json": "dc5862826a37a44f47b3b80463306f1345fa826838cb046213769c361c53539f"
@@ -62,7 +62,7 @@
   "workbook_sha256": "1ce332a5ede4cdcad2a38ab500b7f2626f0f48dab03441761f69334051fab3d8",
   "principal_sha256": "c57fcb28a01c22e88854250d8244a376ff539d0af81e233fed0fa67251ae4c45",
   "annual_history_sha256": {
-    "annual_history_view.py": "993fd2106784ba6293f1e52491ed48797567e9668e7903d59dc09475cdb26392",
+    "annual_history_view.py": "1923a6a369689169edb626839188f3ffaf581507dfae19bb7fd34ca3b2fdbdca",
     "annual_history.py": "0f07612478feaa28529fbdcb37d9dd70b7ac695996aa61e7272081c29aacc320",
     "samples/annual_history_reconciliation.json": "db4b88c8f0c1e0e3704ed49d63c253bb5a1ea79b7b28d78b8efdd2ff9031354f",
     "samples/annual_source_inventory.json": "dc5862826a37a44f47b3b80463306f1345fa826838cb046213769c361c53539f"
