@@ -154,7 +154,7 @@ class Decades(unittest.TestCase):
         snapshot = next(s for s in json.loads((ROOT / "samples/liquidity_pilots.json").read_text())["snapshots"]
                         if s["ticker"] == "ORCL")
         shown = html.unescape(company_review.render(snapshot))
-        ladder, block = shown.index("Principal due in each fiscal year"), shown.index("FY2032 onward, by decade")
+        ladder, block = shown.index("Principal due, FY2027–FY2036"), shown.index("FY2032 onward, by decade")
         self.assertLess(ladder, block)
         self.assertLess(block, shown.index("Next twelve months"))
         for label, amount in (("FY2032–36", "$26.500B"), ("FY2037–46", "$20.750B"), ("FY2047–56", "$31.000B"),

@@ -39,7 +39,17 @@ class DebtDetail(unittest.TestCase):
     def test_total_liabilities_are_a_separate_stack_with_derived_vistra(self):
         for s in json.loads((ROOT/'samples/liquidity_pilots.json').read_text())['snapshots']:
             f,note=b.liability_figure(s);self.assertEqual(f.layout.barmode,'stack');self.assertEqual(len(f.data),2)
-            if s['ticker']=='VST':self.assertAlmostEqual(f.data[1].y[0],26.552);self.assertIn('derived',note)
+            self.assertEqual([trace.orientation for trace in f.data],['h','h'])
+            self.assertEqual([trace.y[0] for trace in f.data],['Total liabilities']*2)
+            if s['ticker']=='VST':self.assertAlmostEqual(f.data[1].x[0],26.552);self.assertIn('derived',note)
+
+    def test_maturity_heatmap_aggregates_every_annual_fact_and_keeps_labels_visible(self):
+        m=d.build();periods=d.maturity_periods(m);f=d.figure(m,'Maturity concentration')
+        self.assertLessEqual(len(periods),10)
+        self.assertAlmostEqual(sum(sum(row) for row in f.data[0].z),m['total']/1e9)
+        self.assertGreaterEqual(f.layout.margin.l,150)
+        self.assertNotEqual(f.layout.plot_bgcolor,'#ffffff')
+        self.assertEqual([p['label'] for p in periods[:5]],['FY27 rem.','FY28','FY29','FY30','FY31'])
 
     def test_annual_flow_ratio_uses_same_fiscal_year_and_preserves_gaps(self):
         m=a.build('VST');f,note=a.funding_history(m)
