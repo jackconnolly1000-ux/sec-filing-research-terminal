@@ -108,7 +108,9 @@ saved files. The optional combined summary and separate scenario workbook stay u
 ## Five-year charts (October 17, 2026)
 
 Each review and individual workbook adds two charts under the five-year table, from the same checked rows
-(`annual_history_view.build`):
+(`annual_history_view.build`). In the app both are Plotly grouped-column charts with fiscal years left to right
+(`annual_history_view.figures`, rebuilt Oct 17 after the first stacked-row version read poorly); a caption under each
+names any Unavailable year:
 
 1. **Fiscal-year-end cash and baseline borrowing**: balances at each fiscal year end, one scale for both.
 2. **Annual OCF, capital spending and FCF**: capital spending is drawn below zero as a use of cash, as in the

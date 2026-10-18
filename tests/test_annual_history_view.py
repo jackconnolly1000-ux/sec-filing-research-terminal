@@ -81,34 +81,39 @@ class AnnualCharts(unittest.TestCase):
     """Two five-year charts per company, drawn from the same checked rows in the app and in Excel."""
     STEMS = {'LLY': 'lly', 'ORCL': 'oracle', 'VST': 'vistra'}
 
-    def test_app_draws_both_charts_from_the_checked_rows(self):
-        import html as h
+    def test_app_figures_are_grouped_columns_from_the_checked_rows(self):
         for ticker in self.STEMS:
-            m = a.build(ticker); shown = h.unescape(a.charts(m))
-            self.assertIn('Fiscal-year-end cash and baseline borrowing', shown)
-            self.assertIn('Annual operating cash flow, capital spending and FCF', shown)
-            for r in m['rows']:
-                for key in ('cash', 'gross_debt', 'operating_cash_flow', 'free_cash_flow'):
-                    self.assertIn(a._usd(r['metrics'][key]['value']), shown)
-                self.assertIn(a._usd(-r['metrics']['capital_spending']['value']), shown)   # a use, left of zero
-            self.assertEqual(shown.count('class="lr-bal-row"'), 10)
-            self.assertEqual(shown.count('class="lr-bar-row"'), 15)
-        self.assertIn('−$206M', h.unescape(a.charts(a.build('VST'))))           # FY2021 OCF stays negative
-        # Charts follow the table and precede the reclassification and source notes
-        full = h.unescape(a.render('LLY'))
-        self.assertLess(full.index('</table>'), full.index('Fiscal-year-end cash and baseline borrowing'))
-        self.assertLess(full.index('Annual operating cash flow'), full.index('classification, not new cash generation'))
+            m = a.build(ticker); balances, flows = a.figures(m)
+            years = [f"FY{r['fiscal_year']}" for r in m['rows']]
+            for fig in (balances, flows):
+                self.assertEqual(fig.layout.barmode, 'group')
+                self.assertTrue(all(t.type == 'bar' and list(t.x) == years for t in fig.data))   # years left to right
+                self.assertEqual(fig.layout.shapes[0].y0, 0)                                        # zero line
+            v = lambda k: [r['metrics'][k]['value'] / 1e9 for r in m['rows']]
+            self.assertEqual([t.name for t in balances.data], ['Cash and equivalents', 'Baseline borrowing'])
+            self.assertEqual(list(balances.data[0].y), v('cash'))
+            self.assertEqual(list(balances.data[1].y), v('gross_debt'))
+            self.assertEqual(list(flows.data[0].y), v('operating_cash_flow'))
+            self.assertEqual(list(flows.data[1].y), [-x for x in v('capital_spending')])             # a use, below zero
+            self.assertEqual(list(flows.data[2].y), v('free_cash_flow'))
+        self.assertLess(a.figures(a.build('VST'))[1].data[0].y[0], 0)                                # FY2021 OCF stays negative
 
     def test_a_missing_value_is_a_gap_not_a_zero_bar(self):
         m = deepcopy(a.build('VST'))
         m['rows'][1]['metrics']['gross_debt']['value'] = None
-        m['rows'][2]['metrics']['free_cash_flow']['value'] = None
-        shown = a.charts(m)
-        self.assertEqual(shown.count('>Unavailable<'), 2)                     # visible values, one per gap
-        import re
-        track = re.search(r'title="Baseline borrowing, Dec 31, 2022: Unavailable">(.*?)</div>', shown).group(1)
-        self.assertEqual(track, '')                                              # an empty track: no bar at all
-        self.assertNotIn('$0', shown)
+        m['rows'][2]['metrics']['capital_spending']['value'] = None
+        balances, flows = a.figures(m)
+        self.assertIsNone(balances.data[1].y[1])
+        self.assertIsNone(flows.data[1].y[2])
+        first, second = a.chart_captions(m)
+        self.assertIn('Unavailable, no bar: FY2022.', first)
+        self.assertIn('Unavailable, no bar: FY2023.', second)
+        self.assertNotIn('Unavailable', a.chart_captions(a.build('VST'))[0])
+
+    def test_charts_sit_between_the_table_and_its_notes(self):
+        html = a.render('LLY')
+        self.assertLess(html.index('</table>'), html.index(a.CHARTS_MARK))
+        self.assertLess(html.index(a.CHARTS_MARK), html.index('classification, not new cash generation'))
 
     def test_excel_charts_bind_to_the_annual_table_and_cache_its_values(self):
         import zipfile, re

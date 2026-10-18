@@ -139,6 +139,17 @@ class AppPages(unittest.TestCase):
             self.assertEqual(order[button - 1], ("caption", export_guide.CAPTION), ticker)   # caption directly above
             self.assertNotIn("What it owes", order[conclusion][1])                          # detail is below the button
 
+    def test_each_review_draws_the_two_five_year_column_charts(self):
+        app = self.run_clean()
+        for ticker in ("LLY", "ORCL", "VST"):
+            app.segmented_control[0].set_value(ticker)
+            self.run_clean()
+            charts = app.get("plotly_chart")
+            self.assertEqual(len(charts), 2, ticker)
+            captions = [c.value for c in app.caption]
+            self.assertTrue(any(c.startswith("Cash and baseline borrowing at each fiscal year end") for c in captions))
+            self.assertTrue(any("capital spending (below zero, a use of cash)" in c for c in captions))
+
     def test_selector_opens_each_checked_review(self):
         app = self.run_clean()
         expected = {"ORCL": ("Oracle Corporation", "125.34B", "Download ORCL review and evidence"),
