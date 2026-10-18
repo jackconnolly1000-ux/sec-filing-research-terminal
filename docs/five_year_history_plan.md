@@ -1,7 +1,7 @@
 # Five-year history: source and implementation plan
 
-Roadmap items 12–13. Source reconciliation completed October 17, 2026. Existing app/workbook
-values and review dates are unchanged; annual history is not displayed yet.
+Roadmap items 12–13. Source reconciliation completed October 17, 2026. The reconciled annual tables are integrated into the app and individual workbooks; latest-quarter
+values and review dates are unchanged.
 
 ## Periods and definitions
 
@@ -50,11 +50,11 @@ or chart them as zero. Validate fiscal-year changes and presentation changes exp
 5. Test source refusal, conflicting filings, missing components and formula parity. Inspect
    desktop/narrow layouts and changed workbook sheets, then verify deployed downloads.
 
-Build steps 1–2 are complete. Lilly 2021/2022 flows use its disclosed FY2023
+Build steps 1–3 are complete. Lilly 2021/2022 flows use its disclosed FY2023
 reclassification, while the balance sheets remain original. Vistra 2021/2024 use complete
 comparative snapshots to establish reported zero short-term borrowing. Each calculation
 retains one filing version, and original gaps remain visible in the audit.
 
-Roadmap item 12 still needs the app/workbook annual table (step 3); item 13 charts
-remain not started. Correct the legacy Lilly FY2025 printed-page references during
-integration. No unsupported history should be published merely to fill five columns.
+Roadmap item 12 is implemented with app/workbook parity. Legacy Lilly FY2025 source
+references are corrected, and checked FY2025 Vistra borrowing replaces the old gap.
+Item 13 five-year charts is next. No unsupported history should be published merely to fill five columns.

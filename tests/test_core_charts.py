@@ -15,8 +15,8 @@ class CoreCharts(unittest.TestCase):
         for s in self.snapshots:
             model=c.build(s);m=s['metrics']
             self.assertEqual(model['flow'],[('Operating cash flow',m['operating_cash_flow']['value']),('Capital spending',-m['capital_spending']['value']),('Free cash flow',m['free_cash_flow']['value'])])
-            self.assertEqual(model['series'],['Cash and equivalents'] if s['ticker']=='VST' else ['Cash and equivalents','Baseline borrowing'])
-            if s['ticker']=='VST':self.assertIn('Unavailable',model['note']);self.assertEqual(model['points'][0][1],[785e6])
+            self.assertEqual(model['series'],['Cash and equivalents','Baseline borrowing'])
+            if s['ticker']=='VST':self.assertEqual(model['points'][0][1],[785e6,20068e6])
 
     def test_app_has_zero_basis_dates_and_no_double_counted_flow_instruction(self):
         for s in self.snapshots:
@@ -32,5 +32,5 @@ class CoreCharts(unittest.TestCase):
             self.assertEqual(len(f['Core charts']._charts),2)
             for cell,ref in [('B6',"='Debt and liquidity'!B10"),('B7',"=-'Debt and liquidity'!B11"),('B8',"='Debt and liquidity'!B12"),('B25',"='History'!B6"),('B26',"='History'!C6")]:self.assertEqual(f['Core charts'][cell].value,ref)
             self.assertEqual(v['Core charts']['B7'].value,-s['metrics']['capital_spending']['value'])
-            if s['ticker']=='VST':self.assertIsNone(v['Core charts']['C25'].value);self.assertEqual(len(f['Core charts']._charts[1].series),1)
+            if s['ticker']=='VST':self.assertEqual(v['Core charts']['C25'].value,20068e6);self.assertEqual(len(f['Core charts']._charts[1].series),2)
             self.assertEqual(json.loads(p.with_suffix('.manifest.json').read_text())['charts_sha256'],c.fingerprint());v.close();f.close()

@@ -16,7 +16,7 @@ class History(unittest.TestCase):
     def test_two_dates_and_independent_annual_answers(self):
         expected = {'LLY': (7268e6,42503e6,35235e6,55629/35228,16813e6,7841e6,8972e6,16813/42503,8972/42503,26302/895),
                     'ORCL': (31289e6,129541e6,98252e6,46567/41764,31977e6,55663e6,-23686e6,31977/129541,-23686/129541,20606/4599),
-                    'VST': (785e6,None,None,9179/11814,4070e6,2752e6,1318e6,None,None,1906/1107)}
+                    'VST': (785e6,20068e6,19283e6,9179/11814,4070e6,2752e6,1318e6,4070/20068,1318/20068,1906/1107)}
         for s in self.snapshots:
             model=h.build(s)
             self.assertNotEqual(model['annual_end'], model['period_end'])
@@ -38,7 +38,7 @@ class History(unittest.TestCase):
             self.assertIn('Fiscal year',text)
             self.assertIn('Later TTM',text)
             self.assertIn('overlap',text)
-        self.assertIn('Unavailable',h.render(self.snapshots[2],company_review.money))
+        self.assertNotIn('Older borrowing presentation was not checked',h.render(self.snapshots[2],company_review.money))
 
     def test_workbooks_reconcile_every_history_cell_and_keep_unknowns_text(self):
         for s in self.snapshots:

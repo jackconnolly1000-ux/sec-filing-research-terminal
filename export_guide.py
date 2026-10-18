@@ -7,6 +7,7 @@ COMMON = [
     ("Borrowing and leases", "Borrowing components, dated lease liabilities and uncommenced commitments, separately."),
     ("Debt and liquidity", "Latest checked ratios, formulas, periods and company-specific limits."),
     ("History", "Annual versus latest dated balances; overlapping FY and TTM flows. Unavailable is not zero."),
+    ("Annual history", "Five completed fiscal years, sourced inputs and FCF formulas; annual history is separate from the latest TTM."),
     ("Core charts", "What remained after capital spending, and how checked cash/borrowing balances changed."),
 ]
 DETAILS = {

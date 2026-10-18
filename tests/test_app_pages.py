@@ -229,8 +229,12 @@ class AppPages(unittest.TestCase):
         self.assertFalse(app.get("download_button"))
 
     def test_missing_history_evidence_shows_a_stated_gap(self):
+        import importlib
         import company_history
-        with mock.patch.object(company_history, "SAMPLE", ROOT / "samples" / "missing-history.json"):
+        real_reload = importlib.reload
+        # app.py reloads company_history on every run (stale Cloud workers); keep this test's patched path in place
+        keep = lambda module: module if module is company_history else real_reload(module)
+        with mock.patch.object(company_history, "SAMPLE", ROOT / "samples" / "missing-history.json"),                 mock.patch.object(importlib, "reload", keep):
             app = self.run_clean()
         self.assertIn("LLY review unavailable", page_text(app))
         self.assertFalse(app.get("download_button"))

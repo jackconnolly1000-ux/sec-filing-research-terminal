@@ -1,6 +1,6 @@
 # Annual history: source reconciliation checkpoint
 
-Checked through October 17, 2026. This checkpoint acquires and reconciles the sources before five-year tables or charts are added. It does not change the app, checked latest-date conclusions, or existing workbooks.
+Checked through October 17, 2026. This checkpoint acquires and reconciles the sources before five-year tables or charts are added. The original source checkpoint precedes the app/workbook integration recorded below. Checked latest-date conclusions are unchanged.
 
 ## Coverage and selection
 
@@ -67,6 +67,40 @@ Printed pages below are the consolidated balance sheet / cash-flow statement. Ev
 - `annual_history.py`: source-specific controls, strict selection and refusal rules. `tests/fixtures/annual_history/`: unchanged tagged fact/context subsets and captured companyfacts rows for offline replay; these are not substitutes for reviewing the complete notes.
 - `python tests/offline/acquire_annual_history.py --raw <raw-directory>` acquires missing reviewed sources with `SEC_CONTACT_EMAIL` or an identifying `--user-agent`. It refuses changed hashes and never overwrites a reviewed capture. Live companyfacts/submissions endpoints change, so an older snapshot may no longer be downloadable; committed subsets preserve offline replay.
 - `python tests/offline/build_annual_history.py --raw <raw-directory> --check` reproduces the checkpoint against full saved documents and captured companyfacts. `build_annual_history_fixtures.py` rebuilds the fact subsets. `python -m unittest discover -s tests` includes regression and refusal tests; the full-document replay skips if the raw sources are absent.
-- No UI, chart, workbook or export-manifest bytes change in this checkpoint. The next step is a sourced annual table in each review and individual workbook, with Excel FCF formulas, before any chart work.
-- The new annual locators use printed statement pages. Some legacy Lilly FY2025 evidence references use pages 56/58; the acquired annual document places its balance sheet/cash flows at 59/61. Those older app/workbook references have not been changed here and need a focused locator correction when the history is integrated.
+- The source checkpoint itself changed no app/workbook figures. The integration below adds the sourced annual tables; five-year charts follow only after table parity passes.
+- Lilly FY2025 uses printed balance-sheet/cash-flow pages 59/61. The legacy history references that used 56/58 are corrected during integration.
 - No usable credit capacity, repayment forecast, quarterly seasonality, restricted-cash availability or new funding conclusion is inferred from these annual totals.
+
+## App and individual workbook integration
+
+The annual table is now served by `annual_history_view.py` in each checked review and
+in each individual workbook's **Annual history** tab. Its 75 values come from the
+checkpoint above. The app retains the exact fiscal year-end dates and presentation notes;
+Excel retains full-dollar inputs on Data, native source hyperlinks, filing metadata and
+formula-linked totals. FCF is a same-year OCF-minus-capex formula. Annual data is separate
+from the latest TTM and the existing annual-versus-latest comparison.
+
+The FY2025 Vistra audit also resolves its earlier two-date borrowing gap: 20,068M of
+borrowing, 19,283M of net debt, 20.3% annual OCF/debt and 6.6% annual FCF/debt. The
+financing balance-sheet line is counted once; its facility split remains unresolved.
+Latest-quarter figures, funding conclusions, catalysts and scenario assumptions do not change.
+Lilly's legacy balance-sheet/cash-flow references are corrected to printed pages 59/61 in
+the saved history sources, their builder and workbook source cells.
+
+Rebuild in an OS temporary directory with the Codex primary runtime:
+
+1. Copy `tests/offline/integrate_annual_history.mjs` and `workbook_style.mjs` there and link
+   the runtime's `node_modules` into that temporary directory.
+2. Run the script with repository root and output-directory arguments. It authors the
+   annual tab and explicit changes, tests FCF recalculation, and renders affected views.
+3. Run `python tests/offline/apply_annual_history.py <output-directory>` from the repo.
+   This installs authored cells, styles, source links and affected native chart parts,
+   checks unrelated ZIP parts remain byte-identical, and rebinds manifests.
+4. Run unit tests, the release saved-source audit and the offline app check.
+
+The disposable authoring import uses cached original cells to avoid the spreadsheet
+runtime's mis-typing of unrelated Oracle formulas containing dates. Original formulas,
+chart parts and caches are retained in the final workbook unless explicitly changed.
+Desktop Excel recalculation itself is not available in this environment; new formulas
+are recalculated and mutation-tested in Artifact Tool and independently checked in the
+saved files. The optional combined summary and separate scenario workbook stay unchanged.

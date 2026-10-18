@@ -5,14 +5,15 @@ import json
 from pathlib import Path
 
 import ratio_review
+import annual_history_view
 
 SAMPLE = Path(__file__).parent / "samples/company_history.json"
-CHECKED_SHA256 = "69082f1c56993e848a3e358f280224f536303b9199f4ec0f57fd944a00b9184c"
+CHECKED_SHA256 = "b5533f1422a1336af21f7ec8d58ef917952cff7f1baf51c6071efaf287468da1"
 
 
 def fingerprint():
     return {"code": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
-            "facts": hashlib.sha256(SAMPLE.read_bytes()).hexdigest(), "ratios": ratio_review.fingerprint()}
+            "facts": hashlib.sha256(SAMPLE.read_bytes()).hexdigest(), "ratios": ratio_review.fingerprint(), "annual": annual_history_view.fingerprint()}
 
 
 def build(snapshot):
@@ -20,7 +21,15 @@ def build(snapshot):
     if hashlib.sha256(SAMPLE.read_bytes()).hexdigest() != CHECKED_SHA256:
         raise ValueError("History source facts changed and require review")
     prior = json.loads(SAMPLE.read_text())[snapshot["ticker"]]
-    facts = prior["facts"]
+    facts = list(prior["facts"])
+    if snapshot["ticker"] == "VST":
+        annual = annual_history_view.build("VST")["rows"][-1]
+        for f in annual["metrics"]["gross_debt"]["inputs"]:
+            f = dict(f)
+            f["label"] = f["tag"].split(":")[1]
+            f["selection_rule"] = "Exact prefixed tag; exact stated instant; USD; no dimensions; agreeing duplicates."
+            f["location"] = "10-K balance sheet, p. " + str(f["location"]["printed_page"])
+            facts.append(f)
     if any(f["value"] is None or f["unit"] != "USD" or f["period_end"] != prior["annual_end"]
            or f["accession"] != prior["accession"] or f.get("dimensions") for f in facts):
         raise ValueError("History needs one checked annual USD balance sheet")

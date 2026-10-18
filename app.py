@@ -24,6 +24,11 @@ import liquidity_simulation
 import scenario_export
 import research_export
 import simulation_view
+import annual_history_view
+import ratio_review
+import company_history
+import export_guide
+import borrowing_leases
 import core_charts
 import company_review
 import funding_conclusions
@@ -80,6 +85,13 @@ reload(liquidity_simulation)
 reload(scenario_export)
 reload(research_export)
 reload(simulation_view)
+# History modules core_charts and company_review read lazily; dependencies first, so a long-lived Cloud worker
+# never pairs new checked JSON with an old module's hash (Oct 17: annual history changed company_history's)
+reload(annual_history_view)
+reload(ratio_review)
+reload(company_history)
+reload(export_guide)
+reload(borrowing_leases)
 reload(core_charts)   # imported lazily by company_review, so a reload of that module alone keeps old chart HTML
 reload(company_review)
 reload(funding_conclusions)

@@ -10,7 +10,7 @@ import oracle_liquidity as ol
 import vistra_liquidity as vl
 
 ROOT = Path(__file__).resolve().parents[1]
-EXPECTED = {"lly_liquidity": 134, "oracle_liquidity": 140, "vistra_liquidity": 175}
+EXPECTED = {"lly_liquidity": 160, "oracle_liquidity": 166, "vistra_liquidity": 211}
 
 
 class WorkbookHyperlinks(unittest.TestCase):
