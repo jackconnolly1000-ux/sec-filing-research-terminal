@@ -167,7 +167,7 @@ def histogram_figure(result):
     fig.update_layout(height=330, margin=dict(l=64, r=12, t=24, b=80), paper_bgcolor="rgba(0,0,0,0)",
                       plot_bgcolor="rgba(0,0,0,0)", bargap=0.04, barmode="stack", font=dict(color=T.TEXT, size=11),
                       legend=dict(orientation="h", y=-0.3, x=0, traceorder="normal"),
-                      xaxis=dict(title="Ending cash on Aug 31, 2027, USD billions", gridcolor=T.BORDER,
+                      xaxis=dict(title="Ending cash · USD billions", gridcolor=T.BORDER,
                                  zerolinecolor=T.BORDER),
                       yaxis=dict(title=f"Simulated trials (of {trials:,})", gridcolor=T.BORDER))
     return fig, size
@@ -177,7 +177,7 @@ def histogram(st, result):
     from charts import CHART_CONFIG
     fig, size = histogram_figure(result)
     st.plotly_chart(fig, width="stretch", theme=None, config=CHART_CONFIG)
-    st.caption(f"Each bar counts the simulated trials whose ending cash fell in that \\${size:.2f}B range; the bars add "
+    st.caption(f"Ending cash is at August 31, 2027. Each bar counts the simulated trials whose ending cash fell in that \\${size:.2f}B range; the bars add "
                f"up to all {result['trials']:,} trials. The left axis is a count of trials, not dollars.")
 
 

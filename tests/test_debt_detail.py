@@ -8,6 +8,7 @@ import debt_detail as d
 import oracle_principal as op
 import borrowing_leases as b
 import annual_history_view as a
+import theme
 ROOT=Path(__file__).resolve().parents[1]
 class DebtDetail(unittest.TestCase):
     def test_matrix_composition_and_calendar_are_one_reconciliation(self):
@@ -31,9 +32,17 @@ class DebtDetail(unittest.TestCase):
 
     def test_plotly_views_use_dollars_in_billions_and_document_exclusions(self):
         m=d.build()
-        for name,kind in [('Maturity concentration','heatmap'),('Fixed-rate coupon distribution','bar'),('Instrument composition','pie')]:
+        for name,kind in [('Maturity concentration','heatmap'),('Fixed-rate coupon distribution','bar'),('Instrument composition','bar')]:
             f=d.figure(m,name);self.assertEqual(f.data[0].type,kind)
-        self.assertAlmostEqual(sum(d.figure(m,'Instrument composition').data[0].values),125.567)
+        composition=d.figure(m,'Instrument composition')
+        self.assertAlmostEqual(sum(composition.data[0].x),125.567)
+        self.assertEqual(list(composition.data[0].y),m['kinds'])
+        self.assertEqual(composition.layout.xaxis.title.text,'USD billions')
+        self.assertGreaterEqual(composition.layout.margin.l,170)
+        coupon=d.figure(m,'Fixed-rate coupon distribution')
+        self.assertEqual(len(coupon.data[0].x),sum(bool(b['principal_usd']) for b in m['bins']))
+        self.assertAlmostEqual(sum(coupon.data[0].y),m['composition'][0]['principal_usd']/1e9)
+        self.assertEqual(coupon.layout.yaxis.gridcolor,theme.BORDER)
         self.assertIn('Unavailable',m['note'])
 
     def test_total_liabilities_compare_two_dated_classes_with_derived_vistra(self):
@@ -51,9 +60,12 @@ class DebtDetail(unittest.TestCase):
         m=d.build();periods=d.maturity_periods(m);f=d.figure(m,'Maturity concentration')
         self.assertLessEqual(len(periods),10)
         self.assertAlmostEqual(sum(sum(row) for row in f.data[0].z),m['total']/1e9)
-        self.assertGreaterEqual(f.layout.margin.l,150)
+        self.assertGreaterEqual(f.layout.margin.l,140)
         self.assertNotEqual(f.layout.plot_bgcolor,'#ffffff')
         self.assertEqual([p['label'] for p in periods[:5]],['FY27 rem.','FY28','FY29','FY30','FY31'])
+        self.assertIsNone(f.data[0].text)  # In-cell amounts would collide at phone width; hover keeps precision.
+        self.assertEqual(list(f.data[0].x)[:5],['FY27','FY28','FY29','FY30','FY31'])
+        self.assertEqual(f.data[0].x[5],'32–41')
 
     def test_annual_flow_ratio_uses_same_fiscal_year_and_preserves_gaps(self):
         m=a.build('VST');f,note=a.funding_history(m)
@@ -61,6 +73,9 @@ class DebtDetail(unittest.TestCase):
         self.assertEqual(list(f.data[1].y),expected);self.assertLess(f.data[1].y[0],0)
         m['rows'][1]['metrics']['gross_debt']['value']=None
         self.assertIsNone(a.funding_history(m)[0].data[1].y[1]);self.assertIn('not leverage',note)
+        self.assertEqual(f.layout.yaxis.gridcolor,theme.BORDER)
+        self.assertEqual(f.layout.yaxis2.gridcolor,theme.BORDER)
+        self.assertFalse(f.layout.xaxis.showgrid)
 
     def test_excel_bins_composition_and_heatmap_match_the_shared_model(self):
         m=d.build();w=load_workbook(ROOT/'samples/oracle_liquidity.xlsx',data_only=True)

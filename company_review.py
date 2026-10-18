@@ -299,10 +299,12 @@ def draw_chart(st, name, snapshot):
             st.plotly_chart(debt_detail.figure(model,choice),width="stretch",theme=None,config=config,key="review_debt_detail_chart")
             if choice=="Maturity concentration":
                 st.caption("FY2027–FY2031 show individual years; later columns combine ten fiscal years, except the final range. "
-                           "Color and cell labels show known principal in USD billions. Blank cells have no dated principal; "
+                           "Color shows known principal in USD billions; hover or tap a cell for its dates and amount. "
+                           "Blank cells have no dated principal; "
                            "commercial paper is Unavailable and excluded.")
             st.caption(model["note"].replace("$","\\$"))
-            if choice=="Fixed-rate coupon distribution":st.caption("Height is principal; color is principal-weighted fixed coupon. Floating SOFR spreads and term-loan amortization rates are excluded.")
+            if choice=="Fixed-rate coupon distribution":st.caption("Each bar is fixed-rate note principal in that coupon bucket. Empty buckets are omitted. Floating-rate notes and term-loan rates are excluded.")
+            if choice=="Instrument composition":st.caption("Known note and term-loan principal by instrument class. Shares use the $125.567B dated total; commercial paper is Unavailable and excluded.")
     if name == "annual":
         with st.expander("Historical cash generation relative to borrowing"):
             fig,caption=annual_history_view.funding_history(model)

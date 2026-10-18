@@ -202,8 +202,11 @@ def funding_history(model):
     f=make_subplots(rows=2,cols=1,shared_xaxes=True,vertical_spacing=.16)
     f.add_trace(go.Bar(x=years,y=[None if d is None else d/1e9 for d in debt],name='Year-end borrowing',marker_color=T.SERIES_BORROWING),row=1,col=1)
     f.add_trace(go.Scatter(x=years,y=ratio,name='Annual OCF / year-end borrowing',mode='lines+markers',connectgaps=False,line_color=T.SERIES_CASH),row=2,col=1)
-    f.update_yaxes(title_text='USD billions',rangemode='tozero',row=1,col=1)
-    f.update_yaxes(title_text='Historical flow / debt',tickformat='.0%',row=2,col=1)
+    f.update_xaxes(showgrid=False,fixedrange=True)
+    f.update_yaxes(title_text='USD billions',rangemode='tozero',gridcolor=T.BORDER,
+                   zerolinecolor=T.TEXT_MUTED,fixedrange=True,row=1,col=1)
+    f.update_yaxes(title_text='Annual OCF / debt',tickformat='.0%',gridcolor=T.BORDER,
+                   zerolinecolor=T.TEXT_MUTED,fixedrange=True,row=2,col=1)
     f.add_hline(y=0,line_color=T.TEXT_MUTED,row=2,col=1)
     f.update_layout(height=440,margin=dict(l=65,r=12,t=35,b=35),showlegend=False,paper_bgcolor='rgba(0,0,0,0)',plot_bgcolor='rgba(0,0,0,0)',font=dict(color=T.TEXT,size=12))
     return f,'Full-year operating cash flow divided by same-date year-end baseline borrowing. A historical flow/debt measure, not leverage, covenant coverage or future repayment coverage. No cross-company ranking.'

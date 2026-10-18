@@ -57,14 +57,18 @@ def waterfall(start, steps, end, opening_label, closing_label):
         return text[:cut] + "<br>" + text[cut + 1:]
     labels = [wrap(x) for x in [opening_label] + [label for label, _ in steps] + [closing_label]]
     values = [start] + [v for _, v in steps] + [end]
-    shown = [f"${start / 1e9:,.3f}B"] + [f"{'+' if v > 0 else '−'}${abs(v) / 1e9:,.3f}B" for _, v in steps] + [f"${end / 1e9:,.3f}B"]
+    # A small relative bar cannot carry an outside label without crossing the category text at phone width.
+    shown = [f"${start / 1e9:,.2f}B"] + [
+        f"{'+' if v > 0 else '−'}${abs(v) / 1e9:,.2f}B" if abs(v) >= 2e9 else "" for _, v in steps
+    ] + [f"${end / 1e9:,.2f}B"]
+    exact = [f"${start / 1e9:,.3f}B"] + [f"{'+' if v > 0 else '−'}${abs(v) / 1e9:,.3f}B" for _, v in steps] + [f"${end / 1e9:,.3f}B"]
     fig = go.Figure(go.Waterfall(
         orientation="h", y=labels, x=[v / 1e9 for v in values],
         measure=["absolute"] + ["relative"] * len(steps) + ["total"],
         text=shown, textposition="outside", cliponaxis=False, textfont=dict(color=T.TEXT, size=12),
         increasing=dict(marker=dict(color=T.FLOW_IN)), decreasing=dict(marker=dict(color=T.FLOW_OUT)),
         totals=dict(marker=dict(color=T.TEXT)), connector=dict(line=dict(color=T.BORDER_STRONG, width=1, dash="dot")),
-        hovertemplate="%{y}: %{text}<extra></extra>"))
+        customdata=exact, hovertemplate="%{y}: %{customdata}<extra></extra>"))
     fig.update_layout(height=60 + 42 * len(labels), margin=dict(l=8, r=72, t=8, b=36), paper_bgcolor="rgba(0,0,0,0)",
                       plot_bgcolor="rgba(0,0,0,0)", font=dict(color=T.TEXT, size=12), showlegend=False,
                       yaxis=dict(autorange="reversed", fixedrange=True, automargin=True, showline=True, linecolor=T.BORDER),
@@ -84,7 +88,8 @@ def bridge_figure(snapshot):
     if v["opening_total"] + sum(x for _, x in steps) != v["closing_total"]:
         raise ValueError("Oracle cash bridge does not reconcile")
     fig = waterfall(v["opening_total"], steps, v["closing_total"], "May 31 cash incl. restricted", "Aug 31 cash incl. restricted")
-    return fig, ("Blue adds cash, grey uses it; additions are listed first, which is not their timing. Balances include restricted cash. "
+    return fig, ("Blue adds cash, grey uses it; additions are listed first, which is not their timing. "
+                 "Hover or tap for amounts, including small bars without labels. Balances include restricted cash. "
                  "June 1–August 31, 2026, from the 10-Q cash-flow statement.")
 
 

@@ -76,27 +76,51 @@ def figure(model,view):
         z=[[sum(row[i] for i in p['indices'])/1e9 for p in periods] for row in model['matrix']]
         if abs(sum(map(sum,z))-model['total']/1e9)>1e-8:raise ValueError('Grouped maturity chart does not reconcile')
         custom=[[[p['start'],p['end']] for p in periods] for _ in KINDS]
-        labels=[[f'${v:.1f}B' if v>=0.5 else '' for v in row] for row in z]
-        f=go.Figure(go.Heatmap(x=[p['label'] for p in periods],y=model['kinds'],z=z,customdata=custom,
-                            text=labels,texttemplate='%{text}',textfont=dict(color=T.TEXT_STRONG,size=12),
+        # The precise figures remain in hover and the checked table. Cell text collides at phone width.
+        period_labels=[]
+        for p in periods:
+            label=p['label']
+            if label.endswith(' rem.'):
+                label=label[:4]
+            elif '–' in label:
+                start,end=label[2:].split('–')
+                label=f'{int(start)%100:02d}–{int(end)%100:02d}'
+            period_labels.append(label)
+        f=go.Figure(go.Heatmap(x=period_labels,y=model['kinds'],z=z,customdata=custom,
                             colorscale=[[0,T.SURFACE],[0.01,'#203450'],[1,T.SERIES_CASH]],zmin=0,zmax=max(map(max,z)),
-                            xgap=3,ygap=3,colorbar=dict(title='USD B',tickfont=dict(color=T.TEXT),titlefont=dict(color=T.TEXT)),
+                            xgap=2,ygap=3,colorbar=dict(title='USD B',thickness=12,thicknessmode='pixels',
+                                                         tickfont=dict(color=T.TEXT),titlefont=dict(color=T.TEXT)),
                             hovertemplate='%{y}, %{x}<br>%{customdata[0]} to %{customdata[1]}<br>%{z:.3f}B principal<extra></extra>'))
-        f.update_layout(height=345,margin=dict(l=175,r=75,t=50,b=65),
-                        title=dict(text='Principal by instrument and fiscal period · USD billions',font=dict(size=14),x=0.02),
+        f.update_layout(height=375,margin=dict(l=145,r=50,t=50,b=85),
+                        title=dict(text='Dated principal concentration · USD billions',font=dict(size=14),x=0.02),
                         plot_bgcolor=T.BG)
-        f.update_xaxes(tickangle=0,side='bottom',fixedrange=True)
+        f.update_xaxes(tickangle=-70,side='bottom',tickfont=dict(size=10),fixedrange=True)
         f.update_yaxes(automargin=True,fixedrange=True)
     elif view=='Fixed-rate coupon distribution':
-        bins=model['bins'];f=go.Figure(go.Bar(x=[f"{b['coupon_low_pct']}–<{b['coupon_high_pct']}%" for b in bins],y=[b['principal_usd']/1e9 for b in bins],
-            marker=dict(color=[b['weighted_coupon_pct'] if b['weighted_coupon_pct'] is not None else 0 for b in bins],colorscale='Blues',colorbar=dict(title='Weighted<br>coupon %')),
-            customdata=[[b['tranche_count'],b['weighted_coupon_pct']] for b in bins],hovertemplate='%{x}<br>Principal: %{y:.3f}B<br>Tranches: %{customdata[0]}<br>Weighted coupon: %{customdata[1]:.2f}%<extra></extra>'))
-        f.update_yaxes(title='USD billions',rangemode='tozero');f.update_xaxes(title='Fixed coupon buckets (lower inclusive, upper exclusive)')
+        # Empty bins add eleven labels without information. They remain in the checked model and workbook.
+        bins=[b for b in model['bins'] if b['principal_usd']]
+        f=go.Figure(go.Bar(x=[f"{b['coupon_low_pct']}–<{b['coupon_high_pct']}%" for b in bins],
+            y=[b['principal_usd']/1e9 for b in bins],marker_color=T.SERIES_BORROWING,
+            customdata=[[b['tranche_count'],b['weighted_coupon_pct']] for b in bins],
+            hovertemplate='%{x}<br>Principal: %{y:.3f}B<br>Tranches: %{customdata[0]}<br>Weighted coupon: %{customdata[1]:.2f}%<extra></extra>'))
+        f.update_yaxes(title='USD billions',rangemode='tozero',gridcolor=T.BORDER,
+                       zerolinecolor=T.TEXT_MUTED,fixedrange=True)
+        f.update_xaxes(title='Fixed coupon bucket',showgrid=False,fixedrange=True)
     elif view=='Instrument composition':
-        f=go.Figure(go.Pie(labels=[c['kind'] for c in model['composition']],values=[c['principal_usd']/1e9 for c in model['composition']],hole=.55,
-                          marker=dict(colors=[T.SERIES_BORROWING,T.SERIES_CASH,T.SERIES_SMA_FAST]),textinfo='label+percent',hovertemplate='%{label}<br>%{value:.3f}B<extra></extra>'))
+        classes=model['composition'];values=[c['principal_usd']/1e9 for c in classes]
+        f=go.Figure(go.Bar(x=values,y=[c['kind'] for c in classes],orientation='h',
+            marker_color=T.SERIES_BORROWING,cliponaxis=False,
+            text=[f'${v:,.3f}B · {v/(model["total"]/1e9):.1%}' for v in values],
+            textposition='outside',textfont=dict(color=T.TEXT_STRONG,size=12),
+            hovertemplate='%{y}<br>%{x:.3f}B principal<extra></extra>'))
+        f.update_layout(height=255,margin=dict(l=180,r=145,t=12,b=48),bargap=.5)
+        f.update_xaxes(title='USD billions',range=[0,max(values)*1.25],gridcolor=T.BORDER,fixedrange=True)
+        f.update_yaxes(categoryorder='array',categoryarray=[c['kind'] for c in reversed(classes)],
+                       automargin=True,fixedrange=True)
     else:raise ValueError('Unknown debt detail view')
     f.update_layout(paper_bgcolor='rgba(0,0,0,0)',font=dict(color=T.TEXT,size=12),showlegend=False)
-    if view!='Maturity concentration':
+    if view=='Fixed-rate coupon distribution':
         f.update_layout(height=350,margin=dict(l=65,r=50,t=25,b=75),plot_bgcolor='rgba(0,0,0,0)')
+    elif view=='Instrument composition':
+        f.update_layout(plot_bgcolor='rgba(0,0,0,0)')
     return f
