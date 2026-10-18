@@ -4,6 +4,8 @@
 
 Implemented on `audit-execution`, starting from merged PR #86 (`98faf56`). No paid AI calls. No push, merge or deployment is claimed. The cloud browser could not reach the workspace Streamlit server (`ERR_CONNECTION_REFUSED`); physical desktop/390px interaction and deployed download verification remain unverified.
 
+**Publication update, October 18:** PR #87 merged as `c421be4`; GitHub's unit tests, saved-source audit and offline app check passed. The live Streamlit app displayed the new Lilly, Oracle and Vistra reviews and Oracle scenario without a visible error. The three primary workbook downloads matched the committed `.xlsx` files byte for byte. The optional combined download opened with three summary sheets; the scenario download opened with nine sheets including Data and About. A desktop screenshot was inspected. The 390px phone layout remains unverified because this browser could not set a mobile viewport. The earlier status sentence records the prepublication checkpoint.
+
 ## Completed stages
 
 1. Scenario validation, explicit-submit form, retained completed runs/exports, evidence-version reset, per-request concurrency coordination and bounded response cache. 539 tests passed. `budget.py` is unchanged.
