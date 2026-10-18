@@ -1,0 +1,25 @@
+{
+  "sheets": {
+    "Debt and liquidity": {
+      "path": "xl/worksheets/sheet1.xml"
+    },
+    "Liquidity inputs": {
+      "path": "xl/worksheets/sheet2.xml"
+    },
+    "About": {
+      "path": "xl/worksheets/sheet3.xml"
+    },
+    "Other obligations": {
+      "path": "xl/worksheets/sheet4.xml"
+    }
+  },
+  "styles": {
+    "input_usd": "27",
+    "link_usd": "29",
+    "formula_usd": "31",
+    "fraction": "36",
+    "multiple": "41",
+    "date": "46"
+  },
+  "sha256": "3741c373ddea81f1f9e2222662acfda9805e11aef5b002149d7b5bae5d4fec6b"
+}

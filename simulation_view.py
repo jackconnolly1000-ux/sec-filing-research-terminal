@@ -10,7 +10,7 @@ from __future__ import annotations
 from dataclasses import replace
 
 import liquidity_simulation as ls
-from scenario_export import SHARE_NOTE
+import scenario_state
 
 B = 1_000_000_000
 XLSX = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -25,8 +25,8 @@ def heading(st, text, note=""):
     st.markdown(f'<div class="sim-h">{esc(text)}{tail}</div>', unsafe_allow_html=True)
 
 
-def _billions(st, label, value, key, help=None):
-    return st.number_input(label, value=round(value / B, 3), step=0.5, format="%.3f", key=key, help=help,
+def _billions(st, label, value, key, help=None, nonnegative=False):
+    return st.number_input(label, value=round(value / B, 3), step=0.5, format="%.3f", key=key, help=help, min_value=0.0 if nonnegative else None,
                            persist_state="session") * B
 
 
@@ -37,29 +37,30 @@ def assumptions(st, inputs, decisions):
     c1, c2, c3 = st.columns(3)
     t = inputs.ocf_ex_prepayments
     low = _billions(c1, "OCF excl. prepayments, assumed low", t.low, "sim_ocf_low")
-    mode = _billions(c2, "Assumed most likely", t.mode, "sim_ocf_mode")
+    mode = _billions(c2, "Assumed mode — not estimated from future outcomes", t.mode, "sim_ocf_mode")
     high = _billions(c3, "Assumed high", t.high, "sim_ocf_high")
     st.caption(t.basis)
     c4, c5 = st.columns(2)
     prepay = _billions(c4, "Prepayments, assumed high (low and most likely are $0)", inputs.prepayments.high,
-                       "sim_prepay", help=inputs.prepayments.basis)
-    dividends = _billions(c5, "Dividends over the year (a decision)", decisions[0].dividends, "sim_div",
+                       "sim_prepay", nonnegative=True, help=inputs.prepayments.basis)
+    dividends = _billions(c5, "Dividends over the year (a decision)", decisions[0].dividends, "sim_div", nonnegative=True,
                           help="Default: Jun–Aug 2026 dividends of $1.565B, times four.")
     c6, c7 = st.columns(2)
-    capex_a = _billions(c6, "Capex, decision A", decisions[0].capex, "sim_capex_a", help="Default: TTM cash capex.")
-    capex_b = _billions(c7, "Capex, decision B", decisions[2].capex, "sim_capex_b", help="Default: fiscal 2026 cash capex.")
+    capex_a = _billions(c6, "Capex, decision A", decisions[0].capex, "sim_capex_a", nonnegative=True, help="Default: TTM cash capex.")
+    capex_b = _billions(c7, "Capex, decision B", decisions[2].capex, "sim_capex_b", nonnegative=True, help="Default: fiscal 2026 cash capex.")
     rho = st.slider("Correlation, OCF excl. prepayments and prepayments", -0.9, 0.9, inputs.correlation, 0.1,
                     format="%.1f", key="sim_rho", persist_state="session")
     st.caption(ls.CORRELATION_BASIS)
     c8, c9 = st.columns(2)
     trials = c8.selectbox("Trials", [10_000, 50_000], key="sim_trials", persist_state="session")
-    seed = int(c9.number_input("Seed", value=ls.DEFAULT_SEED, step=1, key="sim_seed", persist_state="session"))
+    seed = int(c9.number_input("Seed", value=ls.DEFAULT_SEED, min_value=0, step=1, key="sim_seed", persist_state="session"))
     try:
         edited = replace(inputs, ocf_ex_prepayments=ls.Triangular(low, mode, high, t.basis),
-                         prepayments=ls.Triangular(0, 0, max(prepay, 0), inputs.prepayments.basis),
+                         prepayments=ls.Triangular(0, 0, prepay, inputs.prepayments.basis),
                          correlation=float(rho))
-    except ValueError:
-        st.warning("The OCF range needs low ≤ most likely ≤ high. Nothing was run.")
+        ls.validate_inputs(edited, seed)
+    except ValueError as exc:
+        st.warning("Invalid assumptions: low ≤ most likely ≤ high; cash uses must be non-negative. " + str(exc))
         return None
     choices = [ls.Decision(f"{name}{', revolver assumed usable' if rev else ''}", capex, dividends, rev)
                for name, capex in (("Decision A", capex_a), ("Decision B", capex_b)) for rev in (False, True)]
@@ -74,7 +75,7 @@ def results_table(st, results):
              "Average shortfall in those trials ($B)": round(r["mean_shortfall"] / B, 2)}
             for r, d in results]
     st.dataframe(pd.DataFrame(rows), hide_index=True, width="stretch",
-                 column_config={SHARE: st.column_config.NumberColumn(format="%.1f%%")})
+                 column_config={**{c: st.column_config.NumberColumn(format="%.2f") for c in rows[0] if c.endswith("($B)")}, SHARE: st.column_config.NumberColumn(format="%.1f%%")})
     st.caption("Shares are of simulated trials under the assumptions above. They are not probabilities of default "
                "or of a funding gap.")
 
@@ -87,7 +88,7 @@ def monthly_table(st, end, path):
             {"Cash at": "Lowest month end", SHARE: path["share_below_zero_any_month"] * 100,
              "Mean ($B)": round(path["lowest_mean"] / B, 2), "10th percentile ($B)": round(path["lowest_p10"] / B, 2)}]
     st.dataframe(pd.DataFrame(rows), hide_index=True, width="stretch",
-                 column_config={SHARE: st.column_config.NumberColumn(format="%.1f%%")})
+                 column_config={**{c: st.column_config.NumberColumn(format="%.2f") for c in rows[0] if c.endswith("($B)")}, SHARE: st.column_config.NumberColumn(format="%.1f%%")})
     dated = ", ".join(f"{m} ${a / B:.3f}B" for m, a in zip(ls.MONTHS, path["principal_by_month"]) if a)
     where = (f"The month with the lowest cash before any revolver draw is {path['lowest_month']} in "
              f"{path['lowest_month_share']:.1%} of trials.")
@@ -108,7 +109,7 @@ def correlation_table(st, comparison, revolver):
              "10th percentile ($B)": round(r["p10"] / B, 2), SHARE: r["share_below_zero"] * 100}
             for r in comparison]
     st.dataframe(pd.DataFrame(rows), hide_index=True, width="stretch",
-                 column_config={"Correlation setting": st.column_config.NumberColumn(format="%.1f"),
+                 column_config={**{c: st.column_config.NumberColumn(format="%.2f") for c in rows[0] if c.endswith("($B)")}, "Correlation setting": st.column_config.NumberColumn(format="%.1f"),
                                 "Realized correlation": st.column_config.NumberColumn(format="%+.2f"),
                                 SHARE: st.column_config.NumberColumn(format="%.1f%%")})
     note = ("Without the revolver, ending cash is a sum of the inputs, so the mean stays put and only the spread "
@@ -126,7 +127,7 @@ def outside_uses(st, effects, uses, decision):
              "Mean ending cash ($B)": round(e["mean"] / B, 2), SHARE: e["share_below_zero"] * 100}
             for e in effects]
     st.dataframe(pd.DataFrame(rows), hide_index=True, width="stretch",
-                 column_config={SHARE: st.column_config.NumberColumn(format="%.1f%%")})
+                 column_config={**{c: st.column_config.NumberColumn(format="%.2f") for c in rows[0] if c.endswith("($B)")}, SHARE: st.column_config.NumberColumn(format="%.1f%%")})
     measured = "\n".join(f"- **{u.name}.** {u.amount_basis} {u.why_outside}" for u in uses)
     excluded = "\n".join(f"- **{name}:** {status}. {proof}" for name, status, proof in ls.EXCLUDED)
     unmeasured = "\n".join(f"- **{name}:** {note}" for name, note in ls.UNQUANTIFIED)
@@ -251,7 +252,10 @@ def render(st, snapshot) -> None:
         st.markdown(notice("Stress scenario Unavailable", "The checked Oracle evidence it reads did not load. "
                            "No assumed figures are substituted.", "caution"), unsafe_allow_html=True)
         return
+    version = scenario_state.evidence_version()
+    scenario_state.reset_for_version(st.session_state, version)
     with st.container(key="scenario_view"):
+        st.button("Reset assumptions", key="scenario_reset", on_click=scenario_state.clear_scenario, args=(st.session_state,))
         st.markdown(notice(ls.LABEL, "Oracle, September 2026 to August 2027. The figures below come from simulated "
                            "trials, not from checked filing facts. The checked review's funding conclusion is "
                            "unchanged: future funding coverage remains Unavailable.", "caution"), unsafe_allow_html=True)
@@ -274,18 +278,27 @@ def render(st, snapshot) -> None:
             "are anchored to checked history, which does not set future bounds.\n"
             "- **Decisions:** capex, dividends and the revolver."))
         st.caption(ls.TIMING_LIMIT)
-        chosen = assumptions(st, inputs, ls.oracle_decisions())
+        with st.form("scenario_assumptions"):
+            chosen = assumptions(st, inputs, ls.oracle_decisions())
+            submitted = st.form_submit_button("Run scenario", key="sim_submit")
         if chosen is None:
             return
-        edited, decisions, trials, seed = chosen
-        results = [(ls.simulate(edited, d, trials, seed), d) for d in decisions]
+        candidate_key = scenario_state.input_key(chosen, version)
+        completed = st.session_state.get("sim_completed")
+        if submitted or completed is None:
+            completed = scenario_state.calculate(chosen, uses, version)
+            st.session_state["sim_completed"] = completed
+        elif candidate_key != completed["key"]:
+            st.info("Results and download retain the last completed run. Submit Run scenario to apply edited assumptions.")
+        edited, decisions, trials, seed = completed["chosen"]
+        results = completed["results"]
         heading(st, "Results by decision")
         results_table(st, results)
         pick = decision_picker(st, decisions)
         shown = next(d for d in decisions if d.name == pick)
         heading(st, "Distribution of ending cash", shown.name)
         histogram(st, next(r for r, d in results if d.name == pick))
-        monthly = [(d, r, ls.monthly_path(edited, d, trials, seed)) for r, d in results]
+        monthly = completed["monthly"]
         heading(st, "Cash at each month end", shown.name)
         monthly_table(st, *next((r, m) for d, r, m in monthly if d.name == pick))
         from charts import CHART_CONFIG
@@ -294,22 +307,26 @@ def render(st, snapshot) -> None:
         st.caption("Shading shows the 10th–90th percentiles at each month end; the line is the simulated median. "
                    "These are pointwise summaries of assumed trials, not a forecast band or one individual path. "
                    "The dashed line is zero. Even monthly allocation does not establish payment-date liquidity.")
-        comparison = ls.compare_correlations(edited, shown, trials, seed)
+        if shown.name not in completed["comparisons"]:
+            completed["comparisons"][shown.name] = ls.compare_correlations(edited, shown, trials, seed)
+        comparison = completed["comparisons"][shown.name]
         heading(st, "How correlation changes the spread", shown.name)
         correlation_table(st, comparison, shown.revolver)
-        outside = [(d, ls.outside_use_effects(edited, uses, d, trials, seed)) for d in decisions]
+        outside = completed["outside"]
         heading(st, "Sensitivity: cash uses outside the model", shown.name)
         outside_uses(st, next(e for d, e in outside if d.name == pick), uses, shown)
-        check = ls.simulate(edited, decisions[0], trials * 5, seed + 1)
+        check = completed["stability"]
         drift = abs(check["share_below_zero"] - results[0][0]["share_below_zero"])
         st.caption(f"Stability check: rerunning decision A with {trials * 5:,} trials and a new seed changes the "
-                   f"share of trials below zero by {drift:.1%}. The logic, boundary, distribution and stability "
-                   "checks from class also run as automated tests.")
+                   f"share of trials below zero by {drift:.1%}. A separate seed and larger trial count test whether "
+                   "the reported result is sensitive to simulation noise.")
         st.caption("Also not modelled: new borrowing or equity.")
         try:
-            content = workbook(edited, results, trials, seed, comparison, outside, uses, monthly)
+            if pick not in completed["exports"]:
+                completed["exports"][pick] = workbook(edited, results, trials, seed, comparison, outside, uses, monthly)
+            content = completed["exports"][pick]
         except (OSError, ValueError, KeyError):
             st.caption("Scenario workbook Unavailable: its verified layout could not be loaded.")
         else:
             st.download_button("Download this scenario (Excel)", content,
-                               file_name=f"Oracle_Stress_Scenario_seed{seed}.xlsx", mime=XLSX, key="sim_download")
+                               file_name=f"Oracle_Stress_Scenario_seed{seed}.xlsx", mime=XLSX, key="sim_download", on_click="ignore")

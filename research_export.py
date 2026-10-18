@@ -170,13 +170,7 @@ def tables(profiles, run_at=None):
     return rows
 
 
-def _column(k):
-    name = ""
-    while k:
-        k, r = divmod(k-1, 26)
-        name = chr(65+r) + name
-    return name
-
+from xlsx_xml import column as _column, write_cell, attach_links
 
 def workbook(profiles, run_at=None):
     payload = tables(profiles, run_at)
@@ -214,25 +208,14 @@ def workbook(profiles, run_at=None):
                             pass
                     if isinstance(v, date):
                         c.set('s',meta['styles']['date'])
-                        ET.SubElement(c,f'{{{NS}}}v').text=str((v-date(1899,12,30)).days)
                     elif isinstance(v, dict):
-                        c.set('s', meta['styles']['formula_fraction' if values[r-1][3]=='fraction, displayed as %' else 'formula_usd'])
-                        ET.SubElement(c, f"{{{NS}}}f").text = v['formula']
-                        ET.SubElement(c, f"{{{NS}}}v").text = str(v['value'])
-                    elif isinstance(v, (int,float)):
-                        if name == 'Market data' and k==3:
-                            key={'USD per share':'price','fraction, displayed as %':'fraction','multiple (x)':'multiple'}.get(row[3],'usd')
-                        elif name == 'Data' and k==5:
-                            key='usd'
-                        else:
-                            key='integer'
+                        c.set('s',meta['styles']['formula_fraction' if row[3]=='fraction, displayed as %' else 'formula_usd'])
+                    elif isinstance(v,(int,float)):
+                        key=({'USD per share':'price','fraction, displayed as %':'fraction','multiple (x)':'multiple'}.get(row[3],'usd')
+                             if name=='Market data' and k==3 else 'usd' if name=='Data' and k==5 else 'integer')
                         c.set('s',meta['styles'][key])
-                        ET.SubElement(c,f"{{{NS}}}v").text=str(v)
-                    else:
-                        c.set('t','inlineStr')
-                        ET.SubElement(ET.SubElement(c,f"{{{NS}}}is"),f"{{{NS}}}t").text=str(v)
-                        if str(v).startswith('https://') and not any(ch.isspace() for ch in str(v)):
-                            links.append((c.get('r'),str(v)))
+                    write_cell(c,v)
+                    if isinstance(v,str) and v.startswith('https://') and not any(ch.isspace() for ch in v):links.append((c.get('r'),v))
             dimension = sheet.find(f"{{{NS}}}dimension")
             if dimension is None:
                 dimension = ET.Element(f"{{{NS}}}dimension")
@@ -240,15 +223,8 @@ def workbook(profiles, run_at=None):
                 sheet.insert(index, dimension)
             dimension.set('ref',f'A1:{_column(len(values[0]))}{len(values)}')
             if links:
-                block = ET.Element(f"{{{NS}}}hyperlinks")
-                rels = ET.Element(f'{{{PKG}}}Relationships')
-                for n,(ref,url) in enumerate(links):
-                    rid='rIdSource'+str(n)
-                    ET.SubElement(block,f"{{{NS}}}hyperlink",{'ref':ref,f'{{{REL}}}id':rid})
-                    ET.SubElement(rels,f'{{{PKG}}}Relationship',Id=rid,Type=REL+'/hyperlink',Target=url,TargetMode='External')
-                position=next((i for i,x in enumerate(sheet) if x.tag==f'{{{NS}}}pageMargins'),len(sheet))
-                sheet.insert(position,block)
-                replacements[layout['path'].replace('worksheets/','worksheets/_rels/')+'.rels']=ET.tostring(rels)
+                rp=layout['path'].replace('worksheets/','worksheets/_rels/')+'.rels'
+                replacements[rp]=attach_links(sheet,links,src.read(rp) if rp in src.namelist() else None)
             replacements[layout['path']]=ET.tostring(sheet,encoding='utf-8',xml_declaration=True)
         for name in src.namelist():
             dst.writestr(name,replacements.pop(name,src.read(name)))

@@ -1,0 +1,70 @@
+{
+  "ticker": "ORCL",
+  "migrations": [
+    {
+      "sheet": "Data",
+      "from": "B113",
+      "to": "B104",
+      "identity": [
+        "0001193125-26-389274",
+        "us-gaap:NotesPayableCurrent",
+        null,
+        "2026-08-31T00:00:00.000Z",
+        "USD"
+      ],
+      "treatment": "Same-sheet formula alias; original address retained."
+    },
+    {
+      "sheet": "Data",
+      "from": "B120",
+      "to": "B104",
+      "identity": [
+        "0001193125-26-389274",
+        "us-gaap:NotesPayableCurrent",
+        null,
+        "2026-08-31T00:00:00.000Z",
+        "USD"
+      ],
+      "treatment": "Same-sheet formula alias; original address retained."
+    },
+    {
+      "sheet": "Data",
+      "from": "B121",
+      "to": "B105",
+      "identity": [
+        "0001193125-26-389274",
+        "us-gaap:LongTermNotesAndLoans",
+        null,
+        "2026-08-31T00:00:00.000Z",
+        "USD"
+      ],
+      "treatment": "Same-sheet formula alias; original address retained."
+    },
+    {
+      "sheet": "Data",
+      "from": "B156",
+      "to": "B136",
+      "identity": [
+        "0001193125-26-277521",
+        "us-gaap:NotesPayableCurrent",
+        "C_f62bade6-47e1-4441-9bb3-1e534300c2f2",
+        "2026-05-31T00:00:00.000Z",
+        "USD"
+      ],
+      "treatment": "Same-sheet formula alias; original address retained."
+    },
+    {
+      "sheet": "Data",
+      "from": "B157",
+      "to": "B137",
+      "identity": [
+        "0001193125-26-277521",
+        "us-gaap:LongTermNotesAndLoans",
+        "C_f62bade6-47e1-4441-9bb3-1e534300c2f2",
+        "2026-05-31T00:00:00.000Z",
+        "USD"
+      ],
+      "treatment": "Same-sheet formula alias; original address retained."
+    }
+  ]
+}

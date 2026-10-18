@@ -1,19 +1,5 @@
-"""Append the checked August 31 principal calendar to the Oracle workbook's Payment dates sheet.
-
-The workbook is normally built by build_oracle_liquidity.mjs, which needs the Codex artifact runtime. This
-script instead edits only the Payment dates and Repayment review worksheet XML inside the saved .xlsx, so every
-other part (charts, styles, other sheets) stays byte-identical. It refuses to run on any workbook other than the
-reviewed pre-calendar file, reuses existing style ids (blue reported inputs, black formulas, USD shown in
-millions), writes formulas with cached values, then updates the manifest. No network, no AI calls.
-
-Run from app/:  .venv/Scripts/python tests/offline/add_oracle_principal_block.py
-"""
-import hashlib
-import json
+"""Checked calendar cell specification used by principal_records.py; no workbook mutation path."""
 import sys
-import zipfile
-from datetime import date
-from io import BytesIO
 from pathlib import Path
 from xml.sax.saxutils import escape
 
@@ -21,19 +7,11 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 import oracle_principal as op  # noqa: E402
 
-WORKBOOK = ROOT / "samples/oracle_liquidity.xlsx"
-MANIFEST = WORKBOOK.with_suffix(".manifest.json")
-BEFORE = "da9483d8843a950c043457f5b43e75ffdba3a80afd292418f80c1960f9a21502"   # PR #49 workbook
-PAYMENT, REPAYMENT = "xl/worksheets/sheet8.xml", "xl/worksheets/sheet6.xml"
-# Existing cellXfs in this workbook's styles.xml (none has a border)
+# Semantic cell roles in this specification; the authoring tool assigns actual workbook styles.
 TITLE, BOLD, HEAD, TEXT, WRAP, NOTE = 70, 77, 182, 40, 74, 72
 BLUE, BLACK, DATE = 29, 57, 31
 FIRST = 35
 M = 1_000_000
-
-
-def serial(day):
-    return (date.fromisoformat(day) - date(1899, 12, 30)).days
 
 
 class Sheet:
@@ -258,54 +236,5 @@ def block(review):
     return s.xml(heights), inst_last + 1
 
 
-def replace_cell_text(xml, ref, old, new):
-    before = f'<x:c r="{ref}" '
-    start = xml.index(before)
-    end = xml.index("</x:c>", start)
-    cell = xml[start:end]
-    if f"<x:v>{escape(old)}</x:v>" not in cell:
-        raise SystemExit(f"{ref} no longer reads as expected")
-    return xml[:start] + cell.replace(f"<x:v>{escape(old)}</x:v>", f"<x:v>{escape(new)}</x:v>") + xml[end:]
-
-
-def main():
-    content = WORKBOOK.read_bytes()
-    if hashlib.sha256(content).hexdigest() != BEFORE:
-        raise SystemExit("The saved workbook is not the reviewed pre-calendar file; refusing to edit it.")
-    review = op.load()
-    if review is None:
-        raise SystemExit("The saved principal calendar is missing or not Checked.")
-    src = zipfile.ZipFile(BytesIO(content))
-    payment = src.read(PAYMENT).decode("utf-8")
-    rows, last = block(review)
-    payment = replace_cell_text(payment, "A29",
-                                "The May borrowing schedule is historical; remaining August debt maturities are Unavailable.",
-                                "The May borrowing schedule is historical. August 31 principal by instrument starts at row 35; commercial paper is Unavailable.")
-    payment = payment.replace("</x:sheetData>", rows + "</x:sheetData>", 1)
-    repayment = src.read(REPAYMENT).decode("utf-8")
-    repayment = replace_cell_text(repayment, "A40",
-                                  "Remaining August borrowing principal and interest dates are Unavailable. Current borrowing is carrying value.",
-                                  "Note and term-loan principal is dated in Payment dates, row 35 onward. Commercial paper and interest dates are Unavailable.")
-    repayment = replace_cell_text(repayment, "A53", "Remaining borrowing principal and interest at August 31",
-                                  "Commercial paper and interest at August 31")
-    repayment = replace_cell_text(repayment, "D53",
-                                  "Current borrowing is carrying value, not a dated principal schedule. The May principal schedule is historical. Quarter repayments cannot be assigned to its buckets.",
-                                  "Senior-note and term-loan principal is dated by instrument in the August 31 principal calendar. "
-                                  "Commercial paper's August balance and maturity dates, and interest payment amounts, are Unavailable. "
-                                  "Quarter repayments are not assigned to instruments.")
-    out = BytesIO()
-    with zipfile.ZipFile(out, "w") as dst:
-        for info in src.infolist():
-            data = {PAYMENT: payment.encode("utf-8"), REPAYMENT: repayment.encode("utf-8")}.get(info.filename)
-            dst.writestr(info, data if data is not None else src.read(info.filename))
-    new = out.getvalue()
-    WORKBOOK.write_bytes(new)
-    manifest = json.loads(MANIFEST.read_text())
-    manifest["principal_sha256"] = op.fingerprint()
-    manifest["workbook_sha256"] = hashlib.sha256(new).hexdigest()
-    MANIFEST.write_bytes((json.dumps(manifest, indent=2) + "\n").encode("utf-8"))   # LF, as git stores it
-    print("Payment dates rows 35 to", last, "added;", WORKBOOK.name, manifest["workbook_sha256"][:12])
-
-
-if __name__ == "__main__":
-    main()
+if __name__=="__main__":
+    raise SystemExit("Use python tests/offline/build_workbooks.py; principal cells are part of that build.")

@@ -20,11 +20,14 @@ class CoreCharts(unittest.TestCase):
 
     def test_app_has_zero_basis_dates_and_no_double_counted_flow_instruction(self):
         for s in self.snapshots:
-            text=c.render_flow(s,company_review.money)+c.render_balances(s,company_review.money)
-            self.assertIn('not another cash flow',text);self.assertIn('zero',text);self.assertIn('USD',text)
+            import annual_history_view as annual
+            text=company_review.ttm_equation(c.build(s)['flow'],company_review.money)+annual.render(s['ticker'])
+            self.assertIn('FCF',text);self.assertIn('USD',text)
+            figures=annual.figures(annual.build(s['ticker']),annual.latest_balances(s))
+            self.assertEqual(figures[1].layout.shapes[0].y0,0)
             from datetime import date
             end=date.fromisoformat(s['metrics']['cash']['period_end'])
-            self.assertIn(f"{end:%b} {end.day}, {end:%Y}",text)   # the app shows Jun 30, 2026; Excel keeps ISO dates
+            self.assertIn(f"{end:%b} {end.day}, {end:%Y}",annual.chart_captions(annual.build(s["ticker"]),annual.latest_balances(s))[0])   # the app shows Jun 30, 2026; Excel keeps ISO dates
 
     def test_two_native_charts_and_source_formula_bindings(self):
         for s in self.snapshots:

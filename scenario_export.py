@@ -69,25 +69,7 @@ def source_rows(inputs):
     return rows
 
 
-def _column(index):
-    name = ""
-    while index:
-        index, rem = divmod(index - 1, 26)
-        name = chr(65 + rem) + name
-    return name
-
-
-def chart_cache(cache, values):
-    """Artifact Tool exports range bindings without point caches; seed them for other readers."""
-    ns = 'http://schemas.openxmlformats.org/drawingml/2006/chart'
-    for child in list(cache):
-        if child.tag in (f'{{{ns}}}ptCount', f'{{{ns}}}pt'):
-            cache.remove(child)
-    ET.SubElement(cache, f'{{{ns}}}ptCount', val=str(len(values)))
-    for k, value in enumerate(values):
-        point = ET.SubElement(cache, f'{{{ns}}}pt', idx=str(k))
-        ET.SubElement(point, f'{{{ns}}}v').text = str(value)
-
+from xlsx_xml import column as _column, chart_cache, write_cell, attach_links
 
 def workbook(*args, **kwargs):
     """Hydrate reserved template cells without altering its styles or native features."""
@@ -120,33 +102,14 @@ def workbook(*args, **kwargs):
                 if value is None:
                     continue
                 c = cells[_column(k) + str(r)]
-                if isinstance(value, date):
-                    c.attrib.pop("t", None)
-                    ET.SubElement(c, f"{{{NS}}}v").text = str((value - date(1899, 12, 30)).days)
-                elif isinstance(value, dict) and "formula" in value:
-                    ET.SubElement(c, f"{{{NS}}}f").text = value["formula"].removeprefix("=")
-                    ET.SubElement(c, f"{{{NS}}}v").text = repr(float(value["value"]))
-                elif isinstance(value, (int, float)):
-                    ET.SubElement(c, f"{{{NS}}}v").text = repr(float(value))
-                else:
-                    c.set("t", "inlineStr")
-                    ET.SubElement(ET.SubElement(c, f"{{{NS}}}is"), f"{{{NS}}}t").text = str(value)
+                write_cell(c, value)
         # The authoring runtime does not export native hyperlink actions. Preserve full URL text
         # and attach the exact same URL, using standard OpenXML relationships.
         links = [(f"{_column(k)}{r}", value) for r, row in enumerate(rows, 1)
                  for k, value in enumerate(row, 1) if isinstance(value, str) and value.startswith("https://")]
         if links:
-            package_ns = "http://schemas.openxmlformats.org/package/2006/relationships"
-            rels = ET.Element("Relationships", xmlns=package_ns)
-            block = ET.Element(f"{{{NS}}}hyperlinks")
-            for i, (ref, url) in enumerate(links):
-                rid = f"rIdSource{i}"
-                ET.SubElement(block, f"{{{NS}}}hyperlink", {"ref": ref, f"{{{REL}}}id": rid})
-                ET.SubElement(rels, "Relationship", Id=rid, Type=REL + "/hyperlink", Target=url, TargetMode="External")
-            position = next((i for i, child in enumerate(sheet) if child.tag == f"{{{NS}}}pageMargins"), len(sheet))
-            sheet.insert(position, block)
             rp = path.replace("worksheets/", "worksheets/_rels/") + ".rels"
-            replacement[rp] = ET.tostring(rels, encoding="utf-8", xml_declaration=True)
+            replacement[rp] = attach_links(sheet, links, src.read(rp) if rp in src.namelist() else None)
         replacement[path] = ET.tostring(sheet, encoding="utf-8", xml_declaration=True)
     if kwargs.get("monthly") or (len(args) > 7 and args[7]):
         monthly = kwargs.get("monthly") or args[7]
@@ -196,7 +159,7 @@ def tables(inputs, results, trials, seed, comparison=None, outside=None, uses=No
     ws.append([f"Horizon {ls.HORIZON[0]} to {ls.HORIZON[1]}. Created {stamp}. Seed {seed}, {trials:,} trials; "
                "rerunning with the same inputs and seed reproduces these results."])
     ws.append([])
-    ws.append(["Input", "Kind", "Low" + USD, "Most likely" + USD, "High" + USD, "Basis / source"])
+    ws.append(["Input", "Kind", "Low" + USD, "Assumed mode" + USD, "High" + USD, "Basis / source"])
     t, p, c = inputs.ocf_ex_prepayments, inputs.prepayments, inputs.commercial_paper_due
 
     def fixed(value):

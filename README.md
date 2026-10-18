@@ -117,13 +117,12 @@ The original tool, reached from the link under the page subtitle. For up to five
   cross-sheet links. Sources, numeric inputs, financial formulas and existing research are retained.
   The combined pilot download is a styled saved export (`samples/liquidity_pilots.xlsx`), bound to
   both source JSON files by `samples/liquidity_pilots.manifest.json`. It becomes Unavailable when
-  those sources or the workbook differ. The general programmatic export remains available.
-  Workbook styling is rebuilt with `tests/offline/workbook_style.mjs` and
-  `tests/offline/style_pilot_workbook.mjs` using the Codex spreadsheet runtime. The latter imports
-  the current saved export, or accepts a current downloaded pilot workbook as its second argument,
-  verifies every metric against the snapshots, and preserves financial formulas and source rows.
-  The three existing Oracle filter regions are retained as native Excel tables with filter controls.
-  Dedicated Oracle and Vistra builders use the same style helper. No runtime dependency is added.
+  those sources or the workbook differ. The programmatic metric export uses the same authored-template method as the research and scenario exports.
+  Rebuild the company exports and the programmatic template with one command:
+  `python tests/offline/build_workbooks.py` (requires the Codex Artifact Tool runtime).
+  It authors the annual tables, funding detail, principal calendar, charts and hyperlinks together,
+  checks source fingerprints and restores prior outputs if a build fails. See
+  `docs/audit_execution_2026-10-18.md` for verification and remaining access limits.
 
 - Vistra's saved repayment review, checked October 15, adds the January–June cash reconciliation,
   selected repayment dates, project recourse and funding resources by borrower
@@ -218,3 +217,8 @@ What comes next, one pull request per item, with the items gated by date or cond
 ### General research Excel
 
 The experimental research download now includes a cover, retained findings/events, SEC component inputs and an About sheet. SEC results use formulas with matching saved caches; source dates, units and links remain explicit. Layout and reproduction: [general research export](docs/general_research_export.md). Runtime: `research_export.py`; offline Artifact Tool builder: `tests/offline/build_research_template.mjs`.
+
+
+### Audit branch — October 18, 2026
+
+Current funding detail distinguishes reported zero, unknown instrument splits and derived residuals. Total-liability stacks are separate from borrowing. Oracle adds a maturity matrix, fixed-coupon principal distribution and instrument composition, with unknown CP outside the charts. The optional annual OCF/debt view uses full-year cash flow and matching year-end borrowing; it does not predict funding coverage. Existing catalysts and general research remain available.

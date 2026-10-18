@@ -72,6 +72,55 @@ export async function finishBorrowingLeaseSheet(wb,root,ticker,state){
  if(commitment.value!==null)sheet.getRange(`B${n}`).formulas=[[input(commitment,'Leases not yet commenced')]];
  else input(commitment,'Leases not yet commenced — Unavailable');
  const last=n;
+ // One source-backed breakdown below the established lease rows; no existing row shifts.
+ const detail=model.funding_detail;
+ sheet.getRange('A27').values=[['Short-term funding structure — included in baseline borrowing']];
+ sheet.getRange('A28:E28').values=[['Item','USD millions','As of','Status','Basis / source']];
+ const source=f=>({...model.borrowing[0],...f,source_url:f.source_url||model.borrowing[0].source_url,
+   location:typeof f.location==='object'?'Printed p. '+f.location.printed_page:f.location||model.borrowing[0].location,source_sha256:f.source_sha256||''});
+ for(const [i,r] of detail.rows.entries()){
+  const rr=29+i;
+  sheet.getRange(`A${rr}:E${rr}`).values=[[r.label,r.value===null?'Unavailable':null,date(r.period_end),r.status,r.basis]];
+  if(r.value!==null){
+   let formula;
+   if(r.source)formula=input(source(r.source),r.label);
+   else formula=ticker==='LLY'?'=B6-B29':'=SUM(B29:B31)';
+   sheet.getRange(`B${rr}`).formulas=[[formula]];
+  }
+ }
+ sheet.getRange('A34').values=[['Funding structure']];sheet.getRange('E34').values=[[detail.explanation]];
+ if(ticker==='VST'){
+  sheet.getRange('A37:E37').values=[['Fiscal year','Short-term borrowing','Receivables financing','Year end','Treatment']];
+  for(const [i,h] of detail.history.entries()){
+   const rr=38+i;
+   sheet.getRange(`A${rr}:E${rr}`).values=[[h.year,null,null,date(h.short_term.period_end),'Components already included in annual borrowing.']];
+   for(const [col,f] of [['B',h.short_term],['C',h.receivables]])sheet.getRange(`${col}${rr}`).formulas=[[input(source(f),f.tag)]];
+  }
+  sheet.getRange('B8').setNumberFormat('#,##0,,;(#,##0,,);"0"');
+  sheet.getRange('E8').values=[['Reported zero at June 30, 2026; not missing.']];
+ }
+ sheet.getRange('A44:E44').values=[['Liability classification','USD millions','As of','Status','Source / basis']];
+ for(const [i,f] of detail.liabilities.entries()){
+  const rr=45+i;let formula;
+  if(f.inputs){const refs=f.inputs.map(part=>input(source(part),part.label).slice(1));formula='='+refs.join('-');}
+  else formula=input(source(f),f.label);
+  sheet.getRange(`A${rr}:E${rr}`).values=[[f.label,null,date(f.period_end),f.status,f.formula||f.location]];
+  sheet.getRange(`B${rr}`).formulas=[[formula]];
+ }
+ sheet.getRange('A47:E47').values=[['Total liabilities',null,date(detail.period_end),'Derived','Current plus noncurrent; includes borrowing and recognized leases. Do not add them again.']];
+ sheet.getRange('B47').formulas=[['=SUM(B45:B46)']];
+ sheet.getRange('G44:I45').values=[['As of','Current liabilities','Noncurrent liabilities'],[detail.period_end,null,null]];
+ sheet.getRange('H45').formulas=[['=B45']];sheet.getRange('I45').formulas=[['=B46']];sheet.getRange('G45').setNumberFormat('mmm d, yyyy');sheet.getRange('H45:I45').setNumberFormat(USD);
+ const liabilityChart=sheet.charts.add('bar',sheet.getRange('G44:I45'));liabilityChart.barOptions.direction='column';liabilityChart.barOptions.grouping='stacked';liabilityChart.title='Total liabilities (USD billions)';liabilityChart.titleTextStyle.fontSize=12;liabilityChart.titleTextStyle.typeface='Arial';liabilityChart.yAxis={numberFormatCode:'0.0,,,',numberFormatSourceLinked:false};liabilityChart.legend={position:'bottom'};liabilityChart.series.items[0].fill=model.palette.borrowing;liabilityChart.series.items[1].fill=model.palette.cash;liabilityChart.setPosition('G5','P18');
+ const detailFormat=sheet.getRange('A27:E47').format;
+ detailFormat.font.name='Arial';detailFormat.font.size=10;detailFormat.wrapText=true;detailFormat.verticalAlignment='top';detailFormat.rowHeight=44;
+ sheet.getRange('A34:E34').format.rowHeight=200;
+ sheet.getRange('B29:B32').setNumberFormat(USD);sheet.getRange('B29:B32').format.font.color='#008000';sheet.getRange('B45:B47').setNumberFormat(USD);sheet.getRange('B45:B46').format.font.color='#008000';
+ sheet.getRange('C29:C32').setNumberFormat('mmm d, yyyy');sheet.getRange('C45:C47').setNumberFormat('mmm d, yyyy');
+ if(ticker==='VST'){sheet.getRange('B38:C42').setNumberFormat('#,##0,,;(#,##0,,);"0"');sheet.getRange('D38:D42').setNumberFormat('mmm d, yyyy');header(sheet,'A37:E37');frame(sheet,'A37:E42');}
+ for(const rr of [28,44])header(sheet,`A${rr}:E${rr}`);
+ for(const area of ['A28:E32','A44:E47'])frame(sheet,area);
+ sheet.getRange('A27').format.font.bold=true;
  data.getRangeByIndexes(start,0,records.length,headers.length).values=records;
  const lastData=start+records.length;
  const area=`A${start}:${ticker==='LLY'?'O':'R'}${lastData}`;

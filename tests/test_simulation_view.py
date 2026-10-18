@@ -10,6 +10,7 @@ from streamlit.testing.v1 import AppTest
 
 import liquidity_simulation as ls
 import simulation_view as sv
+from scenario_export import SHARE_NOTE
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SERVED = {}
@@ -71,7 +72,8 @@ class ScenarioPanel(unittest.TestCase):
 
     def test_scenario_edits_survive_a_visit_to_the_review(self):
         self.scenario()
-        self.app.slider(key="sim_rho").set_value(0.5).run()
+        self.app.slider(key="sim_rho").set_value(0.5)
+        self.app.button(key="sim_submit").click().run()
         self.view().set_value(sv.VIEWS[0]).run()
         self.assertIn("Funding conclusion for ORCL", self.text())
         self.view().set_value(sv.VIEWS[1]).run()
@@ -96,7 +98,8 @@ class ScenarioPanel(unittest.TestCase):
 
     def test_an_invalid_range_runs_nothing(self):
         self.scenario()
-        next(n for n in self.app.number_input if n.key == "sim_ocf_low").set_value(60.0).run()
+        next(n for n in self.app.number_input if n.key == "sim_ocf_low").set_value(60.0)
+        self.app.button(key="sim_submit").click().run()
         self.assertTrue(any("low ≤ most likely ≤ high" in w.value for w in self.app.warning))
         self.assertEqual(len(self.app.dataframe), 0)
 
@@ -116,7 +119,8 @@ class ScenarioPanel(unittest.TestCase):
 
     def test_the_correlation_setting_reaches_every_result_and_the_download(self):
         self.scenario()
-        self.app.slider(key="sim_rho").set_value(0.5).run()
+        self.app.slider(key="sim_rho").set_value(0.5)
+        self.app.button(key="sim_submit").click().run()
         self.assertFalse(self.app.exception)
         button = next(b for b in self.app.get("download_button") if b.proto.label == "Download this scenario (Excel)")
         wb = load_workbook(BytesIO(SERVED[button.proto.url.rsplit("/", 1)[-1].split(".")[0]]))
@@ -223,7 +227,7 @@ class ScenarioWorkbook(unittest.TestCase):
         self.assertIsInstance(cell.value, float)
         self.assertEqual((cell.font.name, cell.font.sz), ("Arial", 10.0))
         self.assertEqual(wb["About"]["B8"].value, ls.TIMING_LIMIT)
-        self.assertEqual(wb["About"]["B11"].value, sv.SHARE_NOTE)
+        self.assertEqual(wb["About"]["B11"].value, SHARE_NOTE)
         self.assertEqual(wb["Scenario"]["C12"].number_format, "+0.0;-0.0;0.0")   # a ratio, not $ millions
         self.assertNotIn("Correlation", wb.sheetnames)                            # only when a comparison is passed
 

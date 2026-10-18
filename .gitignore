@@ -28,3 +28,7 @@ venv/
 
 # Offline test screenshots
 tests/offline/shots/
+
+# Reproducible audit renders and logs
+outputs/
+*.xlsx.inspect.ndjson

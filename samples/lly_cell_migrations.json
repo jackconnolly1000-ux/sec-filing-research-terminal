@@ -1,0 +1,70 @@
+{
+  "ticker": "LLY",
+  "migrations": [
+    {
+      "sheet": "Data",
+      "from": "B120",
+      "to": "B3",
+      "identity": [
+        "0000059478-26-000081",
+        "us-gaap:DebtCurrent",
+        null,
+        "2026-06-30T00:00:00.000Z",
+        "USD"
+      ],
+      "treatment": "Same-sheet formula alias; original address retained."
+    },
+    {
+      "sheet": "Data",
+      "from": "B121",
+      "to": "B4",
+      "identity": [
+        "0000059478-26-000081",
+        "us-gaap:LongTermDebtNoncurrent",
+        null,
+        "2026-06-30T00:00:00.000Z",
+        "USD"
+      ],
+      "treatment": "Same-sheet formula alias; original address retained."
+    },
+    {
+      "sheet": "Data",
+      "from": "B128",
+      "to": "B3",
+      "identity": [
+        "0000059478-26-000081",
+        "us-gaap:DebtCurrent",
+        null,
+        "2026-06-30T00:00:00.000Z",
+        "USD"
+      ],
+      "treatment": "Same-sheet formula alias; original address retained."
+    },
+    {
+      "sheet": "Data",
+      "from": "B157",
+      "to": "B137",
+      "identity": [
+        "0000059478-26-000013",
+        "us-gaap:DebtCurrent",
+        "c-16",
+        "2025-12-31T00:00:00.000Z",
+        "USD"
+      ],
+      "treatment": "Same-sheet formula alias; original address retained."
+    },
+    {
+      "sheet": "Data",
+      "from": "B158",
+      "to": "B138",
+      "identity": [
+        "0000059478-26-000013",
+        "us-gaap:LongTermDebtNoncurrent",
+        "c-16",
+        "2025-12-31T00:00:00.000Z",
+        "USD"
+      ],
+      "treatment": "Same-sheet formula alias; original address retained."
+    }
+  ]
+}

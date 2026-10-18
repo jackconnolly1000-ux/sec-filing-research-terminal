@@ -107,7 +107,7 @@ class AppPages(unittest.TestCase):
         self.assertIn("Funding conclusion for LLY", text)
         # No Run analysis action and no enclosing review expander on the default page
         self.assertNotIn("Run analysis", [b.label for b in app.button])
-        self.assertEqual([e.proto.label for e in app.expander], ["Optional combined export"])
+        self.assertEqual([e.proto.label for e in app.expander], ["Historical cash generation relative to borrowing", "Optional combined export"])
         self.assertIn(RESEARCH, [b.label for b in app.button])
         self.assertIn("Download LLY review and evidence", self.labels("download_button"))
 
@@ -146,7 +146,7 @@ class AppPages(unittest.TestCase):
             self.run_clean()
             charts = app.get("plotly_chart")
             # the two five-year charts, plus Lilly's and Oracle's cash bridges and Oracle's maturity chart
-            self.assertEqual(len(charts), {"LLY": 3, "ORCL": 4, "VST": 2}[ticker], ticker)
+            self.assertEqual(len(charts), {"LLY": 5, "ORCL": 7, "VST": 4}[ticker], ticker)
             captions = [c.value for c in app.caption]
             self.assertTrue(any(c.startswith("Cash and baseline borrowing at each fiscal year end") for c in captions))
             self.assertTrue(any("capital spending (below zero, a use of cash)" in c for c in captions))

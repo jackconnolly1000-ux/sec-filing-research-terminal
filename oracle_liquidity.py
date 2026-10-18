@@ -195,23 +195,8 @@ def workbook_bytes(review: dict) -> bytes | None:
     try:
         content = WORKBOOK.read_bytes()
         metadata = json.loads(WORKBOOK.with_suffix(".manifest.json").read_text())
-        import annual_history_view
-        if metadata.get("annual_history_sha256") != annual_history_view.fingerprint():
-            return None
-        import export_guide
-        if metadata.get("guide_sha256") != export_guide.fingerprint():
-            return None
-        import core_charts
-        if metadata.get("charts_sha256") != core_charts.fingerprint():
-            return None
-        import company_history
-        if metadata.get("history_sha256") != company_history.fingerprint():
-            return None
-        import ratio_review
-        if metadata.get("ratios_sha256") != ratio_review.fingerprint():
-            return None
-        import borrowing_leases
-        if metadata.get("borrowing_leases_sha256") != borrowing_leases.fingerprint():
+        from workbook_manifest import common_matches
+        if not common_matches(metadata):
             return None
         import funding_conclusions as funding
         if metadata.get("funding_sha256") != funding.fingerprint() or funding.load("ORCL") is None:

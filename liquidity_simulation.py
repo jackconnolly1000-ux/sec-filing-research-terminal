@@ -26,6 +26,7 @@ from __future__ import annotations
 
 import json
 import math
+from numbers import Integral
 from dataclasses import dataclass, field, replace
 from pathlib import Path
 
@@ -90,7 +91,7 @@ class Triangular:
     basis: str = ""
 
     def __post_init__(self):
-        if not self.low <= self.mode <= self.high:
+        if not all(math.isfinite(v) for v in (self.low, self.mode, self.high)) or not self.low <= self.mode <= self.high:
             raise ValueError(f"Triangle must satisfy low <= mode <= high, got {self.low}, {self.mode}, {self.high}")
 
     @property
@@ -134,6 +135,12 @@ class Decision:
     capex: float
     dividends: float
     revolver: bool
+
+    def __post_init__(self):
+        for name in ("capex", "dividends"):
+            value = getattr(self, name)
+            if not math.isfinite(value) or value < 0:
+                raise ValueError(f"{name} must be finite and non-negative")
 
 
 @dataclass
@@ -298,10 +305,23 @@ def ending_cash(inputs: Inputs, decision: Decision, ocf, prepayments, commercial
     return before, before + draw
 
 
+def validate_inputs(inputs: Inputs, seed: int) -> None:
+    """Validate cash-use bounds without forbidding an operating cash outflow."""
+    if not isinstance(seed, Integral) or isinstance(seed, bool) or seed < 0:
+        raise ValueError("seed must be a non-negative integer")
+    for name in ("prepayments", "commercial_paper_due"):
+        triangle = getattr(inputs, name)
+        if not all(math.isfinite(v) and v >= 0 for v in (triangle.low, triangle.mode, triangle.high)):
+            raise ValueError(f"{name} must be finite and non-negative")
+    if not math.isfinite(inputs.correlation) or not -1 < inputs.correlation < 1:
+        raise ValueError("correlation must be between -1 and 1")
+
+
 def _draws(inputs: Inputs, trials: int, seed: int):
     """The random inputs for each trial. Draw order is fixed, so each seed is reproducible, and simulate() and
     monthly_path() see the same trials for the same seed."""
-    if trials < 1:
+    validate_inputs(inputs, seed)
+    if not isinstance(trials, Integral) or isinstance(trials, bool) or trials < 1:
         raise ValueError("trials must be positive")
     rng = np.random.default_rng(seed)
     u_ocf, u_pre = correlated_uniforms(rng, trials, inputs.correlation)

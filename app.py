@@ -6,7 +6,6 @@ import platform
 import requests
 import time
 import traceback
-from importlib import reload
 import yfinance as yf
 import pandas as pd
 from pathlib import Path
@@ -21,6 +20,11 @@ import filing_review
 import filing_xbrl
 import reviewed_financing
 import liquidity_simulation
+import xlsx_xml
+import summary_export
+import workbook_manifest
+import funding_detail
+import debt_detail
 import scenario_export
 import research_export
 import simulation_view
@@ -57,44 +61,16 @@ import ui
 import xbrl
 from charts import CHART_CONFIG, build_price_chart
 
-# A Cloud worker can retain imported views across entry-point reruns after deployment.
-# These modules have no network calls or state to preserve; load the current view and review registry.
-reload(filing_xbrl)   # before the modules that read filings through it (fx.parse, Oct 17)
-reload(theme)   # ui reads its colors from theme; reloading ui alone kept old tokens (Oct 17 outage)
-reload(ui)
-reload(oracle_financing)
-reload(oracle_liquidity)
-reload(oracle_interest)
-reload(oracle_interest_view)
-reload(oracle_revolver)
-reload(oracle_principal)
-reload(oracle_principal_view)
-reload(oracle_repayment)
-reload(oracle_liquidity_view)
-reload(reviewed_financing)
-reload(vistra_liquidity)
-reload(vistra_interest)
-reload(vistra_interest_view)
-reload(vistra_liquidity_view)
-reload(lly_liquidity)
-reload(lly_financing)
-reload(lly_interest)
-reload(lly_interest_view)
-reload(lly_liquidity_view)
-reload(liquidity_simulation)
-reload(scenario_export)
-reload(research_export)
-reload(simulation_view)
-# History modules core_charts and company_review read lazily; dependencies first, so a long-lived Cloud worker
-# never pairs new checked JSON with an old module's hash (Oct 17: annual history changed company_history's)
-reload(annual_history_view)
-reload(ratio_review)
-reload(company_history)
-reload(export_guide)
-reload(borrowing_leases)
-reload(core_charts)   # imported lazily by company_review, so a reload of that module alone keeps old chart HTML
-reload(company_review)
-reload(funding_conclusions)
+# Refresh imported modules only on deployment or an explicitly detected old interface.
+from runtime_cache import refresh_modules
+refresh_modules([filing_xbrl, theme, ui, xlsx_xml, workbook_manifest, funding_detail, oracle_financing, oracle_liquidity, oracle_interest,
+                 oracle_interest_view, oracle_revolver, oracle_principal, oracle_principal_view,
+                 debt_detail, oracle_repayment, oracle_liquidity_view, reviewed_financing, vistra_liquidity,
+                 vistra_interest, vistra_interest_view, vistra_liquidity_view, lly_liquidity,
+                 lly_financing, lly_interest, lly_interest_view, lly_liquidity_view,
+                 liquidity_simulation, scenario_export, research_export, summary_export, simulation_view,
+                 annual_history_view, ratio_review, company_history, export_guide,
+                 borrowing_leases, core_charts, company_review, funding_conclusions])
 
 ET = ZoneInfo("America/New_York")
 
@@ -278,11 +254,12 @@ def load_sec_metrics(cik: str) -> dict:
         return {"status": "failed", "reason": f"SEC company facts couldn't be read: {e}"}
 
 @st.cache_resource(show_spinner=False)
-def analysis_store() -> dict:
+def analysis_store():
     """Complete Claude answers, keyed by a hash of the exact request. Written only when
     analysis.is_cacheable() says every section is usable, so a cut-off or malformed answer is
     never served again as if it were complete."""
-    return {}
+    from runtime_cache import ResponseStore
+    return ResponseStore(ttl=3600, max_entries=64)
 
 ANALYSIS_TTL = 3600
 ANALYSIS_TIMEOUT = 300  # seconds; an answer of up to 12,000 tokens can take minutes
@@ -321,57 +298,58 @@ def run_analysis(ticker: str, evidence: dict) -> dict:
         return analysis.failed_result(sources, str(e))
     key = hashlib.sha256(analysis.request_fingerprint(req["prompt"], req["tool"]).encode()).hexdigest()
     store = analysis_store()
-    hit = store.get(key)
-    from_cache = bool(hit and time.time() - hit["at"] < ANALYSIS_TTL)
-    if from_cache:
-        raw = hit["raw"]   # costs nothing, so the ledger isn't touched
-    else:
-        # Reserve the worst case (measured input + the full output allowance) before calling
-        worst = budget.cost_usd(analysis.MODEL, req["input_tokens"], analysis.MAX_OUTPUT_TOKENS)
-        ledger = spend_ledger()
-        hold = ledger.reserve(worst, enforce=not is_owner())
-        if hold is None:
-            raise TickerSkipped("daily")
-        try:
-            # One attempt only: an SDK retry after a timeout could bill the same request twice.
-            response = client.with_options(timeout=ANALYSIS_TIMEOUT, max_retries=0).messages.create(
-                model=analysis.MODEL, max_tokens=analysis.MAX_OUTPUT_TOKENS, tools=[req["tool"]],
-                tool_choice={"type": "tool", "name": analysis.TOOL_NAME},
-                messages=[{"role": "user", "content": req["prompt"]}])
-        except Exception as e:
-            # A 4xx means the API refused the request, so it wasn't billed. Anything else (5xx, timeout,
-            # connection error, an unexpected error) may have been billed, so it counts at the worst case.
-            if budget.rejected_before_billing(e):
-                ledger.release(hold)
-            else:
-                ledger.settle(hold, worst)
-            if budget.monthly_limit_error(e):
-                raise TickerSkipped("monthly") from e
-            if isinstance(e, APIError):
-                return analysis.failed_result(sources, f"Anthropic API error ({type(e).__name__}); try again")
-            raise
-        # Every response that comes back is billed for what it used, including a cut-off one (max_tokens)
-        ledger.settle(hold, budget.cost_usd(analysis.MODEL, response.usage.input_tokens, response.usage.output_tokens))
-        raw = {"stop_reason": response.stop_reason,
-               "tool_input": next((b.input for b in response.content if b.type == "tool_use"), None),
-               "usage": {"input_tokens": response.usage.input_tokens, "output_tokens": response.usage.output_tokens}}
-        # stop_reason says why Claude stopped: "tool_use" means it finished filling in the tool,
-        # "max_tokens" means it hit the cap mid-answer and the later fields are missing.
-        print(f"[claude] {ticker}: stop_reason={raw['stop_reason']} output_tokens={raw['usage']['output_tokens']} "
-              f"input_tokens={raw['usage']['input_tokens']} max_tokens={analysis.MAX_OUTPUT_TOKENS}", flush=True)
-    checked = analysis.check_response(raw["stop_reason"], raw["tool_input"], sources)
-    if SAVE_DIR and not from_cache:
-        saved = {"ticker": ticker, "saved_at": datetime.now(ET).isoformat(timespec="seconds"), "model": analysis.MODEL,
-                 "max_tokens": analysis.MAX_OUTPUT_TOKENS, "raw": raw, "request": req,
-                 "evidence": [s.coverage() for s in sources], "checked": checked}
-        os.makedirs(SAVE_DIR, exist_ok=True)
-        with open(os.path.join(SAVE_DIR, f"{ticker}_{datetime.now(ET):%Y%m%d_%H%M%S}.json"), "w") as fh:
-            json.dump(saved, fh, indent=1, default=str)
-    if not from_cache and analysis.is_cacheable(checked):
-        store[key] = {"at": time.time(), "raw": raw}
-    return checked | {"usage": raw.get("usage"), "from_cache": from_cache,
-                      "budget": {"input_tokens": req["input_tokens"], "limit": req["budget"],
-                                 "output_reserve": analysis.MAX_OUTPUT_TOKENS, "count": method["method"]}}
+    with store.request(key):
+        hit = store.get(key)
+        from_cache = bool(hit and time.time() - hit["at"] < ANALYSIS_TTL)
+        if from_cache:
+            raw = hit["raw"]   # costs nothing, so the ledger isn't touched
+        else:
+            # Reserve the worst case (measured input + the full output allowance) before calling
+            worst = budget.cost_usd(analysis.MODEL, req["input_tokens"], analysis.MAX_OUTPUT_TOKENS)
+            ledger = spend_ledger()
+            hold = ledger.reserve(worst, enforce=not is_owner())
+            if hold is None:
+                raise TickerSkipped("daily")
+            try:
+                # One attempt only: an SDK retry after a timeout could bill the same request twice.
+                response = client.with_options(timeout=ANALYSIS_TIMEOUT, max_retries=0).messages.create(
+                    model=analysis.MODEL, max_tokens=analysis.MAX_OUTPUT_TOKENS, tools=[req["tool"]],
+                    tool_choice={"type": "tool", "name": analysis.TOOL_NAME},
+                    messages=[{"role": "user", "content": req["prompt"]}])
+            except Exception as e:
+                # A 4xx means the API refused the request, so it wasn't billed. Anything else (5xx, timeout,
+                # connection error, an unexpected error) may have been billed, so it counts at the worst case.
+                if budget.rejected_before_billing(e):
+                    ledger.release(hold)
+                else:
+                    ledger.settle(hold, worst)
+                if budget.monthly_limit_error(e):
+                    raise TickerSkipped("monthly") from e
+                if isinstance(e, APIError):
+                    return analysis.failed_result(sources, f"Anthropic API error ({type(e).__name__}); try again")
+                raise
+            # Every response that comes back is billed for what it used, including a cut-off one (max_tokens)
+            ledger.settle(hold, budget.cost_usd(analysis.MODEL, response.usage.input_tokens, response.usage.output_tokens))
+            raw = {"stop_reason": response.stop_reason,
+                   "tool_input": next((b.input for b in response.content if b.type == "tool_use"), None),
+                   "usage": {"input_tokens": response.usage.input_tokens, "output_tokens": response.usage.output_tokens}}
+            # stop_reason says why Claude stopped: "tool_use" means it finished filling in the tool,
+            # "max_tokens" means it hit the cap mid-answer and the later fields are missing.
+            print(f"[claude] {ticker}: stop_reason={raw['stop_reason']} output_tokens={raw['usage']['output_tokens']} "
+                  f"input_tokens={raw['usage']['input_tokens']} max_tokens={analysis.MAX_OUTPUT_TOKENS}", flush=True)
+        checked = analysis.check_response(raw["stop_reason"], raw["tool_input"], sources)
+        if SAVE_DIR and not from_cache:
+            saved = {"ticker": ticker, "saved_at": datetime.now(ET).isoformat(timespec="seconds"), "model": analysis.MODEL,
+                     "max_tokens": analysis.MAX_OUTPUT_TOKENS, "raw": raw, "request": req,
+                     "evidence": [s.coverage() for s in sources], "checked": checked}
+            os.makedirs(SAVE_DIR, exist_ok=True)
+            with open(os.path.join(SAVE_DIR, f"{ticker}_{datetime.now(ET):%Y%m%d_%H%M%S}.json"), "w") as fh:
+                json.dump(saved, fh, indent=1, default=str)
+        if not from_cache and analysis.is_cacheable(checked):
+            store[key] = {"at": time.time(), "raw": raw}
+        return checked | {"usage": raw.get("usage"), "from_cache": from_cache,
+                          "budget": {"input_tokens": req["input_tokens"], "limit": req["budget"],
+                                     "output_reserve": analysis.MAX_OUTPUT_TOKENS, "count": method["method"]}}
 
 # Local only: set SAVE_SAMPLE_DIR to write each finished profile to JSON (tests/offline/build_sample.py uses them)
 SAMPLE_OUT = os.environ.get("SAVE_SAMPLE_DIR")
@@ -428,6 +406,7 @@ def get_price_history(ticker: str) -> pd.DataFrame:
     hist.index = hist.index.normalize()
     return hist
 
+@st.cache_data(ttl=3600, max_entries=32, show_spinner=False)
 def generate_excel(profiles):
     """A dated research record using the verified offline-authored layout."""
     return research_export.workbook(profiles)
@@ -556,7 +535,7 @@ def render_header() -> None:
 
 
 def render_debt_view() -> None:
-    st.button(RESEARCH_LABEL, type="tertiary", icon=":material/arrow_forward:", icon_position="right",
+    st.button(RESEARCH_LABEL, key="nav_research", type="tertiary", icon=":material/arrow_forward:", icon_position="right",
               on_click=open_view, args=(RESEARCH,))
     # Import the complete view directly: long-lived workers can retain an older model helper after deployment.
     company_review.render_app()
@@ -569,7 +548,7 @@ def render_owner_sidebar() -> None:
     if not owner_passcode:
         return
     with st.sidebar:
-        typed = st.text_input("Owner passcode", type="password")
+        typed = st.text_input("Owner passcode", key="research_owner_passcode", type="password")
         # Clearing the field turns owner mode off again
         st.session_state.owner = bool(typed) and hmac.compare_digest(typed.encode(), str(owner_passcode).encode())
         if typed:
@@ -651,7 +630,7 @@ def render_results(results: dict) -> None:
         else:
             col_dl.download_button("Download Excel", data=record,
                                    file_name=f"Research_Record_{'_'.join(done)}_{results['run_at']:%Y-%m-%d}.xlsx",
-                                   mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+                                   mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", key="research_download", on_click="ignore")
     if not results.get("sample") and sorted(st.session_state.ticker_select) != sorted(results["tickers"]):
         st.caption("Your ticker selection changed. Click Run analysis to update these results.")
 
@@ -666,7 +645,7 @@ def render_results(results: dict) -> None:
 
 
 def render_research_view() -> None:
-    st.button("Debt and liquidity reviews", type="tertiary", icon=":material/arrow_back:",
+    st.button("Debt and liquidity reviews", key="nav_debt", type="tertiary", icon=":material/arrow_back:",
               on_click=open_view, args=(DEBT,))
     st.markdown(f"<div class='irt-h' role='heading' aria-level='2'>{ui.esc(RESEARCH_LABEL)}</div>"
                 "<p class='irt-note'>AI summaries of catalysts, risk-factor changes and 8-K events for any ticker, with "
@@ -694,7 +673,7 @@ def render_research_view() -> None:
             persist_state="session",       # kept while the debt and liquidity page is open
         )
     with col_run:
-        run_btn = st.button("Run analysis", type="primary", width="stretch", disabled=bool(problems))
+        run_btn = st.button("Run analysis", key="research_run", type="primary", width="stretch", disabled=bool(problems))
 
     st.markdown("<p class='irt-note'>Live analysis is limited to about one ticker a day. The archived example is always available.</p>",
                 unsafe_allow_html=True)
@@ -704,7 +683,7 @@ def render_research_view() -> None:
                     unsafe_allow_html=True)
     elif used_fallback:
         st.warning("Couldn't reach the SEC ticker list, so only 6 tickers are available. Reload the page to retry.")
-    st.button("View archived example (AAPL, STRL · Oct 10, 2026)", on_click=load_sample)
+    st.button("View archived example (AAPL, STRL · Oct 10, 2026)", key="research_archive", on_click=load_sample)
     render_owner_sidebar()
 
     if run_btn and not st.session_state.ticker_select:

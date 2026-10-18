@@ -131,3 +131,12 @@ The [financing audit](lly_financing_audit.md) compares saved documents to the SE
 ## Release 1 borrowing and lease presentation (October 16, 2026)
 
 The app and individual workbook now separate the checked borrowing components, recognized lease liabilities and leases not yet commenced. All amounts keep their own dates; missing latest-date lease amounts remain Unavailable. No borrowing, net-debt or coverage value changes. See [the reconciliation and remaining gaps](borrowing_lease_presentation.md).
+
+
+## Current funding detail checked October 18, 2026
+
+Current borrowing is not missing. At June 30, 2026, Lilly reported $7.050B of short-term borrowings and current maturities combined. Its carrying-value disclosure identifies $5.284B of commercial paper; $1.766B is derived current long-term borrowing, not a separately reported principal-payment schedule. Both are already included in $54.908B baseline borrowing. June unused commitments of $10.1B are separate from debt; $10B supports CP and is not an independent additional funding pool. Post-expiry drawable capacity remains Unavailable.
+
+The source checkpoint is `samples/funding_detail.json`, rebuilt by `tests/offline/build_funding_detail.py`. It records exact contexts, permitted dimensions, source hashes and a fact registry. Current/noncurrent **total liabilities** are a separate classification from borrowing; recognized leases already sit within liabilities and are never added a second time.
+
+Commercial paper is the carrying amount in context `c-295`, with all three explicit dimensions checked. Context `c-296` is fair value ($5,280M) and is not substituted. Noncurrent liabilities are $60,663M. June lease liabilities remain Unavailable; the $222M current operating lease amount is December 31, 2025.

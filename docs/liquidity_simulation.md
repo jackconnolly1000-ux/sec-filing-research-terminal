@@ -22,9 +22,9 @@ ending cash = starting cash + OCF excluding prepayments + prepayments
 |---|---|---|---|
 | Filing fact | Starting cash | $36.369B | 10-Q balance sheet, Aug 31, 2026; excludes $2.565B restricted cash |
 | Filing fact | Dated note and term-loan principal | $7.317B | [Principal calendar](oracle_principal_calendar.md): due Sep 2026–Aug 2027 |
-| Assumption (triangular) | OCF excluding prepayments | $31.977B / $35.577B / $46.960B | Corners set at fiscal 2026 OCF, TTM OCF less the specified prepayments, and Jun–Aug 2026 excluding prepayments times four. These are checked historical figures. They don't establish that future OCF stays inside them, or that the TTM figure is most likely. |
-| Assumption (triangular) | Specified customer prepayments | $0 / $0 / $11.363B | From none (as in Q1 FY2026) to one more quarter like Jun–Aug 2026; most likely none. Recurrence isn't established. |
-| Derived range, assumed shape | Commercial paper due | $287M / $337M / $387M | The August balance is Unavailable. The low and high are implied by rounded 10-Q figures; the midpoint as most likely, and repayment within the year, are assumptions. |
+| Assumption (triangular) | OCF excluding prepayments | $31.977B / $35.577B / $46.960B | Corners set at fiscal 2026 OCF, TTM OCF less the specified prepayments, and Jun–Aug 2026 excluding prepayments times four. These are checked historical figures. They don't establish that future OCF stays inside them, or that the TTM figure is assumed mode. |
+| Assumption (triangular) | Specified customer prepayments | $0 / $0 / $11.363B | From none (as in Q1 FY2026) to one more quarter like Jun–Aug 2026; assumed mode none. Recurrence isn't established. |
+| Derived range, assumed shape | Commercial paper due | $287M / $337M / $387M | The August balance is Unavailable. The low and high are implied by rounded 10-Q figures; the midpoint as assumed mode, and repayment within the year, are assumptions. |
 | Decision | Capex | A: $75.66B (TTM) · B: $55.663B (fiscal 2026) | Management chooses this; it isn't an uncertainty |
 | Decision | Dividends | $6.26B | Jun–Aug 2026 dividends of $1.565B (common and preferred), times four |
 | Decision (hypothetical) | Revolver usable | No / yes, up to $10B | The commitment is a filing fact; the drawable amount is Unavailable |
@@ -117,7 +117,7 @@ With all three subtracted, decision B's mean ending cash falls from $8.76B to �
 
 **Reading it:**
 - At the TTM capex rate, checked cash plus the assumed range of operating cash flow doesn't cover the uses the model subtracts in almost every trial. Even the whole revolver lifts ending cash above zero in only about a third of trials, because the mean gap ($11.2B) is larger than the $10B commitment. That's consistent with Oracle raising $19.9B of equity in Jun–Aug 2026.
-- At the fiscal 2026 capex level, ending cash stays above zero in almost every trial of the **base** model. That reading isn't robust: with the three measured outside uses, 62.6% of trials end below zero.
+- At the fiscal 2026 capex level, ending cash stays above zero in almost every trial of the **base** model. That result changes when the measured outside uses are included: with the three measured outside uses, 62.6% of trials end below zero.
 - Capex is the decision that moves the result most, and the unresolved uses matter about as much as the OCF range does.
 
 These results describe the assumptions, not what will happen. They moved slightly on October 17 (decision A from 99.4% to 99.5%) when OCF and prepayments began to be drawn through the correlation step below. The random stream changed; the model didn't.
@@ -132,7 +132,7 @@ These results describe the assumptions, not what will happen. They moved slightl
 1. Draw two independent standard normal scores per trial, z1 and z2.
 2. Tie the second to the first: z2′ = ρ·z1 + √(1 − ρ²)·z2. The pair now has correlation ρ.
 3. Turn each score into a percentile (0 to 1) with the normal CDF.
-4. Read each percentile off its own triangle with the triangle's inverse CDF (`Triangular.quantile`), so each input keeps its stated low, most likely and high.
+4. Read each percentile off its own triangle with the triangle's inverse CDF (`Triangular.quantile`), so each input keeps its stated low, assumed mode and high.
 
 The class covers the principle, not these mechanics; the copula is this app's implementation choice. ρ is the correlation of the normal scores. The dollar draws end up slightly less correlated (+0.48 for a setting of +0.5), and the app shows that realized value.
 
@@ -169,7 +169,7 @@ All three settings reuse the same seed, so the same underlying normal scores app
 
 | Sheet | Contents |
 |---|---|
-| Scenario | Label, horizon, seed and trials. Each input with its **kind** (filing fact, assumption, derived range, hypothetical), low, most likely, high and basis. The timing limit and the share-of-trials note. |
+| Scenario | Label, horizon, seed and trials. Each input with its **kind** (filing fact, assumption, derived range, hypothetical), low, assumed mode, high and basis. The timing limit and the share-of-trials note. |
 | Results | Opens with two rows: the illustrative-scenario label and a link to About. Then one row per decision: mean, standard deviation, percentiles, share of trials below zero and the average shortfall in those trials |
 | Correlation | −0.5, 0 and +0.5 for the decision shown |
 | Monthly path | One row per decision: share below zero at August 31, 2027 and at any month end, mean ending cash, mean and 10th percentile of the lowest month-end cash, the month most often lowest and its share, and the share of trials with a net outflow over the year |
@@ -199,7 +199,7 @@ Findings, all fixed in the same pull request:
    The month-end path checks the timing question: with dated principal in its calendar month and the other flows spread evenly, cash falls every month at the defaults, so the lowest point is August 2027 and the two tests agree.
 5. **Why trust it (60 s).** The checks run as automated tests, the runs are seeded, every percentage is a share of simulated trials, and it never changes the checked conclusion.
 
-**Likely interview question:** *"Why triangular distributions?"* There are only a few checked periods. A low, most likely and high anchored to those periods is a transparent way to state an assumption, and anyone can see and change it. It doesn't claim the history sets the bounds. A fitted normal distribution would imply more precision than three observations support.
+**Likely interview question:** *"Why triangular distributions?"* There are only a few checked periods. A low, assumed mode and high anchored to those periods is a transparent way to state an assumption, and anyone can see and change it. It doesn't claim the history sets the bounds. A fitted normal distribution would imply more precision than three observations support.
 
 ## Limits
 
@@ -210,3 +210,8 @@ Findings, all fixed in the same pull request:
 - Capex and dividends are held at the decision values, with no timing within the year.
 - The commercial paper range is implied, not reported.
 - Oracle only. Lilly and Vistra need dated obligations first.
+
+
+## Input and export controls (October 18, 2026)
+
+Seed must be a non-negative integer. Capex, dividends, customer prepayments and assumed CP payments cannot be negative; operating cash flow may be negative. Assumptions apply on **Run scenario**, not on each edit. The screen and export use the same completed run. Exports and comparisons are retained until inputs or checked source versions change; Reset assumptions clears only the scenario. Model results are shares of simulated trials conditional on these assumptions, never estimated default probabilities.
