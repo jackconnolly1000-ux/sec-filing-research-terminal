@@ -76,6 +76,7 @@ def render(st, snapshot):
     import hashlib
     import json
     from company_review import money
+    from simulation_view import _dollars
     try:
         model = build(snapshot)
     except (ValueError, KeyError, OSError) as exc:
@@ -109,8 +110,8 @@ def render(st, snapshot):
     a.metric('Stressed operating cash flow', money(result['ocf']))
     b.metric('Stressed capital spending', money(result['capex']))
     c.metric('OCF less capital spending', money(result['residual']))
-    st.markdown(f"Historical OCF less capital spending: **{money(result['historical_residual'])}**. "
-                f"Change under the applied stress: **{money(result['change'])}**.")
+    st.markdown(_dollars(f"Historical OCF less capital spending: **{money(result['historical_residual'])}**. "
+                        f"Change under the applied stress: **{money(result['change'])}**."))
     st.info(model['limit'])
     st.markdown('**Why there is no repayment simulation for this company yet:** ' + model['requirement'])
     with st.expander('Calculation and filing inputs'):

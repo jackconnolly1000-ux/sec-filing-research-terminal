@@ -52,6 +52,7 @@ def borrowing(model, money):
     This presentation adapter leaves the shared financial model and workbook fingerprint unchanged.
     """
     import borrowing_leases
+    from ui import esc
     original = borrowing_leases.render_borrowing(model, money)
     if model['ticker'] != 'ORCL':
         return original
@@ -60,7 +61,7 @@ def borrowing(model, money):
         return original
     head, detail = original.split(heading, 1)
     head = head.replace(' — instrument split unavailable', '').replace(
-        escape(model['borrowing_note']),
+        esc(model['borrowing_note']),
         'The 10-Q does not split these borrowing lines by instrument. The rounded $125.0B disclosure is not added.')
     return (head + heading + '<p>The reported current borrowing above is a combined carrying amount. The 10-Q '
             'does not establish a separate commercial-paper balance or current long-term borrowing split. '
