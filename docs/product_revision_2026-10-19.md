@@ -12,7 +12,7 @@
 
 The original Oracle rendered review contained 62 case-insensitive occurrences before the separate evidence/filing disclosures. The same commercial-paper, revolver, interest and timing limitations were repeated in several views; some occurred in closed detail sections. This was not evidence of 62 different missing facts.
 
-No unknown is filled with zero or made reliable by changing its label. The revised primary reading path (closed detail bodies excluded, summaries retained) has 10 occurrences, compared with 36 before the revision. Counts refer to generated review HTML, not a browser search across every expanded disclosure. The checked conclusion still states that future funding coverage is Unavailable. Failure messages for missing/stale evidence remain visible.
+No unknown is filled with zero or made reliable by changing its label. The revised primary reading path (closed detail bodies excluded, summaries retained) has 9 occurrences, compared with 36 before the revision. Counts refer to generated review HTML, not a browser search across every expanded disclosure. The checked conclusion still states that future funding coverage is Unavailable. Failure messages for missing/stale evidence remain visible.
 
 ## Weaknesses and next work
 
