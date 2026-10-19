@@ -99,7 +99,7 @@ class AppPages(unittest.TestCase):
     def test_default_page_opens_lilly_without_secrets_or_network(self):
         app = self.run_clean()
         text = page_text(app)
-        self.assertIn("Debt &amp; Liquidity Research Terminal", "\n".join(m.value for m in app.markdown))
+        self.assertIn("Debt &amp; Liquidity Research</div>", "\n".join(m.value for m in app.markdown))
         self.assertEqual(app.segmented_control[0].value, "LLY")
         self.assertEqual(app.segmented_control[0].options, ["Eli Lilly (LLY)", "Oracle (ORCL)", "Vistra (VST)"])
         self.assertIn("Eli Lilly and Company", text)

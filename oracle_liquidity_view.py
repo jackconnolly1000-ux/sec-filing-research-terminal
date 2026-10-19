@@ -192,7 +192,8 @@ def render(snapshot, money):
             'but commercial paper, current drawable credit and future operating cash generation have not been '
             'established. The two later saved 8-Ks checked below '
             'do not establish additional corporate borrowing.</p>')
-    out += repayment_html(snapshot, money) + '</section>'
+    out += ('<details><summary>Funding resources and obligation mapping</summary>' +
+            repayment_html(snapshot, money) + '</details></section>')
     # Streamlit's Markdown math parser otherwise consumes prose between currency signs.
     return out.replace("$", "&#36;")
 
@@ -205,13 +206,13 @@ def revolver_html(snapshot, money):
     out = '<p>' + esc(audit["conclusion"]) + '</p>'
     for row in audit["dates"]:
         source = audit["sources"][row["source"]]
-        out += '<details><summary>' + esc(row["date"]) + ' · drawable capacity Unavailable</summary>'
+        out += '<details><summary>' + esc(row["date"]) + ' · commitment, usage and draw conditions</summary>'
         for key, label in [("commitment", "Committed amount"), ("drawn", "Outstanding advances"),
                            ("undrawn", "Undrawn commitment")]:
             out += (f'<div class="ol-obligation"><span>{label}</span>'
                     f'<strong>{esc(money(row[key],3))}</strong></div>')
-        out += ('<p class="lr-meta">' + esc(row["detail"]) + ' ' + esc(row["compliance"]) +
-                ' ' + esc(row["drawable_detail"]) + ' <a href="' + esc(source["source_url"]) +
+        out += ('<p class="lr-meta">' + esc(row["detail"]) + ' ' + esc(row["compliance"].removeprefix('Unavailable: ')) +
+                ' ' + esc(row["drawable_detail"].removeprefix('Unavailable: ')) + ' <a href="' + esc(source["source_url"]) +
                 '" target="_blank" rel="noopener noreferrer">' + esc(source["form"] + ', filed ' +
                 source["filed"] + ', ' + row["location"]) + '</a>.</p></details>')
     out += '<details><summary>Letters of credit, increase option and draw conditions</summary>'

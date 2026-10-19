@@ -46,7 +46,7 @@ class ScenarioPanel(unittest.TestCase):
     def text(self):
         return "\n".join([m.value for m in self.app.markdown] + [c.value for c in self.app.caption])
 
-    def test_only_oracle_has_the_scenario_view(self):
+    def test_all_companies_have_a_view_selector_with_distinct_scenario_scope(self):
         self.pick("ORCL")
         self.assertEqual(self.view().options, list(sv.VIEWS))
         self.assertEqual(self.view().value, "Checked review")           # the checked review opens first
@@ -54,8 +54,13 @@ class ScenarioPanel(unittest.TestCase):
         self.assertIn("View → Stress scenario (illustrative)", self.text())
         for ticker in ("LLY", "VST"):
             self.pick(ticker)
-            self.assertIsNone(self.view())
+            self.assertEqual(self.view().options, list(sv.VIEWS))
             self.assertEqual(len(self.app.dataframe), 0)
+            self.view().set_value(sv.VIEWS[1]).run()
+            self.assertIn('Historical cash-generation sensitivity', self.text())
+            self.assertNotIn('Distribution of ending cash', self.text())
+            self.assertNotIn('sim_completed', self.app.session_state)
+            self.view().set_value(sv.VIEWS[0]).run()
 
     def test_scenario_view_is_separate_and_framed(self):
         self.scenario()

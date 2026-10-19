@@ -76,7 +76,7 @@ ET = ZoneInfo("America/New_York")
 
 # --- STREAMLIT PAGE CONFIG + STYLING (colors live in theme.py, CSS in ui.py) ---
 st.set_page_config(
-    page_title="Debt & Liquidity Research Terminal",
+    page_title="Debt & Liquidity Research",
     layout="wide",
     initial_sidebar_state="collapsed"
 )
@@ -526,10 +526,10 @@ def open_view(view: str) -> None:
 
 def render_header() -> None:
     st.markdown(
-        "<div class='irt-header'><div class='irt-title' role='heading' aria-level='1'>Debt &amp; Liquidity Research Terminal</div>"
+        "<div class='irt-header'><div class='irt-title' role='heading' aria-level='1'>Debt &amp; Liquidity Research</div>"
         "<div class='irt-sub'>Trace SEC filing facts through reconciled calculations to funding and repayment conclusions "
-        "for Eli Lilly, Oracle and Vistra. Explore dated reviews, source-linked Excel evidence and Oracle’s separate "
-        "illustrative stress scenario. Research, not investment advice.</div></div>",
+        "for Eli Lilly, Oracle and Vistra. Explore dated reviews, source-linked Excel evidence and company-specific "
+        "illustrative stress tests. Research, not investment advice.</div></div>",
         unsafe_allow_html=True,
     )
 

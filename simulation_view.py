@@ -1,4 +1,4 @@
-"""Release 2, steps 2–3: the Oracle stress scenario in the app, with editable assumptions and an Excel record.
+"""Company-aware stress views: Oracle cash paths; Lilly/Vistra historical cash-generation sensitivity.
 
 The model is liquidity_simulation.py. This view shows the math model and the assumption basis before any result
 (as in class), runs the four decisions side by side, tests month-end cash for the decision shown, measures the cash
@@ -237,14 +237,18 @@ VIEWS = ("Checked review", "Stress scenario (illustrative)")
 
 
 def available(snapshot) -> bool:
-    """Oracle only: Lilly and Vistra have no dated principal calendar, so their obligations side would be invented."""
-    return snapshot.get("ticker") == "ORCL"
+    """All checked companies have a stress view; only Oracle has the fuller cash-path simulation."""
+    return snapshot.get("ticker") in ("LLY", "ORCL", "VST")
 
 
 def render(st, snapshot) -> None:
     """The scenario as its own view, framed (ui.py, .st-key-scenario_view) so it never reads as checked facts."""
     from ui import notice
     if not available(snapshot):
+        return
+    if snapshot.get("ticker") != "ORCL":
+        import cashflow_stress
+        cashflow_stress.render(st, snapshot)
         return
     inputs = ls.oracle_inputs()
     uses = ls.oracle_uses_outside_model()

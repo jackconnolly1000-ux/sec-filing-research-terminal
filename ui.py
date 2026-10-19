@@ -1,4 +1,4 @@
-"""Page styling and HTML components for the Debt & Liquidity Research Terminal:
+"""Page styling and HTML components for Debt & Liquidity Research:
 CSS built from theme.py tokens, skeleton loaders, a run-progress strip, the metrics panel, and
 finding and 8-K rows.
 
