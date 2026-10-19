@@ -140,7 +140,7 @@ Added after this case study, in [`oracle_principal_calendar.md`](oracle_principa
 
 ## Five-minute walkthrough: live app and Oracle Excel
 
-App: https://sec-filing-research-terminal.streamlit.app/. Opening it makes no live data request and needs no sign-in.
+App: https://debt-liquidity-research.streamlit.app/. Opening it makes no live data request and needs no sign-in.
 
 | Time | Where | What to read | What it shows |
 |---|---|---|---|

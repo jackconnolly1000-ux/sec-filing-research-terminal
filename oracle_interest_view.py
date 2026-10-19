@@ -24,10 +24,12 @@ def render(snapshot, money):
         for value in [*(c["periods"][p][key] for p in ["fy", "current", "prior"]), c[key]]:
             out += '<td>' + (f'{value/1e6:,.0f}' if value is not None else 'Unavailable') + '</td>'
         out += '</tr>'
-    out += '</tbody></table></div><p><strong>Capitalized-interest basis:</strong> ' + esc(r["basis"]) + '</p>'
+    out += ('</tbody></table></div><p class="lr-meta">The reported interest line has unresolved composition and '
+            'capitalization limits. This earnings ratio does not establish borrowing-only coverage or contractual '
+            'covenant headroom.</p><details><summary>Interest definitions, unresolved components and filing evidence</summary>')
+    out += '<p><strong>Capitalized-interest basis:</strong> ' + esc(r["basis"]) + '</p>'
     out += '<p><strong>Composition:</strong> ' + esc(r["composition"]) + '</p>'
     out += '<p class="lr-meta">' + esc(r["limitations"]) + '</p>'
-    out += '<details><summary>Interest composition, unavailable measures and filing evidence</summary>'
     lease = c["lease_interest"]
     if lease is not None:
         out += '<p>The lease notes separately report interest of 279M + 126M − 48M = ' + f'{lease/1e6:,.0f}'

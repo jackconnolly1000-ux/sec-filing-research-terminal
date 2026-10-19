@@ -336,10 +336,11 @@ def render(snapshot):
     output += f'<h2>{esc(snapshot["company_name"])}</h2><div class="lr-meta">Balance sheet: {esc(end)} · '
     output += f'<a href="{esc(source)}" target="_blank" rel="noopener noreferrer">Source 10-Q</a> · Balance-sheet facts checked {esc(snapshot["checked_as_of"])}</div>'
     from funding_conclusions import plain_answer, terms_html, render as funding_html
+    import review_presentation
     # The plain answer first; the historical comparison follows it, so a favourable past figure isn't read as the answer
     output += plain_answer(snapshot)
     output += f'<p class="lr-answer">Historical: {esc(headline(snapshot))}</p>'
-    output += '<p class="lr-meta">Cash flows cover the trailing twelve months to this balance-sheet date. Borrowing is at carrying amount and excludes leases. Figures are rounded; evidence retains exact inputs.</p>' + terms_html() + '</header>'
+    output += '<p class="lr-meta">Cash flows cover the trailing twelve months to this balance-sheet date. Borrowing is at carrying amount and excludes leases. Figures are rounded; evidence retains exact inputs.</p><details><summary>Financial terms used in this review</summary>' + terms_html() + '</details></header>'
     output += '<div class="lr-summary">'
     for label, value, detail in (
         ("Cash and equivalents", money(m["cash"]["value"]), "Excludes restricted cash"),
@@ -351,7 +352,7 @@ def render(snapshot):
         swatch = {"Cash and equivalents": "cash", "Baseline gross debt": "borrowing"}.get(label)
         mark = f'<span class="lr-swatch lr-{swatch}" aria-hidden="true"></span>' if swatch else ''
         output += f'<div><div class="lr-stat-label">{mark}{esc(label)}</div><div class="lr-stat-value">{esc(value)}</div><div class="lr-stat-detail">{esc(detail)}</div></div>'
-    output += '</div>' + funding_html(snapshot) + SPLIT
+    output += '</div>' + review_presentation.funding_details(funding_html(snapshot)) + SPLIT
     # Financial order: what the company owes, the cash it generates, how cash was funded, when debt falls due and what
     # could pay it, how earnings covered interest, how balances changed, then what stays unresolved. Each group but the
     # last gets a label; "What remains unresolved?" carries its own rule.
@@ -360,7 +361,7 @@ def render(snapshot):
     import borrowing_leases
     try:
         borrowing_model = borrowing_leases.build(snapshot)
-        output += borrowing_leases.render_borrowing(borrowing_model, money)
+        output += review_presentation.borrowing(borrowing_model, money)
         output += chart_slot("liabilities", "lr-section")
     except (OSError, ValueError, KeyError, TypeError):
         borrowing_model = None
@@ -420,7 +421,8 @@ def render(snapshot):
     remaining = {"VST": "Historical interest-component coverage is shown above. Receivables/Nuveen allocation, Other composition and an all-in financing-cost denominator remain Unavailable.",
                  "ORCL": "Historical reported-line interest coverage is shown above; borrowing-only coverage, capitalization basis and covenant headroom remain Unavailable.",
                  "LLY": "Historical interest coverage uses derived operating income; its capitalization and other limits are stated above."}[snapshot["ticker"]]
-    output += f'<p class="lr-meta">{esc(LIMITS[snapshot["ticker"]])} {remaining}</p></section></section>'
+    output += review_presentation.unresolved(snapshot)
+    output += f'<details><summary>Full interpretation limits</summary><p class="lr-meta">{esc(LIMITS[snapshot["ticker"]])} {remaining}</p></details></section></section>'
     return output.replace("$", "&#36;")
 
 
@@ -630,8 +632,9 @@ def render_app() -> None:
             draw_chart(st, name, snapshot)
         st.markdown('<section class="lr-review">' + rest + '</section>', unsafe_allow_html=True)
     if simulation_view.available(snapshot):
-        st.caption(f"An illustrative stress scenario for these obligations is under View → {simulation_view.VIEWS[1]}, "
-                   "above. It uses stated assumptions and does not change this review.")
+        scope = ("A cash-path simulation" if ticker == "ORCL" else "A historical cash-generation sensitivity")
+        st.caption(f"{scope} is under View → {simulation_view.VIEWS[1]}, above. "
+                   "It uses stated assumptions and does not change this review's funding conclusion.")
     st.markdown(tail, unsafe_allow_html=True)
     with st.expander("Optional combined export"):
         import export_guide

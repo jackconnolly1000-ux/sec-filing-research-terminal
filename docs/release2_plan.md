@@ -25,9 +25,13 @@ The answer is an **illustrative scenario**, not a forecast, a rating, a probabil
 | C. Refresh with newer filings | Later, when the next 10-Qs arrive (Oracle's is likely mid-December). Driven by the filing calendar. |
 | D. Stock-price Monte Carlo, LP allocation, CAPM in general research | Not now. It's disconnected from the Debt & Liquidity product, a max-return LP is close to investment-advice territory, and CAPM regression is Upcoming (Nov 11–13). |
 
-## Scope: Oracle first
+## Company-aware entry point (October 19, 2026)
 
-Oracle is the only review with a **dated** principal calendar ([`oracle_principal_calendar.md`](oracle_principal_calendar.md)): $7.317B of note and term-loan principal falls due September 2026–August 2027, with commercial paper Unavailable. Lilly's per-note calendar isn't supported by its filings ([`lly_principal_calendar_check.md`](lly_principal_calendar_check.md)), and Vistra's borrowing base and Parent-accessible cash are Unavailable. Simulating them would mean inventing the obligations side, so they wait until their evidence exists.
+The Stress scenario view now stays at the top for LLY, ORCL and VST and follows company selection. Oracle retains the full illustrative cash-path model below. Lilly and Vistra use `cashflow_stress.py`: deterministic percentage changes to historical TTM OCF and capital spending, with zero changes as the reference, explicit exclusions and a CSV evidence record. Their results are cash generation after the selected capex line, not projected cash balances or payment coverage. Company controls and completed results have separate state keys. No Oracle values, financing assumptions or distributions are applied to them.
+
+## Full cash-path scope: Oracle first
+
+Oracle is the only review with a **dated** principal calendar ([`oracle_principal_calendar.md`](oracle_principal_calendar.md)): $7.317B of note and term-loan principal falls due September 2026–August 2027, with commercial paper Unavailable. Lilly's per-note calendar isn't supported by its filings ([`lly_principal_calendar_check.md`](lly_principal_calendar_check.md)), and Vistra's borrowing base and Parent-accessible cash are Unavailable. A complete repayment simulation for those companies waits for the missing evidence. Their limited historical cash-generation sensitivities do not require inventing the obligations side.
 
 ## Model as built
 

@@ -1,19 +1,19 @@
-# Debt & Liquidity Research Terminal
+# Debt & Liquidity Research
 
 **What does a company owe, what can fund it, and what do the filings leave unresolved?**
 
-Trace SEC filing facts through reconciled calculations to dated funding and repayment conclusions for **Eli Lilly (LLY), Oracle (ORCL) and Vistra (VST)**. The app combines checked company reviews, source-linked Excel records and a separate illustrative Oracle stress scenario. Research, not investment advice.
+Trace SEC filing facts through reconciled calculations to dated funding and repayment conclusions for **Eli Lilly (LLY), Oracle (ORCL) and Vistra (VST)**. The app combines checked company reviews, source-linked Excel records and company-specific illustrative stress tests. Research, not investment advice.
 
-[Open Debt & Liquidity Research Terminal](https://sec-filing-research-terminal.streamlit.app/)
+[Open Debt & Liquidity Research](https://debt-liquidity-research.streamlit.app/)
 
-The app and browser title use the current name. The hosting address and GitHub repository still use the original `sec-filing-research-terminal` slug; the address requires a separate Streamlit hosting change.
+The GitHub repository retains its original `sec-filing-research-terminal` name. The public hosting address above was verified through the creator’s Streamlit profile on October 19, 2026.
 
 ## Start here
 
 1. **Choose a company.** Read its dated funding conclusion, usable resources, competing uses and decisive unknowns.
 2. **Trace the conclusion.** Inspect borrowing and leases, cash generation, repayment dates, historical ratios and five completed fiscal years of checked history. Source dates and definitions stay visible.
 3. **Download that company’s workbook.** It contains the review, calculations, charts and evidence. The optional combined export is a compact summary, not a peer ranking.
-4. **Explore Oracle’s stress scenario separately.** Change stated assumptions and inspect simulated cash paths and the scenario download. These results do not alter the checked funding conclusion.
+4. **Open Stress scenario (illustrative).** The view follows the selected company. Lilly and Vistra offer a historical OCF/capital-spending sensitivity with a CSV evidence record. Oracle retains its separate cash-path simulation and Excel scenario record. The scopes differ because the available payment-date evidence differs. These results do not alter the checked funding conclusions.
 
 ## Scope and evidence
 
@@ -42,6 +42,8 @@ Oracle’s stress scenario is conditional on stated assumptions. Simulated trial
 
 This is a three-company research project, not an automated credit rating, investment recommendation or complete obligations analysis. Desktop output has been reviewed; static chart renders at phone width do not substitute for actual phone interaction testing.
 
+Lilly and Vistra’s stress views apply user-selected changes to checked historical TTM OCF and capital spending. They do not calculate an ending cash balance or a debt-service funding surplus. They exclude acquisitions, payouts, principal and other obligations; the specific requirements for a repayment model are shown for each company. Zero shocks reproduce the historical reference.
+
 ## Supporting tool: general filing research
 
 **General filing research — experimental** remains a separate secondary page. It compares 10-K risk-factor text, reads selected 10-Q/8-K and MD&A sections, and displays cited AI summaries, catalysts and market data. Its open ticker search does **not** create a checked Debt & Liquidity review for another company.
@@ -57,10 +59,12 @@ The public AI budget is $0.25 per day per server process; cache hits cost nothin
 | App and presentation | `app.py`, `ui.py`, `company_review.py`, `theme.py` |
 | Filing facts and reconciled metrics | `xbrl.py`, `filing_xbrl.py`, `ratio_review.py`, `borrowing_leases.py` |
 | Funding conclusions | `funding_conclusions.py`; company-specific liquidity, interest and repayment modules |
-| Oracle scenario | `liquidity_simulation.py`, `simulation_view.py`, `scenario_export.py` |
+| Company stress views | `cashflow_stress.py` for Lilly/Vistra; `liquidity_simulation.py`, `simulation_view.py`, `scenario_export.py` for Oracle |
+| Concise review presentation | `review_presentation.py`; checked gaps retain consequences, sources and resolution requirements |
 | Saved evidence and downloads | `samples/`, `workbook_manifest.py`, `tests/offline/build_workbooks.py` |
 | Experimental research | `sec_data.py`, `compare.py`, `analysis.py`, `market_data.py`, `research_export.py` |
 
+- [October 19 product revisions and remaining work](docs/product_revision_2026-10-19.md)
 - [Build plan](docs/debt_liquidity_plan.md) and [roadmap](docs/roadmap.md)
 - [Lilly evidence](docs/pilot_evidence_lly.md), [Oracle evidence](docs/pilot_evidence_oracle.md), [Vistra evidence](docs/pilot_evidence_vistra.md)
 - [Funding conclusions](docs/funding_conclusions.md), [ratio reconciliation](docs/ratio_reconciliation.md), [annual history](docs/annual_history_reconciliation.md)
